@@ -36,13 +36,14 @@ npm run watch:assets
 
 ## Deployment
 
-GitHub Pages deployment is handled by GitHub Actions via `.github/workflows/pages.yml`.
+Use GitHub Pages built-in Jekyll publishing from the repository root.
 
 On GitHub:
 
 1. Open `Settings > Pages`.
-2. Set `Source` to `GitHub Actions`.
-3. Push to `master` to trigger a new deployment.
+2. Set `Source` to `Deploy from a branch`.
+3. Set `Branch` to `master` and folder to `/ (root)`.
+4. Save and wait for GitHub Pages to finish building.
 
 ## Notes
 
