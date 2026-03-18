@@ -1,26 +1,26 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-This repository is a Jekyll blog for GitHub Pages. Content lives in [`_posts/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/_posts), with dated Markdown filenames such as `2021-03-29-KVO详解.md`. Shared templates are in [`_layouts/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/_layouts) and [`_includes/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/_includes). Site configuration is in [`_config.yml`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/_config.yml). Static assets are committed under [`css/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/css), [`js/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/js), [`img/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/img), [`fonts/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/fonts), and [`pwa/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/pwa). LESS sources live in [`less/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/less).
+This repository is a Jekyll blog published with GitHub Pages. Posts live in [`_posts/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/_posts) and must use the `YYYY-MM-DD-title.md` naming pattern. Layouts and shared partials are in [`_layouts/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/_layouts) and [`_includes/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/_includes). Site settings, domain, and social metadata live in [`_config.yml`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/_config.yml) and [`CNAME`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/CNAME). Editable style sources are in [`less/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/less), with generated assets committed under [`css/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/css). Long-form personal notes are under [`记录/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/记录); treat them as source material, not automatically publishable content.
 
 ## Build, Test, and Development Commands
-Use Jekyll for site generation and Grunt only for asset rebuilds.
+Use Jekyll for site generation and the local Node tools only for asset rebuilds.
 
-- `jekyll serve -w`: build and preview the site locally with live reload.
-- `jekyll build`: generate the production site into `_site/`.
-- `grunt`: compile LESS and minify JS based on [`Gruntfile.js`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/Gruntfile.js).
-- `grunt watch`: rebuild CSS/JS when files in `less/` or `js/` change.
+- `bundle exec jekyll serve --livereload`: run the blog locally.
+- `bundle exec jekyll build`: generate the production site into `_site/`.
+- `./node_modules/.bin/lessc less/hux-blog.less css/hux-blog.css`: rebuild the main stylesheet.
+- `./node_modules/.bin/cleancss -o css/hux-blog.min.css css/hux-blog.css`: regenerate the minified stylesheet.
 
-The npm scripts in [`package.json`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/package.json) are legacy and currently inconsistent with the committed asset names, so prefer the direct commands above.
+If you change `less/`, update both committed CSS outputs.
 
 ## Coding Style & Naming Conventions
-Preserve the existing style in each file: 4-space indentation in HTML, JS, and config files; no unnecessary reformatting. Keep post filenames in Jekyll format: `YYYY-MM-DD-title.md`. Use YAML front matter for every post and page. Edit source files in `less/` and unminified files in `js/`; commit generated assets in `css/` and minified JS only when they change with the source.
+Preserve the existing style in each file and avoid broad reformatting. Keep YAML front matter on every post and page. For content work, prefer concise titles, meaningful subtitles, and a small tag set. Publish only from reviewed material in [`记录/整理版/`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/记录/整理版) rather than raw notes.
 
 ## Testing Guidelines
-There is no dedicated automated test suite in this repository. Validation is done by running `jekyll build` and reviewing the local site with `jekyll serve -w`. For UI changes, verify at least the home page, one post page, the tags page, and mobile navigation behavior.
+There is no dedicated automated test suite. Validate changes with `bundle exec jekyll build`, then review at least the home page, one post page, the tags page, and the custom domain navigation paths. For visual changes, also confirm desktop and mobile layouts.
 
 ## Commit & Pull Request Guidelines
-Recent history includes short messages like `delete file`, but contributors should use clear imperative summaries such as `Add post about Swift concurrency` or `Fix broken sidebar link`. Keep commits focused. Pull requests should include a brief description, affected pages or templates, screenshots for visual changes, and any config changes in `_config.yml`.
+Use short imperative commit messages such as `Publish AAC intro post` or `Refresh home page layout`. Keep content, styling, and config changes logically separated when practical. PRs should call out domain or Pages changes, include screenshots for UI updates, and mention whether generated CSS was rebuilt.
 
 ## Security & Configuration Tips
-Treat [`_config.yml`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/_config.yml) as the source of truth for site metadata and third-party integrations. When forking or reusing this repo, replace external service credentials, usernames, and analytics identifiers before publishing.
+Treat [`_config.yml`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/_config.yml) and [`CNAME`](/Users/yvain/yvain_personal/github_blog/YvainZhang.github.io/CNAME) as deployment-critical files. Do not publish raw notes that contain customer, internal network, server, or credential details. When reusing this repo, replace usernames, analytics IDs, and domain settings before publishing.
