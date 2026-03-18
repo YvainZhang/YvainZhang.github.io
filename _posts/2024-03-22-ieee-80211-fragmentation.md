@@ -6,7 +6,7 @@ date: 2024-03-22
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
 tags:
-  - Wi‑Fi
+  - Wi-Fi
   - 802.11
   - 无线网络
 ---
@@ -90,7 +90,7 @@ tags:
 - 分片偏向抗丢包
 - 聚合偏向减少开销和提高吞吐
 
-现代 Wi‑Fi 里，聚合通常比传统分片更常见。
+现代 Wi-Fi 里，聚合通常比传统分片更常见。
 
 ## 7. 实际排查分片问题时该看什么
 
