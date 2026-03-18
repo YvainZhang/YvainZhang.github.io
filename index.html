@@ -94,12 +94,11 @@ description: "Thinking will not overcome fear but action will."
         <section class="home-rail-panel">
             <h5><a href="{{'/tags/' | prepend: site.baseurl }}">FEATURED TAGS</a></h5>
             <div class="tags">
-                {% for tag in site.tags %}
-                    {% if tag[1].size >= site.featured-condition-size %}
-                        <a href="{{ site.baseurl }}/tags/#{{ tag[0] }}" title="{{ tag[0] }}" rel="{{ tag[1].size }}">
-                            {{ tag[0] }}
-                        </a>
-                    {% endif %}
+                {% assign home_sorted_tags = site.tags | sort %}
+                {% for tag in home_sorted_tags %}
+                    <a href="{{ site.baseurl }}/tags/#{{ tag[0] }}" title="{{ tag[0] }}" rel="{{ tag[1].size }}">
+                        {{ tag[0] }}
+                    </a>
                 {% endfor %}
             </div>
         </section>
