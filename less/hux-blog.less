@@ -534,13 +534,13 @@ pre code{
 
 .home-layout{
 	display: grid;
-	grid-template-columns: 180px minmax(0, 1fr) 240px;
+	grid-template-columns: 170px minmax(0, 1fr) 220px;
 	gap: 24px;
 	align-items: start;
-	@media only screen and (max-width: 1199px){
-		grid-template-columns: 180px minmax(0, 1fr);
+	@media only screen and (max-width: 991px){
+		grid-template-columns: 170px minmax(0, 1fr);
 	}
-	@media only screen and (max-width: 900px){
+	@media only screen and (max-width: 767px){
 		grid-template-columns: 1fr;
 		gap: 18px;
 	}
@@ -566,57 +566,96 @@ pre code{
 .home-nav-select-wrap{
 	position: relative;
 	margin-bottom: 14px;
-	padding: 3px;
+}
+
+.home-nav-trigger{
+	display: flex;
+	align-items: center;
+	width: 100%;
+	padding: 12px 14px;
+	border: 0;
 	border-radius: 999px;
-	background: linear-gradient(135deg, fade(@brand-primary, 14%), rgba(255,255,255,0.88));
-	&::after{
-		content: "";
-		position: absolute;
-		right: 18px;
-		top: 50%;
-		width: 9px;
-		height: 9px;
-		margin-top: -7px;
-		border-right: 2px solid fade(@brand-primary, 72%);
-		border-bottom: 2px solid fade(@brand-primary, 72%);
-		transform: rotate(45deg);
-		pointer-events: none;
-	}
-	&::before{
-		content: "";
-		position: absolute;
-		left: 14px;
-		top: 50%;
-		width: 8px;
-		height: 8px;
-		margin-top: -4px;
-		border-radius: 50%;
-		background: linear-gradient(135deg, @brand-primary, @accent-soft);
-		box-shadow: 0 0 0 6px fade(@brand-primary, 10%);
-		pointer-events: none;
+	background: linear-gradient(135deg, #132126, #1e3a36);
+	color: #f7f6f1;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	box-shadow: 0 14px 28px rgba(19,33,38,0.16);
+	transition: transform 180ms ease, box-shadow 180ms ease;
+	&:hover,
+	&:focus{
+		transform: translateY(-1px);
+		box-shadow: 0 18px 32px rgba(19,33,38,0.22);
 	}
 }
 
-.home-nav-select{
+.home-nav-trigger-dot{
+	flex: 0 0 auto;
+	width: 8px;
+	height: 8px;
+	margin-right: 10px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #facc15, #f97316);
+	box-shadow: 0 0 0 6px rgba(255,255,255,0.08);
+}
+
+.home-nav-trigger-text{
+	flex: 1 1 auto;
+	text-align: left;
+}
+
+.home-nav-trigger-caret{
+	flex: 0 0 auto;
+	width: 9px;
+	height: 9px;
+	margin-left: 10px;
+	border-right: 2px solid rgba(255,255,255,0.82);
+	border-bottom: 2px solid rgba(255,255,255,0.82);
+	transform: rotate(45deg) translateY(-2px);
+	transition: transform 180ms ease;
+}
+
+.home-nav.is-open .home-nav-trigger-caret{
+	transform: rotate(-135deg) translateX(-1px);
+}
+
+.home-nav-menu{
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: calc(100% + 10px);
+	z-index: 20;
+	padding: 8px;
+	border: 1px solid rgba(23,33,38,0.08);
+	border-radius: 18px;
+	background: rgba(255,255,255,0.95);
+	box-shadow: 0 18px 40px rgba(23,33,38,0.12);
+	backdrop-filter: blur(10px);
+}
+
+.home-nav-option{
 	display: block;
 	width: 100%;
-	padding: 12px 42px 12px 32px;
-	border: 1px solid rgba(23,33,38,0.06);
-	border-radius: 999px;
-	background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,248,245,0.96));
-	color: #142227;
-	font-size: 13px;
+	padding: 10px 12px;
+	border: 0;
+	border-radius: 12px;
+	background: transparent;
+	color: fade(@ink-deep, 82%);
+	font-size: 12px;
 	font-weight: 800;
-	letter-spacing: 0.08em;
+	letter-spacing: 0.12em;
+	text-align: left;
 	text-transform: uppercase;
-	outline: none;
-	box-shadow: 0 8px 18px rgba(23,33,38,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
-	appearance: none;
-	-webkit-appearance: none;
-	-moz-appearance: none;
+	transition: background 180ms ease, color 180ms ease;
+	& + &{
+		margin-top: 4px;
+	}
+	&.is-active,
+	&:hover,
 	&:focus{
-		border-color: fade(@brand-primary, 36%);
-		box-shadow: 0 0 0 4px fade(@brand-primary, 10%), 0 10px 22px rgba(23,33,38,0.08);
+		background: fade(@brand-primary, 10%);
+		color: @brand-primary;
 	}
 }
 
@@ -693,11 +732,11 @@ pre code{
 
 .home-rail{
 	align-self: start;
-	@media only screen and (min-width: 1200px){
+	@media only screen and (min-width: 992px){
 		position: sticky;
 		top: 92px;
 	}
-	@media only screen and (max-width: 1199px){
+	@media only screen and (max-width: 991px){
 		grid-column: 1 / -1;
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -715,7 +754,7 @@ pre code{
 	border: 1px solid rgba(23,33,38,0.08);
 	border-radius: 22px;
 	box-shadow: 0 18px 40px rgba(23,33,38,0.08);
-	@media only screen and (max-width: 1199px){
+	@media only screen and (max-width: 991px){
 		margin-bottom: 0;
 	}
 	h5{
