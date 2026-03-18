@@ -6,15 +6,14 @@ description: "Thinking will not overcome fear but action will."
 <div class="home-layout">
     <aside class="home-nav" id="home-nav">
         <div class="home-nav-panel">
-            <label class="home-nav-label" for="home-nav-select">Browse</label>
-            <select class="home-nav-select" id="home-nav-select">
-                <option value="time">By Time</option>
-                <option value="tag">By Tag</option>
-            </select>
-        </div>
-        <div class="home-nav-body">
-            <section class="home-nav-panel home-nav-list is-active" data-home-panel="time">
-                <h3>Recent entries</h3>
+            <div class="home-nav-select-wrap">
+                <select class="home-nav-select" id="home-nav-select" aria-label="Browse posts">
+                    <option value="time">By Time</option>
+                    <option value="tag">By Tag</option>
+                </select>
+            </div>
+            <div class="home-nav-body">
+                <section class="home-nav-list is-active" data-home-panel="time">
                 <ul class="home-link-list">
                     {% for post in site.posts limit: 7 %}
                     <li>
@@ -25,10 +24,9 @@ description: "Thinking will not overcome fear but action will."
                     </li>
                     {% endfor %}
                 </ul>
-            </section>
+                </section>
 
-            <section class="home-nav-panel home-nav-list" data-home-panel="tag" hidden>
-                <h3>Browse tags</h3>
+                <section class="home-nav-list" data-home-panel="tag" hidden>
                 <ul class="home-tag-list">
                     {% assign sorted_tags = site.tags | sort %}
                     {% for tag in sorted_tags %}
@@ -41,7 +39,8 @@ description: "Thinking will not overcome fear but action will."
                     {% endfor %}
                 </ul>
                 <a class="home-tags-link" href="{{ '/tags/' | prepend: site.baseurl }}">Open full tag archive</a>
-            </section>
+                </section>
+            </div>
         </div>
     </aside>
 
