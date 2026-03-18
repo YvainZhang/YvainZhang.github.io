@@ -12,7 +12,7 @@ description: "Thinking will not overcome fear but action will."
                     <span class="home-nav-trigger-text">By Time</span>
                     <span class="home-nav-trigger-caret" aria-hidden="true"></span>
                 </button>
-                <div class="home-nav-menu" id="home-nav-menu" role="listbox" aria-label="Browse posts">
+                <div class="home-nav-menu" id="home-nav-menu" role="listbox" aria-label="Browse posts" hidden>
                     <button class="home-nav-option is-active" type="button" data-home-choice="time">By Time</button>
                     <button class="home-nav-option" type="button" data-home-choice="tag">By Tag</button>
                 </div>
@@ -95,7 +95,7 @@ description: "Thinking will not overcome fear but action will."
             <h5><a href="{{'/tags/' | prepend: site.baseurl }}">FEATURED TAGS</a></h5>
             <div class="tags">
                 {% for tag in site.tags %}
-                    {% if tag[1].size > site.featured-condition-size %}
+                    {% if tag[1].size >= site.featured-condition-size %}
                         <a href="{{ site.baseurl }}/tags/#{{ tag[0] }}" title="{{ tag[0] }}" rel="{{ tag[1].size }}">
                             {{ tag[0] }}
                         </a>
@@ -150,12 +150,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function closeMenu() {
         nav.classList.remove('is-open');
+        if (menu) {
+            menu.hidden = true;
+        }
         if (trigger) trigger.setAttribute('aria-expanded', 'false');
     }
 
     if (trigger) {
         trigger.addEventListener('click', function () {
             var open = nav.classList.toggle('is-open');
+            if (menu) {
+                menu.hidden = !open;
+            }
             trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
     }
