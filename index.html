@@ -3,56 +3,6 @@ layout: page
 description: "Thinking will not overcome fear but action will."
 ---
 
-<div class="home-shell">
-    <aside class="home-side-nav">
-        <div class="home-side-panel">
-            <p class="home-side-kicker">Navigate</p>
-            <h2 class="home-side-title">Home Index</h2>
-            <ul class="home-side-links">
-                <li><a href="#home-intro">Overview</a></li>
-                <li><a href="#home-posts">Latest Posts</a></li>
-                <li><a href="{{ site.baseurl }}/tags/">Tags</a></li>
-                <li><a href="{{ site.baseurl }}/about/">About</a></li>
-            </ul>
-        </div>
-        <div class="home-side-panel">
-            <p class="home-side-kicker">Tracks</p>
-            <ul class="home-side-topics">
-                <li>Operating systems</li>
-                <li>Embedded systems</li>
-                <li>Multimedia and FFmpeg</li>
-                <li>Wi-Fi and driver work</li>
-            </ul>
-        </div>
-    </aside>
-
-    <div class="home-main">
-<section class="home-intro" id="home-intro">
-    <div class="home-intro-head">
-        <p class="home-intro-kicker">Software Notes</p>
-        <h2 class="home-intro-title">Systems, media, and engineering notes with less noise.</h2>
-        <p class="home-intro-copy">This blog focuses on low-level systems, multimedia tooling, Wi-Fi driver work, and the kind of technical details that are usually scattered across personal notebooks.</p>
-    </div>
-    <div class="home-intro-grid">
-        <div class="home-intro-card">
-            <span class="home-intro-label">Focus</span>
-            <strong>Operating systems</strong>
-            <p>Boot flows, memory management, and embedded fundamentals.</p>
-        </div>
-        <div class="home-intro-card">
-            <span class="home-intro-label">Track</span>
-            <strong>Multimedia</strong>
-            <p>FFmpeg, containers, codecs, and audio basics that stay practical.</p>
-        </div>
-        <div class="home-intro-card">
-            <span class="home-intro-label">Current</span>
-            <strong>Wireless systems</strong>
-            <p>802.11 protocol notes, P2P, power saving, and driver-side reasoning.</p>
-        </div>
-    </div>
-</section>
-
-<section id="home-posts">
 {% for post in paginator.posts %}
 <div class="post-preview">
     <a href="{{ post.url | prepend: site.baseurl }}">
@@ -75,7 +25,6 @@ description: "Thinking will not overcome fear but action will."
 </div>
 <hr>
 {% endfor %}
-</section>
 
 <!-- Pager -->
 {% if paginator.total_pages > 1 %}
@@ -92,5 +41,3 @@ description: "Thinking will not overcome fear but action will."
     {% endif %}
 </ul>
 {% endif %}
-    </div>
-</div>
