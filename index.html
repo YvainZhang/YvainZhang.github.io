@@ -83,6 +83,37 @@ description: "Thinking will not overcome fear but action will."
         </ul>
         {% endif %}
     </main>
+
+    <aside class="home-rail">
+        {% if site.featured-tags %}
+        <section class="home-rail-panel">
+            <h5><a href="{{'/tags/' | prepend: site.baseurl }}">FEATURED TAGS</a></h5>
+            <div class="tags">
+                {% for tag in site.tags %}
+                    {% if tag[1].size > {{site.featured-condition-size}} %}
+                        <a href="{{ site.baseurl }}/tags/#{{ tag[0] }}" title="{{ tag[0] }}" rel="{{ tag[1].size }}">
+                            {{ tag[0] }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="home-rail-panel visible-md visible-lg">
+            <h5><a href="{{'/about/' | prepend: site.baseurl }}">ABOUT ME</a></h5>
+            <div class="short-about">
+                {% if site.sidebar-avatar %}
+                    <a href="{{ site.baseurl }}/about">
+                        <img src="{{site.sidebar-avatar}}"/>
+                    </a>
+                {% endif %}
+                {% if site.sidebar-about-description %}
+                    <p>{{site.sidebar-about-description}}</p>
+                {% endif %}
+            </div>
+        </section>
+    </aside>
 </div>
 
 <script>
