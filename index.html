@@ -5,21 +5,14 @@ description: "Thinking will not overcome fear but action will."
 
 <div class="home-layout">
     <aside class="home-nav" id="home-nav">
-        <button class="home-nav-toggle" type="button" aria-expanded="false" aria-controls="home-nav-body">
-            Browse
-            <span class="home-nav-toggle-icon" aria-hidden="true"></span>
-        </button>
-        <div class="home-nav-body" id="home-nav-body">
-            <section class="home-nav-panel">
-                <p class="home-nav-kicker">Navigate</p>
-                <h2 class="home-nav-title">Start from time or topic.</h2>
-                <p class="home-nav-copy">Use the switch to skim recent writing or jump straight into a tag archive.</p>
-                <div class="home-nav-switch" role="tablist" aria-label="Home navigation mode">
-                    <button class="home-nav-tab is-active" type="button" data-home-tab="time" aria-pressed="true">By Time</button>
-                    <button class="home-nav-tab" type="button" data-home-tab="tag" aria-pressed="false">By Tag</button>
-                </div>
-            </section>
-
+        <div class="home-nav-panel">
+            <label class="home-nav-label" for="home-nav-select">Browse</label>
+            <select class="home-nav-select" id="home-nav-select">
+                <option value="time">By Time</option>
+                <option value="tag">By Tag</option>
+            </select>
+        </div>
+        <div class="home-nav-body">
             <section class="home-nav-panel home-nav-list is-active" data-home-panel="time">
                 <h3>Recent entries</h3>
                 <ul class="home-link-list">
@@ -53,12 +46,6 @@ description: "Thinking will not overcome fear but action will."
     </aside>
 
     <main class="home-feed">
-        <section class="home-feed-head">
-            <p class="home-feed-kicker">Latest Posts</p>
-            <h2 class="home-feed-title">Recent writing and software notes.</h2>
-            <p class="home-feed-copy">Start with the newest posts here, or use the left navigation to jump by tag.</p>
-        </section>
-
         {% for post in paginator.posts %}
         <div class="post-preview">
             <a href="{{ post.url | prepend: site.baseurl }}">
@@ -104,17 +91,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var nav = document.getElementById('home-nav');
     if (!nav) return;
 
-    var toggle = nav.querySelector('.home-nav-toggle');
-    var tabs = nav.querySelectorAll('[data-home-tab]');
+    var select = nav.querySelector('#home-nav-select');
     var panels = nav.querySelectorAll('[data-home-panel]');
 
     function setActiveTab(name) {
-        tabs.forEach(function (tab) {
-            var active = tab.getAttribute('data-home-tab') === name;
-            tab.classList.toggle('is-active', active);
-            tab.setAttribute('aria-pressed', active ? 'true' : 'false');
-        });
-
         panels.forEach(function (panel) {
             var active = panel.getAttribute('data-home-panel') === name;
             panel.classList.toggle('is-active', active);
@@ -122,17 +102,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    tabs.forEach(function (tab) {
-        tab.addEventListener('click', function () {
-            setActiveTab(tab.getAttribute('data-home-tab'));
+    if (select) {
+        select.addEventListener('change', function () {
+            setActiveTab(select.value);
         });
-    });
-
-    if (toggle) {
-        toggle.addEventListener('click', function () {
-            var open = nav.classList.toggle('is-open');
-            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
+        setActiveTab(select.value);
     }
 });
 </script>
