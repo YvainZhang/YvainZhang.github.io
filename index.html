@@ -63,7 +63,7 @@ description: "Thinking will not overcome fear but action will."
                 </h3>
                 {% endif %}
                 <div class="post-content-preview">
-                    {{ post.content | strip_html | truncate:200 }}
+                    {{ post.content | strip_html | truncate:96 }}
                 </div>
             </a>
             <p class="post-meta">
@@ -95,7 +95,7 @@ description: "Thinking will not overcome fear but action will."
             <h5><a href="{{'/tags/' | prepend: site.baseurl }}">FEATURED TAGS</a></h5>
             <div class="tags">
                 {% for tag in site.tags %}
-                    {% if tag[1].size > {{site.featured-condition-size}} %}
+                    {% if tag[1].size > site.featured-condition-size %}
                         <a href="{{ site.baseurl }}/tags/#{{ tag[0] }}" title="{{ tag[0] }}" rel="{{ tag[1].size }}">
                             {{ tag[0] }}
                         </a>
