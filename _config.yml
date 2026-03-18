@@ -5,7 +5,7 @@ header-img: img/post-bg-desk.jpg
 email:
 description: "Personal blog about software, notes, and projects."
 keyword: "Yvain Zhang, Blog, Jekyll, GitHub Pages, software, notes"
-url: "https://YvainZhang.github.io"          # your host, for absolute URL
+url: "https://xidianedu.cc"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/YvainZhang/YvainZhang.github.io.git" # you code repository
 
