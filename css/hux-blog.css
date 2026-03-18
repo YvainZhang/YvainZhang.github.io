@@ -892,6 +892,25 @@ pre code {
   line-height: 1.75;
   color: rgba(23, 33, 38, 0.74);
 }
+.home-rail-panel .tags {
+  margin-bottom: 0;
+}
+.home-rail-panel .tags a,
+.home-rail-panel .tags .tag {
+  border-color: rgba(23, 33, 38, 0.12);
+  color: rgba(23, 33, 38, 0.86);
+  background: rgba(255, 255, 255, 0.72);
+}
+.home-rail-panel .tags a:hover,
+.home-rail-panel .tags .tag:hover,
+.home-rail-panel .tags a:focus,
+.home-rail-panel .tags .tag:focus,
+.home-rail-panel .tags a:active,
+.home-rail-panel .tags .tag:active {
+  color: white;
+  border-color: #0f766e;
+  background: #0f766e;
+}
 .post-preview {
   position: relative;
   margin-bottom: 26px;
@@ -1154,6 +1173,18 @@ form .row:first-child .floating-label-form-group {
   color: #808080;
   background-color: #404040;
   cursor: not-allowed;
+}
+.post-container .pager li > a,
+.post-container .pager li > span {
+  font-size: 12px;
+  padding: 10px 14px;
+}
+@media only screen and (min-width: 768px) {
+  .post-container .pager li > a,
+  .post-container .pager li > span {
+    font-size: 13px;
+    padding: 11px 18px;
+  }
 }
 ::-moz-selection {
   color: white;

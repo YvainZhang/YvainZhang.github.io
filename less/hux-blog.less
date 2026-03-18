@@ -781,6 +781,21 @@ pre code{
 		line-height: 1.75;
 		color: fade(@ink-deep, 74%);
 	}
+	.tags{
+		margin-bottom: 0;
+		a,.tag{
+			border-color: rgba(23,33,38,0.12);
+			color: fade(@ink-deep, 86%);
+			background: rgba(255,255,255,0.72);
+			&:hover,
+			&:focus,
+			&:active{
+				color: white;
+				border-color: @brand-primary;
+				background: @brand-primary;
+			}
+		}
+	}
 }
 
 .post-preview {
@@ -1065,6 +1080,20 @@ form .row:first-child .floating-label-form-group {
 			color: @gray;
 			background-color: @gray-dark;
 			cursor: not-allowed;
+		}
+	}
+}
+
+.post-container .pager {
+	li {
+		> a,
+		> span {
+			font-size: 12px;
+			padding: 10px 14px;
+			@media only screen and (min-width: 768px) {
+				font-size: 13px;
+				padding: 11px 18px;
+			}
 		}
 	}
 }
