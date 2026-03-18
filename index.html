@@ -1,43 +1,138 @@
 ---
-layout: page
+layout: home
 description: "Thinking will not overcome fear but action will."
 ---
 
-{% for post in paginator.posts %}
-<div class="post-preview">
-    <a href="{{ post.url | prepend: site.baseurl }}">
-        <span class="post-category">{{ post.tags | first | default: "Post" }}</span>
-        <h2 class="post-title">
-            {{ post.title }}
-        </h2>
-        {% if post.subtitle %}
-        <h3 class="post-subtitle">
-            {{ post.subtitle }}
-        </h3>
-        {% endif %}
-        <div class="post-content-preview">
-            {{ post.content | strip_html | truncate:200 }}
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by {% if post.author %}{{ post.author }}{% else %}{{ site.title }}{% endif %} on {{ post.date | date: "%B %-d, %Y" }}
-    </p>
-</div>
-<hr>
-{% endfor %}
+<div class="home-layout">
+    <aside class="home-nav" id="home-nav">
+        <button class="home-nav-toggle" type="button" aria-expanded="false" aria-controls="home-nav-body">
+            Browse
+            <span class="home-nav-toggle-icon" aria-hidden="true"></span>
+        </button>
+        <div class="home-nav-body" id="home-nav-body">
+            <section class="home-nav-panel">
+                <p class="home-nav-kicker">Navigate</p>
+                <h2 class="home-nav-title">Start from time or topic.</h2>
+                <p class="home-nav-copy">Use the switch to skim recent writing or jump straight into a tag archive.</p>
+                <div class="home-nav-switch" role="tablist" aria-label="Home navigation mode">
+                    <button class="home-nav-tab is-active" type="button" data-home-tab="time" aria-pressed="true">By Time</button>
+                    <button class="home-nav-tab" type="button" data-home-tab="tag" aria-pressed="false">By Tag</button>
+                </div>
+            </section>
 
-<!-- Pager -->
-{% if paginator.total_pages > 1 %}
-<ul class="pager">
-    {% if paginator.previous_page %}
-    <li class="previous">
-        <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&larr; Newer Posts</a>
-    </li>
-    {% endif %}
-    {% if paginator.next_page %}
-    <li class="next">
-        <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Older Posts &rarr;</a>
-    </li>
-    {% endif %}
-</ul>
-{% endif %}
+            <section class="home-nav-panel home-nav-list is-active" data-home-panel="time">
+                <h3>Recent entries</h3>
+                <ul class="home-link-list">
+                    {% for post in site.posts limit: 7 %}
+                    <li>
+                        <a href="{{ post.url | prepend: site.baseurl }}">
+                            <strong>{{ post.title }}</strong>
+                            <span>{{ post.date | date: "%Y-%m-%d" }}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            <section class="home-nav-panel home-nav-list" data-home-panel="tag" hidden>
+                <h3>Browse tags</h3>
+                <ul class="home-tag-list">
+                    {% assign sorted_tags = site.tags | sort %}
+                    {% for tag in sorted_tags %}
+                    <li>
+                        <a href="{{ '/tags/#' | prepend: site.baseurl }}{{ tag[0] }}">
+                            <span>{{ tag[0] }}</span>
+                            <em>{{ tag[1].size }}</em>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <a class="home-tags-link" href="{{ '/tags/' | prepend: site.baseurl }}">Open full tag archive</a>
+            </section>
+        </div>
+    </aside>
+
+    <main class="home-feed">
+        <section class="home-feed-head">
+            <p class="home-feed-kicker">Latest Posts</p>
+            <h2 class="home-feed-title">Recent writing and software notes.</h2>
+            <p class="home-feed-copy">Start with the newest posts here, or use the left navigation to jump by tag.</p>
+        </section>
+
+        {% for post in paginator.posts %}
+        <div class="post-preview">
+            <a href="{{ post.url | prepend: site.baseurl }}">
+                <span class="post-category">{{ post.tags | first | default: "Post" }}</span>
+                <h2 class="post-title">
+                    {{ post.title }}
+                </h2>
+                {% if post.subtitle %}
+                <h3 class="post-subtitle">
+                    {{ post.subtitle }}
+                </h3>
+                {% endif %}
+                <div class="post-content-preview">
+                    {{ post.content | strip_html | truncate:200 }}
+                </div>
+            </a>
+            <p class="post-meta">
+                Posted by {% if post.author %}{{ post.author }}{% else %}{{ site.title }}{% endif %} on {{ post.date | date: "%B %-d, %Y" }}
+            </p>
+        </div>
+        <hr>
+        {% endfor %}
+
+        {% if paginator.total_pages > 1 %}
+        <ul class="pager">
+            {% if paginator.previous_page %}
+            <li class="previous">
+                <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&larr; Newer Posts</a>
+            </li>
+            {% endif %}
+            {% if paginator.next_page %}
+            <li class="next">
+                <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Older Posts &rarr;</a>
+            </li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var nav = document.getElementById('home-nav');
+    if (!nav) return;
+
+    var toggle = nav.querySelector('.home-nav-toggle');
+    var tabs = nav.querySelectorAll('[data-home-tab]');
+    var panels = nav.querySelectorAll('[data-home-panel]');
+
+    function setActiveTab(name) {
+        tabs.forEach(function (tab) {
+            var active = tab.getAttribute('data-home-tab') === name;
+            tab.classList.toggle('is-active', active);
+            tab.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+
+        panels.forEach(function (panel) {
+            var active = panel.getAttribute('data-home-panel') === name;
+            panel.classList.toggle('is-active', active);
+            panel.hidden = !active;
+        });
+    }
+
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            setActiveTab(tab.getAttribute('data-home-tab'));
+        });
+    });
+
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            var open = nav.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+    }
+});
+</script>
