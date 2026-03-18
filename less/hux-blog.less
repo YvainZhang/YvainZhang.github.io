@@ -9,9 +9,13 @@ body {
 	.sans-serif;
 	font-size: 16px;
 	// Hux mpdify to 16px (Mobile First), and increase to 20px while 768+ width
-	color: @gray-dark;
+	color: @ink-deep;
 	//-webkit-user-select:text; //对于 Blog 还是先不开启这句。
 	overflow-x : hidden;
+	background:
+		radial-gradient(circle at top left, rgba(15, 118, 110, 0.08), transparent 30%),
+		radial-gradient(circle at top right, rgba(217, 119, 6, 0.08), transparent 28%),
+		linear-gradient(180deg, #fbf7f0 0%, @page-bg 55%, #efe6d8 100%);
 }
 
 // -- Typography
@@ -38,7 +42,7 @@ h4{
     font-size: 21px;
 }
 a {
-	color: @gray-dark;
+	color: @ink-deep;
 	&:hover,
 	&:focus {
 		color: @brand-primary;
@@ -289,6 +293,7 @@ pre code{
 	.sans-serif;
 	.navbar-brand {
 		font-weight: 800;
+		letter-spacing: 0.06em;
 		// materialize
 		color: white;
 		height: 56px;
@@ -322,6 +327,7 @@ pre code{
 			color: white;
 			padding: 20px;
 			line-height: 20px;
+			text-transform: uppercase;
 			&:hover,
 			&:focus {
 				color: @white-faded;
@@ -359,8 +365,10 @@ pre code{
 			/* when the user scrolls down, we hide the header right above the viewport */
 			position: fixed;
 			top: -61px;
-			background-color: fade(white, 90%);
-			border-bottom: 1px solid darken(white, 5%);
+			background-color: fade(#fffaf3, 90%);
+			border-bottom: 1px solid rgba(23, 33, 38, 0.08);
+			box-shadow: 0 16px 40px rgba(23, 33, 38, 0.08);
+			backdrop-filter: blur(12px);
 			-webkit-transition: -webkit-transform 0.3s;
 			-moz-transition: -moz-transform 0.3s;
 			transition: transform 0.3s;
@@ -403,8 +411,35 @@ pre code{
 	.background-cover;
 	// NOTE: Background images are set within the HTML using inline CSS!
 	margin-bottom: 0px;  /* 0 on mobile, modify by Hux */
+	position: relative;
+	overflow: hidden;
+	&::before{
+		content: "";
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(135deg, rgba(9, 42, 51, 0.78) 0%, rgba(15, 118, 110, 0.55) 48%, rgba(217, 119, 6, 0.35) 100%);
+	}
+	&::after{
+		content: "";
+		position: absolute;
+		right: -120px;
+		top: 60px;
+		width: 360px;
+		height: 360px;
+		border-radius: 50%;
+		background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 70%);
+	}
 	@media only screen and (min-width: 768px) {
 		margin-bottom: 20px;  /* response on desktop */
+	}
+	.container,
+	.row,
+	.site-heading,
+	.post-heading,
+	.page-heading {
+		position: relative;
+		z-index: 1;
 	}
 	.site-heading,
 	.post-heading,
@@ -428,14 +463,18 @@ pre code{
 		h1 {
 			margin-top: 0;
 			font-size: 50px;
+			letter-spacing: -0.03em;
+			text-shadow: 0 12px 30px rgba(0,0,0,0.28);
 		}
 		.subheading {
 			.sans-serif;
 			font-size: 18px;
 			line-height: 1.1;
 			display: block;
-			font-weight: 300;
-			margin: 10px 0 0;
+			font-weight: 400;
+			max-width: 700px;
+			margin: 16px auto 0;
+			color: rgba(255,255,255,0.82);
 		}
 		@media only screen and (min-width: 768px) {
 			h1 {
@@ -484,39 +523,137 @@ pre code{
 	}
 }
 
+.home-intro{
+	margin: -55px 0 55px;
+	padding: 28px 28px 8px;
+	background: @panel-bg;
+	border: 1px solid @panel-border;
+	border-radius: 28px;
+	box-shadow: 0 30px 80px rgba(23, 33, 38, 0.12);
+	backdrop-filter: blur(12px);
+	@media only screen and (max-width: 767px){
+		margin: -20px 0 36px;
+		padding: 22px 18px 2px;
+		border-radius: 20px;
+	}
+}
+
+.home-intro-kicker{
+	margin: 0 0 10px;
+	font-size: 11px;
+	font-weight: 800;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+	color: @brand-primary;
+}
+
+.home-intro-title{
+	margin: 0;
+	font-size: 34px;
+	line-height: 1.1;
+	color: #142227;
+	@media only screen and (max-width: 767px){
+		font-size: 28px;
+	}
+}
+
+.home-intro-copy{
+	margin: 18px 0 0;
+	max-width: 760px;
+	font-size: 16px;
+	color: fade(@ink-deep, 78%);
+}
+
+.home-intro-grid{
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 16px;
+	margin-top: 28px;
+	@media only screen and (max-width: 991px){
+		grid-template-columns: 1fr;
+	}
+}
+
+.home-intro-card{
+	padding: 18px 18px 14px;
+	background: rgba(255,255,255,0.7);
+	border-radius: 20px;
+	border: 1px solid rgba(23, 33, 38, 0.06);
+	box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+	strong{
+		display: block;
+		font-size: 19px;
+		margin-bottom: 8px;
+		color: #132126;
+	}
+	p{
+		margin: 0;
+		font-size: 14px;
+		color: fade(@ink-deep, 72%);
+	}
+}
+
+.home-intro-label{
+	display: inline-block;
+	margin-bottom: 10px;
+	padding: 5px 10px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: @accent-soft;
+	background: rgba(217, 119, 6, 0.1);
+	border-radius: 999px;
+}
+
 // Post Preview Pages (Home Page)
 
 .post-preview {
+	position: relative;
+	margin-bottom: 26px;
+	padding: 28px 30px 24px;
+	background: rgba(255,255,255,0.72);
+	border: 1px solid rgba(23, 33, 38, 0.08);
+	border-radius: 26px;
+	box-shadow: 0 20px 45px rgba(23, 33, 38, 0.08);
+	transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+	&:hover{
+		transform: translateY(-4px);
+		box-shadow: 0 28px 60px rgba(23, 33, 38, 0.12);
+		border-color: fade(@brand-primary, 30%);
+	}
 	> a {
-		color: @gray-dark;
+		color: @ink-deep;
 		&:hover,
 		&:focus {
 			text-decoration: none;
 			color: @brand-primary;
 		}
 		> .post-title {
-			font-size: 21px;
+			font-size: 25px;
 			line-height: 1.3;
-			margin-top: 30px;
-			margin-bottom: 8px;
+			margin-top: 12px;
+			margin-bottom: 10px;
+			letter-spacing: -0.02em;
 		}
 		> .post-subtitle {
 			font-size: 15px;
 			line-height: 1.3;
 			margin: 0;
-			font-weight: 300;
-			margin-bottom: 10px;
+			font-weight: 400;
+			margin-bottom: 12px;
+			color: fade(@ink-deep, 72%);
 		}
 	}
 	> .post-meta {
 		.serif;
-		color: @gray;
-		font-size: 16px;
+		color: fade(@ink-deep, 58%);
+		font-size: 15px;
 		font-style: italic;
-		margin-top: 0;
+		margin-top: 16px;
 		> a {
 			text-decoration: none;
-			color: @gray-dark;
+			color: @ink-deep;
 			&:hover,
 			&:focus {
 				color: @brand-primary;
@@ -527,31 +664,49 @@ pre code{
 	@media only screen and (min-width: 768px) {
 		> a {
 			> .post-title {
-				font-size: 26px;
+				font-size: 31px;
 				line-height: 1.3;
 				margin-bottom: 10px;
 			}
 			> .post-subtitle{
-				font-size: 16px;
+				font-size: 17px;
 			}
 		}
 		.post-meta{
-			font-size: 18px;
+			font-size: 16px;
 		}
+	}
+	@media only screen and (max-width: 767px){
+		padding: 20px 18px 18px;
+		border-radius: 20px;
 	}
 }
 
 // Hux add home-page post-content-preview
 .post-content-preview{
-    font-size: 13px;
-    font-style: italic;
-    color:#a3a3a3;
+    font-size: 14px;
+    font-style: normal;
+    color: fade(@ink-deep, 72%);
+    line-height: 1.8;
     &:hover{
         color: @brand-primary;
     }
     @media only screen and (min-width: 768px) {
         font-size:14px;
     }
+}
+
+.post-category{
+	display: inline-flex;
+	align-items: center;
+	padding: 5px 11px;
+	font-size: 11px;
+	font-weight: 800;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: @brand-primary;
+	background: fade(@brand-primary, 10%);
+	border-radius: 999px;
 }
 
 // Sections
@@ -576,6 +731,7 @@ pre code{
 footer {
 	font-size: 20px;
 	padding: 50px 0 65px;
+	background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,248,239,0.75) 100%);
 	.list-inline {
 		margin: 0;
 		padding: 0;
@@ -695,9 +851,10 @@ form .row:first-child .floating-label-form-group {
 			font-size: 13px;
 			font-weight: 800;
 			letter-spacing: 1px;
-			padding: 10px;
-			background-color: white;
-			border-radius: 0;
+			padding: 12px 16px;
+			background-color: rgba(255,255,255,0.88);
+			border-radius: 999px;
+			border: 1px solid rgba(23,33,38,0.08);
 			@media only screen and (min-width: 768px) {
 				font-size: 14px;
 				padding: 15px 25px;
@@ -800,9 +957,11 @@ img::-moz-selection {
 		line-height: 28px;
 		margin: 0 2px;
 		margin-bottom: 8px;
-		background: #D6D6D6;
+		background: rgba(15, 118, 110, 0.12);
+		color: @ink-deep !important;
 		&:hover, &:active{
-			background-color: #0085a1 !important;
+			background-color: @brand-primary !important;
+			color: white !important;
 		}
 	}
 	@media only screen and (min-width: 768px) {
@@ -879,6 +1038,23 @@ img::-moz-selection {
 				font-size: 18px;
 			}
 		}
+	}
+}
+
+.sidebar-container{
+	section{
+		padding: 18px 18px 14px;
+		background: rgba(255,255,255,0.68);
+		border: 1px solid rgba(23,33,38,0.08);
+		border-radius: 22px;
+		box-shadow: 0 18px 40px rgba(23,33,38,0.08);
+	}
+	hr{
+		display: none;
+	}
+	.short-about img{
+		border: 3px solid rgba(255,255,255,0.85);
+		box-shadow: 0 12px 30px rgba(23,33,38,0.14);
 	}
 }
 
@@ -1023,6 +1199,5 @@ img::-moz-selection {
 .page-fullscreen footer .copyright a:hover{
 	color: #ddd;
 }
-
 
 
