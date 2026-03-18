@@ -2,7 +2,7 @@
 layout: post
 title: "FFmpeg 快速上手"
 subtitle: "先把容器、编码和常用命令理顺"
-date: 2026-03-17
+date: 2023-04-27
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
 tags:

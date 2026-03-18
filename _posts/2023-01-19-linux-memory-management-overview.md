@@ -2,7 +2,7 @@
 layout: post
 title: "Linux 内存管理概览"
 subtitle: "从虚拟内存、页表到回收与 OOM"
-date: 2026-03-17
+date: 2023-01-19
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
 tags:

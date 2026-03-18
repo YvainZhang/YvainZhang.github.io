@@ -2,7 +2,7 @@
 layout: post
 title: "ARM 启动流程"
 subtitle: "从上电到 Bootloader，再到内核或应用"
-date: 2026-03-17
+date: 2022-11-07
 author: Yvain Zhang
 header-img: "img/post-bg-desk.jpg"
 tags:
