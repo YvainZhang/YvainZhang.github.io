@@ -33,8 +33,7 @@ description: "Slow is smooth, smooth is fast."
 
                 <section class="home-nav-list" data-home-panel="tag" hidden>
                 <ul class="home-tag-list">
-                    {% assign sorted_tags = site.tags | sort %}
-                    {% for tag in sorted_tags %}
+                    {% for tag in site.tags %}
                     <li>
                         <a href="{{ '/tags/#' | prepend: site.baseurl }}{{ tag[0] }}">
                             <span>{{ tag[0] }}</span>
@@ -94,8 +93,7 @@ description: "Slow is smooth, smooth is fast."
         <section class="home-rail-panel">
             <h5><a href="{{'/tags/' | prepend: site.baseurl }}">FEATURED TAGS</a></h5>
             <div class="tags">
-                {% assign home_sorted_tags = site.tags | sort %}
-                {% for tag in home_sorted_tags %}
+                {% for tag in site.tags %}
                     <a href="{{ site.baseurl }}/tags/#{{ tag[0] }}" title="{{ tag[0] }}" rel="{{ tag[1].size }}">
                         {{ tag[0] }}
                     </a>
