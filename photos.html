@@ -1,0 +1,38 @@
+---
+layout: page
+title: "Photos"
+description: "Selected frames from walks, travel, and everyday light."
+header-img: "img/home-bg-art.jpg"
+---
+
+<div class="gallery-page">
+    <div class="gallery-intro">
+        <p>A small photography board for selected shots worth keeping around.</p>
+    </div>
+
+    {% assign photos = site.data.photos %}
+    {% if photos and photos.size > 0 %}
+    <div class="photo-grid">
+        {% for photo in photos %}
+        <figure class="photo-card">
+            <a class="photo-media" href="{{ photo.image | prepend: site.baseurl }}" target="_blank" rel="noopener">
+                <img src="{{ photo.image | prepend: site.baseurl }}" alt="{{ photo.title }}">
+            </a>
+            <figcaption class="photo-copy">
+                <div class="photo-meta">
+                    {% if photo.location %}<span>{{ photo.location }}</span>{% endif %}
+                    {% if photo.date %}<span>{{ photo.date }}</span>{% endif %}
+                </div>
+                <h3>{{ photo.title }}</h3>
+                {% if photo.description %}<p>{{ photo.description }}</p>{% endif %}
+            </figcaption>
+        </figure>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="photo-empty">
+        <h3>Gallery in progress</h3>
+        <p>Selected photographs will be added here over time.</p>
+    </div>
+    {% endif %}
+</div>

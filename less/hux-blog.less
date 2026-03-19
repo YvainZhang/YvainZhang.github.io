@@ -126,6 +126,93 @@ pre code{
 	margin-bottom: 15px;
 }
 
+.gallery-page {
+	.gallery-intro {
+		margin: 10px 0 34px;
+		p {
+			margin: 0;
+			max-width: 620px;
+			color: fade(@ink-deep, 76%);
+			font-size: 17px;
+			line-height: 1.7;
+		}
+	}
+}
+
+.photo-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 28px;
+	margin-bottom: 24px;
+	@media (max-width: 767px) {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
+}
+
+.photo-card {
+	margin: 0;
+	background: rgba(255, 251, 244, 0.84);
+	border: 1px solid fade(@ink-deep, 8%);
+	border-radius: 22px;
+	overflow: hidden;
+	box-shadow: 0 16px 40px rgba(34, 34, 34, 0.08);
+}
+
+.photo-media {
+	display: block;
+	background: #e9dfd1;
+	img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		transition: transform 220ms ease;
+	}
+	&:hover img,
+	&:focus img {
+		transform: scale(1.025);
+	}
+}
+
+.photo-copy {
+	padding: 18px 18px 20px;
+	h3 {
+		margin: 8px 0 10px;
+		font-size: 22px;
+		line-height: 1.2;
+	}
+	p {
+		margin: 0;
+		color: fade(@ink-deep, 76%);
+		line-height: 1.75;
+	}
+}
+
+.photo-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	font-size: 12px;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: fade(@ink-deep, 55%);
+}
+
+.photo-empty {
+	padding: 34px 28px;
+	border: 1px dashed fade(@ink-deep, 16%);
+	border-radius: 20px;
+	background: rgba(255, 251, 244, 0.72);
+	h3 {
+		margin: 0 0 10px;
+	}
+	p {
+		margin: 0;
+		color: fade(@ink-deep, 72%);
+	}
+}
+
 // In the post.
 .post-container{
 	a{
