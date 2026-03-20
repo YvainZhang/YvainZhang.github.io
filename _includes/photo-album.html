@@ -1,0 +1,23 @@
+<section class="photo-album">
+    <div class="photo-album-head">
+        <h2>{{ include.album.album }}</h2>
+        <div class="photo-meta">
+            {% if include.album.date %}<span>{{ include.album.date }}</span>{% endif %}
+            <span>{{ include.album.items.size }} 张</span>
+        </div>
+        {% if include.album.description %}<p>{{ include.album.description }}</p>{% endif %}
+    </div>
+    <div class="photo-grid">
+        {% for photo in include.album.items %}
+        <figure class="photo-card">
+            <a class="photo-media" href="{{ photo.image | prepend: site.baseurl }}" target="_blank" rel="noopener">
+                <img src="{{ photo.image | prepend: site.baseurl }}" alt="{{ photo.title }}">
+            </a>
+            <figcaption class="photo-copy">
+                <h3>{{ photo.title }}</h3>
+                {% if photo.description %}<p>{{ photo.description }}</p>{% endif %}
+            </figcaption>
+        </figure>
+        {% endfor %}
+    </div>
+</section>

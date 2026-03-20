@@ -1,0 +1,18 @@
+{% assign albums = site.data.photos %}
+{% if albums and albums.size > 0 %}
+<ul class="album-list">
+    {% for album in albums %}
+    {% assign album_url = '/photos/' | append: album.slug | append: '/' | prepend: site.baseurl %}
+    <li class="{% if page.album_slug == album.slug %}is-active{% endif %}">
+        <a href="{{ album_url }}">
+            <strong>{{ album.album }}</strong>
+            <span>
+                {% if album.date %}{{ album.date }} · {% endif %}{{ album.items.size }} 张
+            </span>
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="album-empty">No photos published yet.</p>
+{% endif %}

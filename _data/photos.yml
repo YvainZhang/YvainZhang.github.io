@@ -8,6 +8,7 @@
 #       image: "/img/photos/rain-on-glass.jpg"
 #       description: "雨停之后，路灯和车灯都变得更柔和。"
 - album: "城市夜景"
+  slug: "city-nightscape"
   date: "2016-11"
   items:
     - title: "夜景"
@@ -15,6 +16,7 @@
       description: "城市灯光亮起之后，街道和楼体形成了更安静的层次。"
 
 - album: "无锡太湖周边"
+  slug: "wuxi-taihu"
   items:
     - title: "无锡太湖周边 1"
       image: "/img/photos/无锡太湖周边 1.jpg"
