@@ -299,6 +299,21 @@ pre code {
     padding-left: 2px;
   }
 }
+.photo-album + .photo-album {
+  margin-top: 40px;
+}
+.photo-album-head {
+  margin: 0 0 18px;
+}
+.photo-album-head h2 {
+  margin: 0 0 8px;
+  font-size: 30px;
+  line-height: 1.12;
+}
+.photo-album-head p {
+  margin: 10px 0 0;
+  color: rgba(23, 33, 38, 0.72);
+}
 .photo-grid {
   display: grid;
   grid-template-columns: 1fr;

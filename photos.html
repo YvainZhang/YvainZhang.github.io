@@ -6,25 +6,33 @@ header-img: "img/home-bg-art.jpg"
 ---
 
 <div class="gallery-page">
-    {% assign photos = site.data.photos %}
-    {% if photos and photos.size > 0 %}
-    <div class="photo-grid">
-        {% for photo in photos %}
-        <figure class="photo-card" id="photo-{{ forloop.index }}">
-            <a class="photo-media" href="{{ photo.image | prepend: site.baseurl }}" target="_blank" rel="noopener">
-                <img src="{{ photo.image | prepend: site.baseurl }}" alt="{{ photo.title }}">
-            </a>
-            <figcaption class="photo-copy">
+    {% assign albums = site.data.photos %}
+    {% if albums and albums.size > 0 %}
+        {% for album in albums %}
+        <section class="photo-album" id="album-{{ forloop.index }}">
+            <div class="photo-album-head">
+                <h2>{{ album.album }}</h2>
                 <div class="photo-meta">
-                    {% if photo.location %}<span>{{ photo.location }}</span>{% endif %}
-                    {% if photo.date %}<span>{{ photo.date }}</span>{% endif %}
+                    {% if album.date %}<span>{{ album.date }}</span>{% endif %}
+                    <span>{{ album.items.size }} 张</span>
                 </div>
-                <h3>{{ photo.title }}</h3>
-                {% if photo.description %}<p>{{ photo.description }}</p>{% endif %}
-            </figcaption>
-        </figure>
+                {% if album.description %}<p>{{ album.description }}</p>{% endif %}
+            </div>
+            <div class="photo-grid">
+                {% for photo in album.items %}
+                <figure class="photo-card">
+                    <a class="photo-media" href="{{ photo.image | prepend: site.baseurl }}" target="_blank" rel="noopener">
+                        <img src="{{ photo.image | prepend: site.baseurl }}" alt="{{ photo.title }}">
+                    </a>
+                    <figcaption class="photo-copy">
+                        <h3>{{ photo.title }}</h3>
+                        {% if photo.description %}<p>{{ photo.description }}</p>{% endif %}
+                    </figcaption>
+                </figure>
+                {% endfor %}
+            </div>
+        </section>
         {% endfor %}
-    </div>
     {% else %}
     <div class="photo-empty">
         <h3>Gallery in progress</h3>

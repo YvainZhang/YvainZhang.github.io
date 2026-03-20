@@ -1,11 +1,32 @@
-# Add your own work here. Images can be placed under img/photos/.
+# Add albums here. Images can be placed under img/photos/.
 # Example:
-# - title: "Rain on Glass"
-#   image: "/img/photos/rain-on-glass.jpg"
-#   location: "Xi'an"
+# - album: "雨后街景"
 #   date: "2025-10"
-#   description: "Street reflections after a late evening storm."
-- title: "夜景"
-  image: "/img/photos/1773998506014_d.jpg"
+#   description: "傍晚散步时拍到的一组街景。"
+#   items:
+#     - title: "玻璃上的雨"
+#       image: "/img/photos/rain-on-glass.jpg"
+#       description: "雨停之后，路灯和车灯都变得更柔和。"
+- album: "城市夜景"
   date: "2016-11"
-  description: "城市灯光亮起之后，街道和楼体形成了更安静的层次。"
+  items:
+    - title: "夜景"
+      image: "/img/photos/1773998506014_d.jpg"
+      description: "城市灯光亮起之后，街道和楼体形成了更安静的层次。"
+
+- album: "无锡太湖周边"
+  items:
+    - title: "无锡太湖周边 1"
+      image: "/img/photos/无锡太湖周边 1.jpg"
+    - title: "无锡太湖周边 2"
+      image: "/img/photos/无锡太湖周边 2.jpg"
+    - title: "无锡太湖周边 3"
+      image: "/img/photos/无锡太湖周边 3.jpeg"
+    - title: "无锡太湖周边 4"
+      image: "/img/photos/无锡太湖周边 4.jpeg"
+    - title: "无锡太湖周边 5"
+      image: "/img/photos/无锡太湖周边 5.jpg"
+    - title: "无锡太湖周边 6"
+      image: "/img/photos/无锡太湖周边 6.jpg"
+    - title: "无锡太湖周边"
+      image: "/img/photos/无锡太湖周边.jpg"

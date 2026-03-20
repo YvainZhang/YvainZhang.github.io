@@ -20,14 +20,16 @@ layout: default
         <aside class="col-lg-2 col-md-2 col-sm-12 col-xs-12 photos-sidebar">
             <div class="photos-sidebar-panel">
                 <h5>Albums</h5>
-                {% assign photos = site.data.photos %}
-                {% if photos and photos.size > 0 %}
+                {% assign albums = site.data.photos %}
+                {% if albums and albums.size > 0 %}
                 <ul class="album-list">
-                    {% for photo in photos %}
+                    {% for album in albums %}
                     <li>
-                        <a href="#photo-{{ forloop.index }}">
-                            <strong>{{ photo.title }}</strong>
-                            {% if photo.date %}<span>{{ photo.date }}</span>{% endif %}
+                        <a href="#album-{{ forloop.index }}">
+                            <strong>{{ album.album }}</strong>
+                            <span>
+                                {% if album.date %}{{ album.date }} · {% endif %}{{ album.items.size }} 张
+                            </span>
                         </a>
                     </li>
                     {% endfor %}
