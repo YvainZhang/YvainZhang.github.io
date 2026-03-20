@@ -247,13 +247,13 @@ pre code {
 }
 @media (min-width: 992px) {
   .photos-sidebar {
-    padding-right: 34px;
+    padding-right: 18px;
   }
 }
 .photos-sidebar-panel {
   position: sticky;
   top: 92px;
-  padding: 22px 20px;
+  padding: 18px 16px;
   border-radius: 20px;
   background: rgba(255, 251, 244, 0.84);
   border: 1px solid rgba(23, 33, 38, 0.08);
@@ -306,7 +306,7 @@ pre code {
 }
 @media (min-width: 992px) {
   .photos-content {
-    padding-left: 8px;
+    padding-left: 2px;
   }
 }
 .photo-grid {
@@ -330,14 +330,18 @@ pre code {
   box-shadow: 0 16px 40px rgba(34, 34, 34, 0.08);
 }
 .photo-media {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
   background: #e9dfd1;
 }
 .photo-media img {
   display: block;
-  width: 100%;
-  aspect-ratio: 0.8;
-  object-fit: cover;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  max-height: 78vh;
   transition: transform 220ms ease;
 }
 .photo-media:hover img,
