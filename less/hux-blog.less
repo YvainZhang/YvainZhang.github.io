@@ -139,6 +139,78 @@ pre code{
 	}
 }
 
+.photos-shell {
+	margin-top: 40px;
+	margin-bottom: 30px;
+}
+
+.photos-sidebar {
+	@media (min-width: 992px) {
+		padding-right: 34px;
+	}
+}
+
+.photos-sidebar-panel {
+	position: sticky;
+	top: 92px;
+	padding: 22px 20px;
+	border-radius: 20px;
+	background: rgba(255, 251, 244, 0.84);
+	border: 1px solid fade(@ink-deep, 8%);
+	box-shadow: 0 16px 38px rgba(34, 34, 34, 0.06);
+	h5 {
+		margin: 0 0 14px;
+		font-size: 13px;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: fade(@ink-deep, 54%);
+	}
+	@media (max-width: 991px) {
+		position: static;
+		margin-bottom: 24px;
+	}
+}
+
+.album-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	li + li {
+		margin-top: 10px;
+		padding-top: 10px;
+		border-top: 1px solid fade(@ink-deep, 8%);
+	}
+	a {
+		display: block;
+		text-decoration: none;
+	}
+	strong {
+		display: block;
+		font-size: 15px;
+		line-height: 1.45;
+		font-weight: 700;
+	}
+	span {
+		display: block;
+		margin-top: 4px;
+		font-size: 12px;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: fade(@ink-deep, 52%);
+	}
+}
+
+.album-empty {
+	margin: 0;
+	color: fade(@ink-deep, 64%);
+}
+
+.photos-content {
+	@media (min-width: 992px) {
+		padding-left: 8px;
+	}
+}
+
 .photo-grid {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));

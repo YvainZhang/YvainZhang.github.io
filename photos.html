@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: photos
 title: "Photos"
 description: "Selected frames from walks, travel, and everyday light."
 header-img: "img/home-bg-art.jpg"
@@ -14,7 +14,7 @@ header-img: "img/home-bg-art.jpg"
     {% if photos and photos.size > 0 %}
     <div class="photo-grid">
         {% for photo in photos %}
-        <figure class="photo-card">
+        <figure class="photo-card" id="photo-{{ forloop.index }}">
             <a class="photo-media" href="{{ photo.image | prepend: site.baseurl }}" target="_blank" rel="noopener">
                 <img src="{{ photo.image | prepend: site.baseurl }}" alt="{{ photo.title }}">
             </a>

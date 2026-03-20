@@ -1,0 +1,45 @@
+---
+layout: default
+---
+
+<header class="intro-header" style="background-image: url('{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</h1>
+                    <span class="subheading">{{ page.description }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container photos-shell">
+    <div class="row">
+        <aside class="col-lg-3 col-md-4 col-sm-12 col-xs-12 photos-sidebar">
+            <div class="photos-sidebar-panel">
+                <h5>Albums</h5>
+                {% assign photos = site.data.photos %}
+                {% if photos and photos.size > 0 %}
+                <ul class="album-list">
+                    {% for photo in photos %}
+                    <li>
+                        <a href="#photo-{{ forloop.index }}">
+                            <strong>{{ photo.title }}</strong>
+                            {% if photo.date %}<span>{{ photo.date }}</span>{% endif %}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="album-empty">No photos published yet.</p>
+                {% endif %}
+            </div>
+        </aside>
+
+        <main class="col-lg-9 col-md-8 col-sm-12 col-xs-12 photos-content">
+            {{ content }}
+        </main>
+    </div>
+</div>
