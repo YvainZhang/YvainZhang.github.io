@@ -9,5 +9,5 @@ permalink: /photos/city-nightscape/
 
 {% assign album = site.data.photos | where: "slug", page.album_slug | first %}
 {% if album %}
-    {% include photo-album.html album=album %}
+{% include photo-album.html album=album %}
 {% endif %}
