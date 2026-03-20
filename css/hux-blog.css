@@ -237,13 +237,13 @@ pre code {
 }
 @media (min-width: 992px) {
   .photos-sidebar {
-    padding-right: 18px;
+    padding-right: 10px;
   }
 }
 .photos-sidebar-panel {
   position: sticky;
   top: 92px;
-  padding: 18px 16px;
+  padding: 16px 14px;
   border-radius: 20px;
   background: rgba(255, 251, 244, 0.84);
   border: 1px solid rgba(23, 33, 38, 0.08);
@@ -301,15 +301,9 @@ pre code {
 }
 .photo-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px;
+  grid-template-columns: 1fr;
+  gap: 22px;
   margin-bottom: 24px;
-}
-@media (max-width: 767px) {
-  .photo-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
 }
 .photo-card {
   margin: 0;
