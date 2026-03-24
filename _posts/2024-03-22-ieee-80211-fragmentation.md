@@ -6,9 +6,9 @@ date: 2024-03-22
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
 tags:
-  - Wi-Fi
-  - 802.11
   - 无线网络
+  - 802.11
+  - Wi-Fi
 ---
 
 802.11 分片看起来只是把大帧拆小，背后其实就是一个很实在的取舍：**多花一点协议开销，换更高一点的抗错误能力。**

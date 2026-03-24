@@ -6,8 +6,8 @@ date: 2022-03-11
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
 tags:
-  - FFmpeg
   - 多媒体
+  - FFmpeg
   - 工具链
 ---
 

@@ -6,7 +6,7 @@ date: 2022-06-28
 author: Yvain Zhang
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
-  - Linux
+  - 操作系统
   - 嵌入式
   - 驱动
 ---

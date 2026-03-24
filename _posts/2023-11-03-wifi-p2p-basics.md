@@ -6,9 +6,9 @@ date: 2023-11-03
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
 tags:
+  - 无线网络
   - Wi-Fi
   - P2P
-  - 无线网络
 ---
 
 Wi-Fi P2P，也就是常说的 Wi-Fi Direct，说白了就是不依赖现成 AP，让两台设备自己把链路拉起来。  

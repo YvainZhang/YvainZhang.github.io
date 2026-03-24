@@ -6,9 +6,9 @@ date: 2021-09-23
 author: Yvain Zhang
 header-img: "img/post-bg-desk.jpg"
 tags:
-  - MP4
-  - M4A
   - 多媒体
+  - 容器
+  - MP4
 ---
 
 MP4 / M4A 最容易让人误会的地方，就是大家太习惯直接看后缀了。后缀一熟，就很容易顺手把它们当成编码格式，其实它们先是容器。

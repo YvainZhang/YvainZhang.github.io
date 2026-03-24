@@ -6,9 +6,9 @@ date: 2023-01-19
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
 tags:
+  - 操作系统
   - Linux
   - 内存管理
-  - 操作系统
 ---
 
 Linux 内存管理最让人头疼的地方，不是某个概念难，而是概念太多、太碎。页表、VMA、缺页、伙伴系统、swap、OOM 每个都知道一点，但很容易串不起来。  

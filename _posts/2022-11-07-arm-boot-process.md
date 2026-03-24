@@ -6,8 +6,8 @@ date: 2022-11-07
 author: Yvain Zhang
 header-img: "img/post-bg-desk.jpg"
 tags:
-  - ARM
   - 操作系统
+  - ARM
   - 嵌入式
 ---
 

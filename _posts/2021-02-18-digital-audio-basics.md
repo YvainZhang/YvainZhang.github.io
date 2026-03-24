@@ -6,9 +6,9 @@ date: 2021-02-18
 author: Yvain Zhang
 header-img: "img/post-bg-digital-native.jpg"
 tags:
+  - 多媒体
   - 音频
   - 数字音频
-  - 多媒体
 ---
 
 很多人学数字音频时，卡住的地方不是公式，而是名词太多：WAV、PCM、AAC、MP3、MP4、采样率、位深、码率都听过，但放在一起就乱了。  

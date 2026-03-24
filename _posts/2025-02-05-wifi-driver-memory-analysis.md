@@ -6,7 +6,7 @@ date: 2025-02-05
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
 tags:
-  - Wi-Fi
+  - 无线网络
   - 驱动
   - 内存分析
 ---

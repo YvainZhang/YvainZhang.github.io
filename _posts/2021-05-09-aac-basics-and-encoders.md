@@ -6,9 +6,9 @@ date: 2021-05-09
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
 tags:
-  - AAC
+  - 多媒体
   - 音频
-  - 编码
+  - AAC
 ---
 
 AAC 在音视频链路里太常见了，常见到很多人默认知道它，但真问到 profile、封装关系和工具链差别时，往往又说不太清。

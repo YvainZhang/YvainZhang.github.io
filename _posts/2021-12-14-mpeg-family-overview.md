@@ -6,9 +6,9 @@ date: 2021-12-14
 author: Yvain Zhang
 header-img: "img/post-bg-universe.jpg"
 tags:
+  - 多媒体
   - MPEG
   - 标准
-  - 多媒体
 ---
 
 很多音视频术语看着散，不是因为它们真的没关系，而是平时接触时都是一个个单独出现。MP3、AAC、MP4、AVC / H.264 这些东西，其实大都能放回 MPEG 这条线上。

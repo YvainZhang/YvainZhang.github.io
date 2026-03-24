@@ -6,9 +6,9 @@ date: 2024-07-16
 author: Yvain Zhang
 header-img: "img/post-bg-unix-linux.jpg"
 tags:
-  - Wi-Fi
-  - USB
+  - 无线网络
   - 驱动
+  - USB
 ---
 
 USB Wi-Fi 性能上不去，很多时候不是某个点单独慢，而是整条链路都不够顺。  
