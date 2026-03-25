@@ -89,28 +89,6 @@ description: "Slow is smooth, smooth is fast."
     </main>
 
     <aside class="home-rail">
-        <section class="home-rail-panel home-stats-panel">
-            <h5><a href="{{ '/series/' | prepend: site.baseurl }}">SITE OVERVIEW</a></h5>
-            <div class="home-stats-grid">
-                <a href="{{ '/tags/' | prepend: site.baseurl }}">
-                    <strong>{{ site.posts | size }}</strong>
-                    <span>文章</span>
-                </a>
-                <a href="{{ '/tags/' | prepend: site.baseurl }}">
-                    <strong>{{ site.tags | size }}</strong>
-                    <span>标签</span>
-                </a>
-                <a href="{{ '/series/' | prepend: site.baseurl }}">
-                    <strong>{{ site.data.series | size }}</strong>
-                    <span>系列</span>
-                </a>
-                <a href="{{ '/photos/' | prepend: site.baseurl }}">
-                    <strong>{{ site.data.photos | size }}</strong>
-                    <span>相册</span>
-                </a>
-            </div>
-        </section>
-
         {% if site.featured-tags %}
         <section class="home-rail-panel">
             <h5><a href="{{'/tags/' | prepend: site.baseurl }}">FEATURED TAGS</a></h5>
@@ -123,18 +101,6 @@ description: "Slow is smooth, smooth is fast."
             </div>
         </section>
         {% endif %}
-
-        <section class="home-rail-panel">
-            <h5><a href="{{ '/series/' | prepend: site.baseurl }}">SERIES</a></h5>
-            <div class="home-series-list">
-                {% for group in site.data.series %}
-                <a href="{{ '/series/#' | append: group.slug | prepend: site.baseurl }}">
-                    <strong>{{ group.title }}</strong>
-                    <span>{{ group.description }}</span>
-                </a>
-                {% endfor %}
-            </div>
-        </section>
 
         <section class="home-rail-panel visible-md visible-lg">
             <h5><a href="{{'/about/' | prepend: site.baseurl }}">ABOUT ME</a></h5>
