@@ -1,0 +1,11 @@
+- slug: "systems"
+  title: "操作系统"
+  description: "启动流程、内存管理和嵌入式驱动这一组基础主题。"
+
+- slug: "media"
+  title: "多媒体"
+  description: "围绕音频、容器、编码和 FFmpeg 的一组文章。"
+
+- slug: "wireless"
+  title: "无线网络"
+  description: "Wi-Fi 协议、低功耗、P2P 以及驱动分析相关内容。"

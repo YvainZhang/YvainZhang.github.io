@@ -246,6 +246,17 @@ pre code{
 	}
 }
 
+.album-card-link{
+	display: inline-block;
+	margin-top: 14px;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: @brand-primary;
+}
+
 .photo-album + .photo-album {
 	margin-top: 40px;
 }
@@ -335,6 +346,63 @@ pre code{
 		margin: 0;
 		color: fade(@ink-deep, 72%);
 	}
+}
+
+.series-page{
+	.series-block + .series-block{
+		margin-top: 42px;
+	}
+}
+
+.series-block-head{
+	margin-bottom: 18px;
+	h2{
+		margin: 0 0 8px;
+		font-size: 30px;
+	}
+	p{
+		margin: 0;
+		color: fade(@ink-deep, 70%);
+	}
+}
+
+.series-posts{
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 18px;
+	@media only screen and (max-width: 767px){
+		grid-template-columns: 1fr;
+	}
+}
+
+.series-post-card{
+	margin: 0;
+	border: 1px solid fade(@ink-deep, 8%);
+	border-radius: 18px;
+	background: rgba(255,251,244,0.84);
+	box-shadow: 0 16px 36px rgba(34,34,34,0.06);
+	a{
+		display: block;
+		padding: 18px 18px 20px;
+		text-decoration: none;
+	}
+	h3{
+		margin: 8px 0 8px;
+		font-size: 22px;
+		line-height: 1.25;
+	}
+	p{
+		margin: 0;
+		color: fade(@ink-deep, 72%);
+	}
+}
+
+.series-post-date{
+	display: inline-block;
+	font-size: 12px;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: fade(@ink-deep, 52%);
 }
 
 // In the post.
@@ -1013,6 +1081,60 @@ pre code{
 	}
 }
 
+.home-stats-grid{
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
+	a{
+		display: block;
+		padding: 12px 10px;
+		border-radius: 14px;
+		text-align: center;
+		text-decoration: none;
+		background: rgba(255,255,255,0.58);
+		border: 1px solid rgba(23,33,38,0.06);
+	}
+	strong{
+		display: block;
+		font-size: 24px;
+		line-height: 1;
+	}
+	span{
+		display: block;
+		margin-top: 6px;
+		font-size: 12px;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: fade(@ink-deep, 58%);
+	}
+}
+
+.home-series-list{
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	a{
+		display: block;
+		padding: 12px 12px;
+		border-radius: 14px;
+		text-decoration: none;
+		background: rgba(255,255,255,0.58);
+		border: 1px solid rgba(23,33,38,0.06);
+	}
+	strong{
+		display: block;
+		font-size: 15px;
+		line-height: 1.35;
+	}
+	span{
+		display: block;
+		margin-top: 5px;
+		font-size: 13px;
+		line-height: 1.6;
+		color: fade(@ink-deep, 66%);
+	}
+}
+
 .post-preview {
 	position: relative;
 	margin-bottom: 26px;
@@ -1117,6 +1239,14 @@ pre code{
 	color: @brand-primary;
 	background: fade(@brand-primary, 10%);
 	border-radius: 999px;
+}
+
+.post-series-meta{
+	margin-top: 8px;
+	a{
+		color: white;
+		text-decoration: underline;
+	}
 }
 
 // Sections

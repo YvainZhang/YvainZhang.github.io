@@ -25,6 +25,7 @@ header-img: "img/home-bg-art.jpg"
                 </div>
                 <h2><a href="{{ album_url }}">{{ album.album }}</a></h2>
                 {% if album.description %}<p>{{ album.description }}</p>{% endif %}
+                <a class="album-card-link" href="{{ album_url }}">查看相册</a>
             </div>
         </article>
         {% endfor %}

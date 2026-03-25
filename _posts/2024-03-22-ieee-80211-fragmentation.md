@@ -5,6 +5,7 @@ subtitle: "为什么要拆大帧、如何确认、以及它和聚合的区别"
 date: 2024-03-22
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
+series: "无线网络"
 tags:
   - 无线网络
   - 802.11

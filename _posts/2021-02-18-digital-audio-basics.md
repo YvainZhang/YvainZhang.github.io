@@ -5,6 +5,7 @@ subtitle: "从采样率、位深到解复用、解码与播放链路"
 date: 2021-02-18
 author: Yvain Zhang
 header-img: "img/post-bg-digital-native.jpg"
+series: "多媒体"
 tags:
   - 多媒体
   - 音频

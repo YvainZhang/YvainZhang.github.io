@@ -5,6 +5,7 @@ subtitle: "从中断、并发、设备模型到用户态 / 内核态边界"
 date: 2022-06-28
 author: Yvain Zhang
 header-img: "img/post-bg-unix-linux.jpg"
+series: "操作系统"
 tags:
   - 操作系统
   - 嵌入式

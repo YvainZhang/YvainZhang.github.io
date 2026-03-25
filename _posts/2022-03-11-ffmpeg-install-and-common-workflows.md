@@ -5,6 +5,7 @@ subtitle: "从安装方式到裁剪、重采样、分片和批处理思路"
 date: 2022-03-11
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
+series: "多媒体"
 tags:
   - 多媒体
   - FFmpeg

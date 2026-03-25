@@ -1,0 +1,31 @@
+---
+layout: page
+title: "Series"
+description: "按主题串起来的文章集合"
+header-img: "img/post-bg-keybord.jpg"
+nav_exclude: true
+---
+
+<div class="series-page">
+    {% for group in site.data.series %}
+    <section class="series-block" id="{{ group.slug }}">
+        <div class="series-block-head">
+            <h2>{{ group.title }}</h2>
+            <p>{{ group.description }}</p>
+        </div>
+        <div class="series-posts">
+            {% for post in site.posts %}
+                {% if post.series == group.title %}
+                <article class="series-post-card">
+                    <a href="{{ post.url | prepend: site.baseurl }}">
+                        <span class="series-post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
+                        <h3>{{ post.title }}</h3>
+                        {% if post.subtitle %}<p>{{ post.subtitle }}</p>{% endif %}
+                    </a>
+                </article>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endfor %}
+</div>

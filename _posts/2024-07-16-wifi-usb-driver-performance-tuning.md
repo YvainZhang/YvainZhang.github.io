@@ -5,6 +5,7 @@ subtitle: "从数据路径、上下文切换到多核流水线如何形成"
 date: 2024-07-16
 author: Yvain Zhang
 header-img: "img/post-bg-unix-linux.jpg"
+series: "无线网络"
 tags:
   - 无线网络
   - 驱动
