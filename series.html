@@ -7,6 +7,22 @@ nav_exclude: true
 ---
 
 <div class="series-page">
+    <section class="series-overview">
+        {% for group in site.data.series %}
+        {% assign post_count = 0 %}
+        {% for post in site.posts %}
+            {% if post.series == group.title %}
+                {% assign post_count = post_count | plus: 1 %}
+            {% endif %}
+        {% endfor %}
+        <a class="series-overview-card" href="#{{ group.slug }}">
+            <strong>{{ group.title }}</strong>
+            <span>{{ group.description }}</span>
+            <em>{{ post_count }} 篇文章</em>
+        </a>
+        {% endfor %}
+    </section>
+
     {% for group in site.data.series %}
     <section class="series-block" id="{{ group.slug }}">
         <div class="series-block-head">
@@ -16,13 +32,7 @@ nav_exclude: true
         <div class="series-posts">
             {% for post in site.posts %}
                 {% if post.series == group.title %}
-                <article class="series-post-card">
-                    <a href="{{ post.url | prepend: site.baseurl }}">
-                        <span class="series-post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
-                        <h3>{{ post.title }}</h3>
-                        {% if post.subtitle %}<p>{{ post.subtitle }}</p>{% endif %}
-                    </a>
-                </article>
+                {% include post-summary-card.html post=post compact=true %}
                 {% endif %}
             {% endfor %}
         </div>
