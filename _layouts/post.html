@@ -65,6 +65,28 @@ layout: default
 
                 <hr style="visibility: hidden;">
 
+                {% if page.series %}
+                <section class="related-series">
+                    <div class="related-series-head">
+                        <h3>同系列文章</h3>
+                        <a href="{{ '/series/#' | prepend: site.baseurl }}{{ page.series | slugify }}">查看全部</a>
+                    </div>
+                    <div class="related-series-grid">
+                        {% for post in site.posts %}
+                            {% if post.series == page.series and post.url != page.url %}
+                            <article class="related-series-card">
+                                <a href="{{ post.url | prepend: site.baseurl }}">
+                                    <span>{{ post.date | date: "%Y-%m-%d" }}</span>
+                                    <strong>{{ post.title }}</strong>
+                                    {% if post.subtitle %}<em>{{ post.subtitle }}</em>{% endif %}
+                                </a>
+                            </article>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
                 <ul class="pager">
                     {% if page.previous.url %}
                     <li class="previous">

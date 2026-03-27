@@ -49,6 +49,37 @@ description: "Slow is smooth, smooth is fast."
     </aside>
 
     <main class="home-feed">
+        <section class="home-intro-card">
+            <span class="home-intro-kicker">Yvain Zhang</span>
+            <h2>系统、音视频、无线网络，以及一些摄影记录。</h2>
+            <p>这里主要整理操作系统、多媒体、协议与驱动相关笔记。内容会尽量写成可以反复查阅的长期材料，而不是一次性的碎片记录。</p>
+        </section>
+
+        <section class="home-start-card">
+            <div class="home-section-head">
+                <h3>Start Here</h3>
+                <a href="{{ '/series/' | prepend: site.baseurl }}">按系列浏览</a>
+            </div>
+            <div class="home-start-grid">
+                <a href="{{ '/2023/01/19/linux-memory-management-overview/' | prepend: site.baseurl }}">
+                    <strong>Linux 内存管理概览</strong>
+                    <span>从虚拟内存、页表到回收与 OOM 的主线。</span>
+                </a>
+                <a href="{{ '/2023/04/27/ffmpeg-quick-start/' | prepend: site.baseurl }}">
+                    <strong>FFmpeg 快速上手</strong>
+                    <span>先把容器、编码和常用命令理顺。</span>
+                </a>
+                <a href="{{ '/2024/07/16/wifi-usb-driver-performance-tuning/' | prepend: site.baseurl }}">
+                    <strong>Wi-Fi USB 驱动架构与性能调优</strong>
+                    <span>从数据路径和多核流水线切入性能分析。</span>
+                </a>
+                <a href="{{ '/photos/' | prepend: site.baseurl }}">
+                    <strong>Photos</strong>
+                    <span>摄影内容单独整理成相册页，和技术内容分开浏览。</span>
+                </a>
+            </div>
+        </section>
+
         {% for post in paginator.posts %}
         <div class="post-preview">
             <a href="{{ post.url | prepend: site.baseurl }}">

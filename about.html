@@ -14,24 +14,45 @@ header-img: "img/post-bg-rwd.jpg"
 <!-- Chinese Version -->
 <div class="zh post-container">
 
-    <!--copied from markdown -->
-    <blockquote><p>持续记录，持续整理。<br>
-    让知识沉淀成长期资产。</p></blockquote>
+    <blockquote>
+        <p>持续记录，持续整理。<br>
+            让知识沉淀成长期资产。</p>
+    </blockquote>
 
     <p>你好，我是 <strong>Yvain Zhang</strong>。</p>
 
-    <p>这里是我的个人博客，主要记录软件开发、工具使用、学习笔记，以及一些项目实践。</p>
+    <p>这里是我的个人站点，主要记录操作系统、多媒体、无线网络、工具使用，以及一些摄影内容。</p>
 
-    <p>本站基于 <a href="https://pages.github.com/">GitHub Pages</a> 和 <a href="https://jekyllrb.com/">Jekyll</a> 搭建，仓库地址在 <a href="https://github.com/YvainZhang/YvainZhang.github.io">GitHub</a>。如果你在文章中发现问题，欢迎通过 issue 交流。</p>
+    <h5>这个站主要写什么</h5>
 
-    <p></p>
-    
+    <ul>
+        <li>操作系统：启动流程、内存管理、FreeRTOS、协议栈基础</li>
+        <li>多媒体：音频格式、容器、FFmpeg、流媒体播放列表</li>
+        <li>无线网络：Wi-Fi 协议、低功耗、P2P 和驱动分析</li>
+        <li>Photos：把摄影内容单独做成相册，避免和技术文章混在一起</li>
+    </ul>
+
+    <h5>如果第一次来，可以从这里开始</h5>
+
+    <ul>
+        <li><a href="{{ '/2023/01/19/linux-memory-management-overview/' | prepend: site.baseurl }}">Linux 内存管理概览</a></li>
+        <li><a href="{{ '/2023/04/27/ffmpeg-quick-start/' | prepend: site.baseurl }}">FFmpeg 快速上手</a></li>
+        <li><a href="{{ '/2024/07/16/wifi-usb-driver-performance-tuning/' | prepend: site.baseurl }}">Wi-Fi USB 驱动架构与性能调优</a></li>
+        <li><a href="{{ '/series/' | prepend: site.baseurl }}">Series</a></li>
+        <li><a href="{{ '/photos/' | prepend: site.baseurl }}">Photos</a></li>
+    </ul>
+
+    <h5>关于这个站</h5>
+
+    <p>本站基于 <a href="https://pages.github.com/">GitHub Pages</a> 和 <a href="https://jekyllrb.com/">Jekyll</a> 搭建，公开仓库在
+        <a href="https://github.com/YvainZhang/YvainZhang.github.io">GitHub</a>。如果你在文章中发现明显错误，欢迎直接提 issue。</p>
+
     <h5>Links</h5>
 
     <ul>
         <li><a href="https://github.com/YvainZhang">GitHub</a></li>
-        <li><a href="https://jekyllrb.com/">Jekyll</a></li>
-        <li><a href="https://pages.github.com/">GitHub Pages</a></li>
+        <li><a href="{{ '/series/' | prepend: site.baseurl }}">Series</a></li>
+        <li><a href="{{ '/photos/' | prepend: site.baseurl }}">Photos</a></li>
     </ul>
 </div>
 
@@ -67,10 +88,10 @@ header-img: "img/post-bg-rwd.jpg"
     window.addEventListener('hashchange', _render);
 
     // handle render
-    function _render(){
+    function _render() {
         var _hash = window.location.hash;
         // en
-        if(_hash == "#en"){
+        if (_hash == "#en") {
             if ($select) {
                 $select.selectedIndex = 1;
             }
@@ -78,8 +99,8 @@ header-img: "img/post-bg-rwd.jpg"
                 $en.style.display = "block";
             }
             $zh.style.display = "none";
-        // zh by default
-        }else{
+            // zh by default
+        } else {
             // not trigger onChange, otherwise cause a loop call.
             if ($select) {
                 $select.selectedIndex = 0;
@@ -92,10 +113,10 @@ header-img: "img/post-bg-rwd.jpg"
     }
 
     // handle select change
-    function onLanChange(index){
-        if(index == 0){
+    function onLanChange(index) {
+        if (index == 0) {
             window.location.hash = "#zh"
-        }else{
+        } else {
             window.location.hash = "#en"
         }
     }
@@ -112,14 +133,14 @@ header-img: "img/post-bg-rwd.jpg"
 <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script>
 
 <div id="gitalk-container"></div>
-    <script type="text/javascript">
+<script type="text/javascript">
     var gitalk = new Gitalk({
-    clientID: '{{site.gitalk.clientID}}',
-    clientSecret: '{{site.gitalk.clientSecret}}',
-    repo: '{{site.gitalk.repo}}',
-    owner: '{{site.gitalk.owner}}',
-    admin: ['{{site.gitalk.admin}}'],
-    distractionFreeMode: {{site.gitalk.distractionFreeMode}},
+        clientID: '{{site.gitalk.clientID}}',
+        clientSecret: '{{site.gitalk.clientSecret}}',
+        repo: '{{site.gitalk.repo}}',
+        owner: '{{site.gitalk.owner}}',
+        admin: ['{{site.gitalk.admin}}'],
+        distractionFreeMode: {{ site.gitalk.distractionFreeMode }},
     id: 'about',
     });
     gitalk.render('gitalk-container');
@@ -127,7 +148,7 @@ header-img: "img/post-bg-rwd.jpg"
 {% endif %}
 <!-- Gitalk end -->
 
- <!-- disqus 评论框 start  -->
+<!-- disqus 评论框 start  -->
 {% if site.disqus.enable %}
 
 <div class="comment">
@@ -143,7 +164,7 @@ header-img: "img/post-bg-rwd.jpg"
     var disqus_identifier = "{{site.disqus.username}}/{{page.url}}";
     var disqus_url = "{{site.url}}{{page.url}}";
 
-    (function() {
+    (function () {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
