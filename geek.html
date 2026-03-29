@@ -50,6 +50,26 @@ header-img: "img/post-bg-universe.jpg"
         {% endfor %}
     </section>
 
+    <section class="geek-article-section">
+        <div class="series-block-head">
+            <h2>AI 与 Agent 文章</h2>
+            <p>这一组文章按 runoob 的专题结构重写，但保留了更贴近本博客的工程视角和表达方式。</p>
+        </div>
+        <div class="series-posts">
+            {% for post in site.posts %}
+                {% if post.series == "AI 与 Agent" %}
+                <article class="series-post-card">
+                    <a href="{{ post.url | prepend: site.baseurl }}">
+                        <span class="series-post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
+                        <h3>{{ post.title }}</h3>
+                        {% if post.subtitle %}<p>{{ post.subtitle }}</p>{% endif %}
+                    </a>
+                </article>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+
     <section class="geek-track-grid">
         {% for track in site.data.geek.tracks %}
         <article class="geek-track-card" id="{{ track.slug }}">
