@@ -9,22 +9,23 @@ description: "Slow is smooth, smooth is fast."
             <div class="home-nav-select-wrap">
                 <button class="home-nav-trigger" id="home-nav-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
                     <span class="home-nav-trigger-dot" aria-hidden="true"></span>
-                    <span class="home-nav-trigger-text">By Time</span>
+                    <span class="home-nav-trigger-text">By Series</span>
                     <span class="home-nav-trigger-caret" aria-hidden="true"></span>
                 </button>
                 <div class="home-nav-menu" id="home-nav-menu" role="listbox" aria-label="Browse posts" hidden>
-                    <button class="home-nav-option is-active" type="button" data-home-choice="time">By Time</button>
+                    <button class="home-nav-option is-active" type="button" data-home-choice="series">By Series</button>
                     <button class="home-nav-option" type="button" data-home-choice="tag">By Tag</button>
                 </div>
             </div>
             <div class="home-nav-body">
-                <section class="home-nav-list is-active" data-home-panel="time">
+                <section class="home-nav-list is-active" data-home-panel="series">
                 <ul class="home-link-list">
-                    {% for post in site.posts limit: 7 %}
+                    {% for group in site.data.series %}
+                    {% assign group_posts = site.posts | where: "series", group.title %}
                     <li>
-                        <a href="{{ post.url | prepend: site.baseurl }}">
-                            <strong>{{ post.title }}</strong>
-                            <span>{{ post.date | date: "%Y-%m-%d" }}</span>
+                        <a href="{{ '/series/#' | prepend: site.baseurl }}{{ group.slug }}">
+                            <strong>{{ group.title }}</strong>
+                            <span>{{ group_posts | size }} posts</span>
                         </a>
                     </li>
                     {% endfor %}
@@ -57,43 +58,35 @@ description: "Slow is smooth, smooth is fast."
     </aside>
 
     <main class="home-feed">
-        {% for post in paginator.posts %}
-        <div class="post-preview">
-            <a href="{{ post.url | prepend: site.baseurl }}">
-                <span class="post-category">{{ post.tags | first | default: "Post" }}</span>
-                <h2 class="post-title">
-                    {{ post.title }}
-                </h2>
-                {% if post.subtitle %}
-                <h3 class="post-subtitle">
-                    {{ post.subtitle }}
-                </h3>
-                {% endif %}
-                <div class="post-content-preview">
-                    {{ post.content | strip_html | truncate:96 }}
-                </div>
-            </a>
-            <p class="post-meta">
-                Posted by {% if post.author %}{{ post.author }}{% else %}{{ site.title }}{% endif %} on {{ post.date | date: "%B %-d, %Y" }}
-            </p>
-        </div>
-        <hr>
-        {% endfor %}
-
-        {% if paginator.total_pages > 1 %}
-        <ul class="pager">
-            {% if paginator.previous_page %}
-            <li class="previous">
-                <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&larr; Newer Posts</a>
-            </li>
-            {% endif %}
-            {% if paginator.next_page %}
-            <li class="next">
-                <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Older Posts &rarr;</a>
-            </li>
-            {% endif %}
-        </ul>
-        {% endif %}
+        <section class="home-category-shell">
+            <div class="series-block-head">
+                <h2>Browse by Category</h2>
+                <p>首页只保留分类入口。具体文章从对应专题页进入。</p>
+            </div>
+            <div class="home-category-grid">
+                {% for group in site.data.series %}
+                {% assign group_posts = site.posts | where: "series", group.title %}
+                {% assign latest_post = group_posts | first %}
+                <article class="home-category-card" id="{{ group.slug }}">
+                    <a href="{{ '/series/#' | prepend: site.baseurl }}{{ group.slug }}">
+                        <span class="home-category-kicker">Series</span>
+                        <h3>{{ group.title }}</h3>
+                        <p>{{ group.description }}</p>
+                        <div class="home-category-meta">
+                            <strong>{{ group_posts | size }}</strong>
+                            <span>posts</span>
+                        </div>
+                        {% if latest_post %}
+                        <div class="home-category-latest">
+                            <em>Latest</em>
+                            <span>{{ latest_post.title }}</span>
+                        </div>
+                        {% endif %}
+                    </a>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
     </main>
 
     <aside class="home-rail">
@@ -196,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    setActiveTab('time');
+    setActiveTab('series');
     closeMenu();
 });
 

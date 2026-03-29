@@ -9,7 +9,3 @@
 - slug: "wireless"
   title: "无线网络"
   description: "Wi-Fi 协议、低功耗、P2P 以及驱动分析相关内容。"
-
-- slug: "ai-agent"
-  title: "AI 与 Agent"
-  description: "围绕大模型、Agent 结构、工具调用和 AI 原生开发工具链的一组文章。"
