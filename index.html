@@ -44,6 +44,14 @@ description: "Slow is smooth, smooth is fast."
                 </ul>
                 <a class="home-tags-link" href="{{ '/tags/' | prepend: site.baseurl }}">Open full tag archive</a>
                 </section>
+
+                <section class="home-spotlight">
+                    <a class="home-spotlight-card" href="{{ '/geek/' | prepend: site.baseurl }}">
+                        <span class="home-spotlight-label">Geek</span>
+                        <strong>{{ site.data.geek.intro.title }}</strong>
+                        <p>{{ site.data.geek.intro.description }}</p>
+                    </a>
+                </section>
             </div>
         </div>
     </aside>
@@ -101,6 +109,18 @@ description: "Slow is smooth, smooth is fast."
             </div>
         </section>
         {% endif %}
+
+        <section class="home-rail-panel visible-md visible-lg">
+            <h5><a href="{{ '/geek/' | prepend: site.baseurl }}">GEEK RADAR</a></h5>
+            <div class="home-geek-list">
+                {% for track in site.data.geek.tracks limit: 3 %}
+                <a href="{{ '/geek/#' | prepend: site.baseurl }}{{ track.slug }}">
+                    <strong>{{ track.title }}</strong>
+                    <span>{{ track.kicker }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
 
         <section class="home-rail-panel visible-md visible-lg">
             <h5><a href="{{'/about/' | prepend: site.baseurl }}">ABOUT ME</a></h5>

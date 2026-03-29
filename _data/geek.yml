@@ -1,0 +1,44 @@
+intro:
+  title: "Geek"
+  description: "记录值得长期理解的技术拐点，不追热搜，重点放在架构变化、产品信号和工程落地。"
+  statement: "这里优先关注 AI、具身智能、开发者工具链，以及会重塑软件工程方式的新基础设施。"
+
+tracks:
+  - title: "AI Systems"
+    slug: "ai-systems"
+    kicker: "模型、Agent 与工程化"
+    description: "关注模型能力边界、Agent 设计、评测方法、上下文工程、推理成本，以及这些变化怎样影响真实的软件系统。"
+    topics:
+      - "大模型与多模态"
+      - "Agent 工作流"
+      - "Eval 与基准"
+      - "Inference 成本"
+    cadence: "短评 + 结构化笔记"
+    status: "Ready"
+  - title: "Embodied Intelligence"
+    slug: "embodied-intelligence"
+    kicker: "机器人、感知与闭环控制"
+    description: "关注具身智能从 demo 走向系统工程的过程，包括世界模型、仿真训练、感知融合、执行器闭环和人机协作。"
+    topics:
+      - "VLA / 世界模型"
+      - "仿真到现实"
+      - "多传感器融合"
+      - "机器人产品化"
+    cadence: "专题跟踪"
+    status: "Ready"
+  - title: "Tooling Frontier"
+    slug: "tooling-frontier"
+    kicker: "新一代开发工具链"
+    description: "关注会改变开发者工作流的工具：代码生成、自动化调试、知识管理、终端代理，以及 AI 原生的软件协作方式。"
+    topics:
+      - "AI Coding"
+      - "终端代理"
+      - "知识工作流"
+      - "Dev Infra"
+    cadence: "案例拆解"
+    status: "Ready"
+
+principles:
+  - "只写值得一年后回看的内容，不做单纯新闻搬运。"
+  - "优先整理一手发布、技术报告、工程实践，再补个人判断。"
+  - "每篇尽量回答三个问题：发生了什么、为什么重要、离工程落地还有多远。"

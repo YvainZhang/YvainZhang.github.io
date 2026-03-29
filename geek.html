@@ -1,0 +1,47 @@
+---
+layout: page
+title: "Geek"
+description: "前沿技术雷达：AI、具身智能与新一代开发工具链。"
+header-img: "img/post-bg-universe.jpg"
+---
+
+<div class="geek-page">
+    <section class="geek-intro-card">
+        <span class="geek-eyebrow">Frontier Radar</span>
+        <h2>{{ site.data.geek.intro.description }}</h2>
+        <p>{{ site.data.geek.intro.statement }}</p>
+    </section>
+
+    <section class="geek-track-grid">
+        {% for track in site.data.geek.tracks %}
+        <article class="geek-track-card" id="{{ track.slug }}">
+            <span class="geek-track-kicker">{{ track.kicker }}</span>
+            <h3>{{ track.title }}</h3>
+            <p>{{ track.description }}</p>
+            <ul class="geek-topic-list">
+                {% for topic in track.topics %}
+                <li>{{ topic }}</li>
+                {% endfor %}
+            </ul>
+            <div class="geek-track-meta">
+                <span>{{ track.cadence }}</span>
+                <strong>{{ track.status }}</strong>
+            </div>
+        </article>
+        {% endfor %}
+    </section>
+
+    <section class="geek-principles">
+        <div class="series-block-head">
+            <h2>写作方式</h2>
+            <p>先把栏目框架立住，后续每篇内容再填到对应方向里。</p>
+        </div>
+        <div class="geek-principles-grid">
+            {% for principle in site.data.geek.principles %}
+            <article class="geek-principle-card">
+                <p>{{ principle }}</p>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+</div>
