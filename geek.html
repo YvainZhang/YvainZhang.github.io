@@ -12,6 +12,44 @@ header-img: "img/post-bg-universe.jpg"
         <p>{{ site.data.geek.intro.statement }}</p>
     </section>
 
+    <section class="geek-feature-card">
+        <div class="geek-feature-head">
+            <span class="geek-track-kicker">{{ site.data.geek.feature.kicker }}</span>
+            <h2>{{ site.data.geek.feature.title }}</h2>
+            <p>{{ site.data.geek.feature.summary }}</p>
+        </div>
+        <div class="geek-feature-model">{{ site.data.geek.feature.model }}</div>
+        <div class="geek-feature-grid">
+            <div class="geek-feature-block">
+                <h3>关键理解</h3>
+                <ul class="geek-bullet-list">
+                    {% for item in site.data.geek.feature.highlights %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="geek-feature-block">
+                <h3>最小案例</h3>
+                <strong>{{ site.data.geek.feature.example.title }}</strong>
+                <p>{{ site.data.geek.feature.example.description }}</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="geek-module-grid">
+        {% for module in site.data.geek.feature.modules %}
+        <article class="geek-module-card" id="{{ module.slug }}">
+            <h3>{{ module.title }}</h3>
+            <p>{{ module.description }}</p>
+            <ul class="geek-bullet-list">
+                {% for item in module.items %}
+                <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </article>
+        {% endfor %}
+    </section>
+
     <section class="geek-track-grid">
         {% for track in site.data.geek.tracks %}
         <article class="geek-track-card" id="{{ track.slug }}">
@@ -29,19 +67,5 @@ header-img: "img/post-bg-universe.jpg"
             </div>
         </article>
         {% endfor %}
-    </section>
-
-    <section class="geek-principles">
-        <div class="series-block-head">
-            <h2>写作方式</h2>
-            <p>先把栏目框架立住，后续每篇内容再填到对应方向里。</p>
-        </div>
-        <div class="geek-principles-grid">
-            {% for principle in site.data.geek.principles %}
-            <article class="geek-principle-card">
-                <p>{{ principle }}</p>
-            </article>
-            {% endfor %}
-        </div>
     </section>
 </div>

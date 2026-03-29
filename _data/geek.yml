@@ -3,6 +3,50 @@ intro:
   description: "记录值得长期理解的技术拐点，不追热搜，重点放在架构变化、产品信号和工程落地。"
   statement: "这里优先关注 AI、具身智能、开发者工具链，以及会重塑软件工程方式的新基础设施。"
 
+feature:
+  title: "AI Agent"
+  kicker: "当前聚焦"
+  summary: "Agent 不只是对话，而是目标驱动的任务执行系统。它更接近会规划、会调用工具、会保留上下文的执行者。"
+  model: "LLM + Planning + Tool use + Memory"
+  highlights:
+    - "从“问答”切换到“给目标，让系统拆解并执行”"
+    - "核心不是回复更像人，而是能否完成真实动作"
+    - "一个最小 Agent 往往已经包含输入解析、工具调用、状态保存和结果汇总"
+  example:
+    title: "天气穿衣助手"
+    description: "最简单的 Agent 也可以按“识别城市 → 查询天气 → 生成建议 → 保存中间状态”的链路运行。"
+  modules:
+    - title: "基础认知"
+      slug: "agent-foundation"
+      description: "先建立最重要的观念：Agent 和普通聊天模型的区别，不在输出文本，而在于围绕目标持续执行任务。"
+      items:
+        - "AI Agent 简介"
+        - "核心组件：LLM、规划、工具、记忆"
+        - "从问答转向目标驱动执行"
+    - title: "工作原理"
+      slug: "agent-mechanism"
+      description: "理解 Agent 的主循环：接收目标、拆分步骤、调用工具、观察结果、调整下一步，并在必要时保留上下文。"
+      items:
+        - "任务拆解"
+        - "工具调用与反馈"
+        - "多轮迭代执行"
+    - title: "Python 实现"
+      slug: "agent-python"
+      description: "从最小示例入手，看一个可运行 Agent 如何组织工具、记忆和执行流程，而不是只停留在概念解释。"
+      items:
+        - "最小 Agent 结构"
+        - "工具调用"
+        - "记忆系统"
+        - "问答实例"
+    - title: "工具生态"
+      slug: "agent-tooling"
+      description: "把概念映射到实际工具链，理解不同框架和终端代理分别解决什么问题，以及适合什么使用场景。"
+      items:
+        - "LangChain / CrewAI"
+        - "Claude Code / OpenCode"
+        - "Skills 与工作流"
+        - "Qoder / Trae"
+
 tracks:
   - title: "AI Systems"
     slug: "ai-systems"
@@ -37,8 +81,3 @@ tracks:
       - "Dev Infra"
     cadence: "案例拆解"
     status: "Ready"
-
-principles:
-  - "只写值得一年后回看的内容，不做单纯新闻搬运。"
-  - "优先整理一手发布、技术报告、工程实践，再补个人判断。"
-  - "每篇尽量回答三个问题：发生了什么、为什么重要、离工程落地还有多远。"
