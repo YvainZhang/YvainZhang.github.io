@@ -5,7 +5,7 @@ subtitle: "把嵌入式和系统面试里最容易散掉的概念串起来"
 date: 2022-09-09
 author: Yvain Zhang
 header-img: "img/post-bg-unix-linux.jpg"
-series: "操作系统"
+series: "技术"
 tags:
   - 操作系统
   - 中断

@@ -5,7 +5,7 @@ subtitle: "从上电到 Bootloader，再到内核或应用"
 date: 2022-11-07
 author: Yvain Zhang
 header-img: "img/post-bg-desk.jpg"
-series: "操作系统"
+series: "技术"
 tags:
   - 操作系统
   - ARM

@@ -5,7 +5,7 @@ subtitle: "从 Socket、TCP/UDP 到并发连接和调优思路"
 date: 2022-12-02
 author: Yvain Zhang
 header-img: "img/post-bg-keybord.jpg"
-series: "操作系统"
+series: "技术"
 tags:
   - 操作系统
   - 网络

@@ -5,7 +5,7 @@ subtitle: "从 Box、Track 到为什么播放器能拖动和定位"
 date: 2021-09-23
 author: Yvain Zhang
 header-img: "img/post-bg-desk.jpg"
-series: "多媒体"
+series: "技术"
 tags:
   - 多媒体
   - 容器

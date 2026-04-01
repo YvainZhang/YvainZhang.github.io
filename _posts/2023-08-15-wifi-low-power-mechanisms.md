@@ -5,7 +5,7 @@ subtitle: "从 PS-Poll、U-APSD 到功耗、时延和吞吐的取舍"
 date: 2023-08-15
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
-series: "无线网络"
+series: "技术"
 tags:
   - 无线网络
   - Wi-Fi

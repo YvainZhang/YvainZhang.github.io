@@ -26,19 +26,34 @@ description: "Slow is smooth, smooth is fast."
         <div class="home-explore-grid">
             {% for group in site.data.series %}
             {% assign group_posts = site.posts | where: "series", group.title %}
+            {% if group.title == "摄影" %}
+                {% assign entry_href = '/photos/' | prepend: site.baseurl %}
+            {% else %}
+                {% assign entry_href = '/series/#' | prepend: site.baseurl | append: group.slug %}
+            {% endif %}
             {% assign latest_post = group_posts | first %}
             <article class="home-explore-card home-explore-card-{{ group.slug }}">
-                <a href="{{ '/series/#' | prepend: site.baseurl }}{{ group.slug }}">
+                <a href="{{ entry_href }}">
                     <span class="home-explore-icon">{{ forloop.index }}</span>
                     <div class="home-explore-copy">
                         <h4>{{ group.title }}</h4>
                         <p>{{ group.description }}</p>
                     </div>
                     <div class="home-explore-meta">
+                        {% if group.title == "摄影" %}
+                        <strong>{{ album_count }}</strong>
+                        <span>个相册</span>
+                        {% else %}
                         <strong>{{ group_posts | size }}</strong>
                         <span>篇文章</span>
+                        {% endif %}
                     </div>
-                    {% if latest_post %}
+                    {% if group.title == "摄影" and site.data.photos.first %}
+                    <div class="home-explore-latest">
+                        <em>最近整理</em>
+                        <span>{{ site.data.photos.last.album }}</span>
+                    </div>
+                    {% elsif latest_post %}
                     <div class="home-explore-latest">
                         <em>最近更新</em>
                         <span>{{ latest_post.title }}</span>
@@ -47,26 +62,6 @@ description: "Slow is smooth, smooth is fast."
                 </a>
             </article>
             {% endfor %}
-
-            <article class="home-explore-card home-explore-card-photos">
-                <a href="{{ '/photos/' | prepend: site.baseurl }}">
-                    <span class="home-explore-icon">P</span>
-                    <div class="home-explore-copy">
-                        <h4>摄影</h4>
-                        <p>把城市夜景、湖边散步和偶尔遇到的好光线收成相册。</p>
-                    </div>
-                    <div class="home-explore-meta">
-                        <strong>{{ album_count }}</strong>
-                        <span>个相册</span>
-                    </div>
-                    {% if site.data.photos.first %}
-                    <div class="home-explore-latest">
-                        <em>最近整理</em>
-                        <span>{{ site.data.photos.last.album }}</span>
-                    </div>
-                    {% endif %}
-                </a>
-            </article>
         </div>
     </section>
 

@@ -5,7 +5,7 @@ subtitle: "理解 WAV 文件头、chunk 结构和常见编码方式"
 date: 2021-10-28
 author: Yvain Zhang
 header-img: "img/post-bg-desk.jpg"
-series: "多媒体"
+series: "技术"
 tags:
   - 多媒体
   - 音频

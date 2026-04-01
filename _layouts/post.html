@@ -42,7 +42,7 @@ layout: default
                     {% comment %} endif {% endcomment %}
                     <span class="meta">Posted by {% if page.author %}{{ page.author }}{% else %}{{ site.title }}{% endif %} on {{ page.date | date: "%B %-d, %Y" }}</span>
                     {% if page.series %}
-                    <span class="meta post-series-meta">In <a href="{{ '/series/#' | prepend: site.baseurl }}{{ page.series | slugify }}">{{ page.series }}</a></span>
+                    <span class="meta post-series-meta">主题：<a href="{{ '/series/#' | prepend: site.baseurl }}{{ page.series | slugify }}">{{ page.series }}</a></span>
                     {% endif %}
                 </div>
             </div>
@@ -68,7 +68,7 @@ layout: default
                 {% if page.series %}
                 <section class="related-series">
                     <div class="related-series-head">
-                        <h3>同系列文章</h3>
+                        <h3>同主题文章</h3>
                         <a href="{{ '/series/#' | prepend: site.baseurl }}{{ page.series | slugify }}">查看全部</a>
                     </div>
                     <div class="related-series-grid">
@@ -184,7 +184,7 @@ layout: default
                 {% if page.series %}
                 <section>
                     <hr class="hidden-sm hidden-xs">
-                    <h5><a href="{{ '/series/' | prepend: site.baseurl }}">SERIES</a></h5>
+                    <h5><a href="{{ '/series/' | prepend: site.baseurl }}">THEMES</a></h5>
                     <div class="tags">
                         <a href="{{ '/series/#' | prepend: site.baseurl }}{{ page.series | slugify }}">{{ page.series }}</a>
                     </div>

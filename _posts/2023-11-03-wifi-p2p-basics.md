@@ -5,7 +5,7 @@ subtitle: "理解发现、协商、组建立和并发角色限制"
 date: 2023-11-03
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
-series: "无线网络"
+series: "技术"
 tags:
   - 无线网络
   - Wi-Fi

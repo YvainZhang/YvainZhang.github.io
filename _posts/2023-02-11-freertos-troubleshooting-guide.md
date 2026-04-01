@@ -5,7 +5,7 @@ subtitle: "从中断优先级、栈溢出到 printf 使用误区"
 date: 2023-02-11
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
-series: "操作系统"
+series: "技术"
 tags:
   - 操作系统
   - FreeRTOS

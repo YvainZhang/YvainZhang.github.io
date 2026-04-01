@@ -5,7 +5,7 @@ subtitle: "从虚拟内存、页表到回收与 OOM"
 date: 2023-01-19
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
-series: "操作系统"
+series: "技术"
 tags:
   - 操作系统
   - Linux

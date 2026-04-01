@@ -5,7 +5,7 @@ subtitle: "从 MAC、ARP 到 IP、路由，把链路层和网络层串起来"
 date: 2022-08-18
 author: Yvain Zhang
 header-img: "img/post-bg-unix-linux.jpg"
-series: "操作系统"
+series: "技术"
 tags:
   - 操作系统
   - 网络

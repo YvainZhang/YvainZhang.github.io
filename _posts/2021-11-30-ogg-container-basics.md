@@ -5,7 +5,7 @@ subtitle: "从 Ogg page、逻辑流到 Vorbis、Opus 和 Theora 的关系"
 date: 2021-11-30
 author: Yvain Zhang
 header-img: "img/post-bg-universe.jpg"
-series: "多媒体"
+series: "技术"
 tags:
   - 多媒体
   - 音频

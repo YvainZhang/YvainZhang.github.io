@@ -5,7 +5,7 @@ subtitle: "先把容器、编码和常用命令理顺"
 date: 2023-04-27
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
-series: "多媒体"
+series: "技术"
 tags:
   - 多媒体
   - FFmpeg

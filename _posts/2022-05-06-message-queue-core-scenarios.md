@@ -5,7 +5,7 @@ subtitle: "从解耦、异步到消峰，理解它为什么经常是系统缓冲
 date: 2022-05-06
 author: Yvain Zhang
 header-img: "img/post-bg-keybord.jpg"
-series: "操作系统"
+series: "技术"
 tags:
   - 操作系统
   - 消息队列

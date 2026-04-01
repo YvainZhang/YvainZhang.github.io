@@ -1,11 +1,19 @@
-- slug: "systems"
-  title: "操作系统"
-  description: "启动流程、内存管理和嵌入式驱动这一组基础主题。"
+- slug: "learning"
+  title: "学习"
+  description: "把正在学、反复学和值得长期积累的东西收在一起。"
 
-- slug: "media"
-  title: "多媒体"
-  description: "围绕音频、容器、编码和 FFmpeg 的一组文章。"
+- slug: "tech"
+  title: "技术"
+  description: "目前内容最多的一组，主要是嵌入式、系统、多媒体和无线网络。"
 
-- slug: "wireless"
-  title: "无线网络"
-  description: "Wi-Fi 协议、低功耗、P2P 以及驱动分析相关内容。"
+- slug: "investment"
+  title: "投资"
+  description: "记录市场观察、框架思考和以后可能会持续更新的投资笔记。"
+
+- slug: "life"
+  title: "生活感悟"
+  description: "给工作之外的想法留个位置，慢慢写成更有人味的记录。"
+
+- slug: "photography"
+  title: "摄影"
+  description: "把喜欢的照片和相册单独放出来，留住值得回看的光线。"

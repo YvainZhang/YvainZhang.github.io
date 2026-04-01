@@ -5,7 +5,7 @@ subtitle: "把 MP3、AAC、MP4、H.264 放回同一条标准演进主线"
 date: 2021-12-14
 author: Yvain Zhang
 header-img: "img/post-bg-universe.jpg"
-series: "多媒体"
+series: "技术"
 tags:
   - 多媒体
   - MPEG

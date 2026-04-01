@@ -5,7 +5,7 @@ subtitle: "从帧结构、ID3 到同步、哈夫曼解码和 IMDCT"
 date: 2021-03-26
 author: Yvain Zhang
 header-img: "img/post-bg-digital-native.jpg"
-series: "多媒体"
+series: "技术"
 tags:
   - 多媒体
   - 音频

@@ -5,7 +5,7 @@ subtitle: "理解 profile、容器关系与工程上的实际取舍"
 date: 2021-05-09
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
-series: "多媒体"
+series: "技术"
 tags:
   - 多媒体
   - 音频

@@ -5,7 +5,7 @@ subtitle: "从媒体列表、主列表到直播更新和标签含义"
 date: 2022-04-19
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
-series: "多媒体"
+series: "技术"
 tags:
   - 多媒体
   - 流媒体

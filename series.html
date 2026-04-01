@@ -1,21 +1,30 @@
 ---
 layout: page
-title: "Series"
-description: "按主题串起来的文章集合"
+title: "Themes"
+description: "按大主题查看这个站点里的内容"
 header-img: "img/post-bg-keybord.jpg"
 nav_exclude: true
 ---
 
 <div class="series-page">
     {% for group in site.data.series %}
+    {% assign group_posts = site.posts | where: "series", group.title %}
     <section class="series-block" id="{{ group.slug }}">
         <div class="series-block-head">
             <h2>{{ group.title }}</h2>
             <p>{{ group.description }}</p>
         </div>
         <div class="series-posts">
-            {% for post in site.posts %}
-                {% if post.series == group.title %}
+            {% if group.title == "摄影" %}
+                <article class="series-post-card series-post-card-empty">
+                    <a href="{{ '/photos/' | prepend: site.baseurl }}">
+                        <span class="series-post-date">Album</span>
+                        <h3>查看摄影相册</h3>
+                        <p>摄影内容单独放在 Photos 页面，不和文章混在一起。</p>
+                    </a>
+                </article>
+            {% elsif group_posts.size > 0 %}
+                {% for post in group_posts %}
                 <article class="series-post-card">
                     <a href="{{ post.url | prepend: site.baseurl }}">
                         <span class="series-post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
@@ -23,8 +32,16 @@ nav_exclude: true
                         {% if post.subtitle %}<p>{{ post.subtitle }}</p>{% endif %}
                     </a>
                 </article>
-                {% endif %}
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                <article class="series-post-card series-post-card-empty">
+                    <a href="#">
+                        <span class="series-post-date">Soon</span>
+                        <h3>还没有公开内容</h3>
+                        <p>这个主题先占个位置，后面有合适的内容再慢慢补上。</p>
+                    </a>
+                </article>
+            {% endif %}
         </div>
     </section>
     {% endfor %}

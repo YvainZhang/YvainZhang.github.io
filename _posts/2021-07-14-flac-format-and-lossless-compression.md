@@ -5,7 +5,7 @@ subtitle: "从元数据块、音频帧到为什么 FLAC 适合存档"
 date: 2021-07-14
 author: Yvain Zhang
 header-img: "img/post-bg-universe.jpg"
-series: "多媒体"
+series: "技术"
 tags:
   - 多媒体
   - 音频

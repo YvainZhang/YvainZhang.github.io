@@ -5,7 +5,7 @@ subtitle: "从 AMR-NB、AMR-WB 到帧类型、模式和文件结构"
 date: 2022-01-21
 author: Yvain Zhang
 header-img: "img/post-bg-digital-native.jpg"
-series: "多媒体"
+series: "技术"
 tags:
   - 多媒体
   - 音频

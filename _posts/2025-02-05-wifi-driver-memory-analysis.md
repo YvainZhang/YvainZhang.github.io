@@ -5,7 +5,7 @@ subtitle: "从静态 / 动态内存、泄漏趋势到真正有价值的分析结
 date: 2025-02-05
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
-series: "无线网络"
+series: "技术"
 tags:
   - 无线网络
   - 驱动
