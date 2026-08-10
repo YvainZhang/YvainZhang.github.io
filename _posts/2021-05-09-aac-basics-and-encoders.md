@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "AAC 基础与编码工具"
-subtitle: "理解 profile、容器关系与工程上的实际取舍"
+subtitle: "Profile、封装与兼容性检查"
 date: 2021-05-09
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
@@ -12,7 +12,7 @@ tags:
   - AAC
 ---
 
-AAC 在音视频链路里太常见了，常见到很多人默认知道它，但真问到 profile、封装关系和工具链差别时，往往又说不太清。
+项目里说“这是 AAC”通常还不够。至少还要知道 profile、采样率、声道数，以及这段 AAC 是裸流、ADTS，还是装在 MP4 / M4A / TS 里。兼容性问题经常就藏在这些信息里。
 
 ## 1. AAC 为什么重要
 
@@ -118,12 +118,12 @@ AAC 经常出现在这些地方：
 - 容器与音频流信息不匹配
 - 采样率或声道配置超出预期
 
-## 8. 总结
+## 8. 实际检查清单
 
-看 AAC 时，先把这三件事分开：
+碰到 AAC 播放或转码问题时，我会先确认：
 
 - AAC 是编码格式
 - AAC 有不同 profile
 - AAC 常常装在 MP4 / M4A / TS 等容器里
 
-只要把这三层关系理顺，后续再看转码、封装、播放器兼容性问题，就不会总是把“编码”和“容器”混成一件事。
+然后再核对 profile、AudioSpecificConfig / ADTS 头和目标设备支持范围。先看这些，比一上来怀疑编码器算法有效得多。

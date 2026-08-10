@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Ogg 容器基础"
-subtitle: "从 Ogg page、逻辑流到 Vorbis、Opus 和 Theora 的关系"
+subtitle: "Page、逻辑流和 packet 拼接"
 date: 2021-11-30
 author: Yvain Zhang
 header-img: "img/post-bg-universe.jpg"
@@ -12,8 +12,7 @@ tags:
   - Ogg
 ---
 
-Ogg 经常被直接叫成“音频格式”，但严格来说，它首先是一个容器。  
-这一点和很多人熟悉的 MP4、WAV 有点像：真正装在里面的可以是不同类型的数据流，而容器负责把这些流组织起来。
+遇到 Ogg 文件，我先找 `OggS`，再看逻辑流和里面的 codec。把 Ogg 直接当成 Vorbis 的别名，在只处理普通音乐文件时可能没事，碰到 Opus 或多逻辑流就会出错。
 
 ## 1. Ogg 到底是什么
 
@@ -162,15 +161,13 @@ Ogg 自己不决定音频 / 视频怎么压缩，它更像外层壳。
 - continuation page 处理
 - checksum 校验
 
-## 10. 总结
+## 10. 解析顺序
 
-理解 Ogg，最重要的是别把它直接等同于某一种音频编码。
-
-更实用的抓法通常是：
+我一般这样看：
 
 - 先把 Ogg 当成容器
 - 再看 page 结构
 - 再看逻辑流怎么复用
 - 最后再看里面到底装的是 Vorbis、Opus 还是别的内容
 
-把这几层分开之后，后面无论是读格式文档、看播放器实现，还是自己做解析，都会顺很多。
+需要特别小心 continuation page。一个 packet 可以跨 page，按 page 直接当完整数据交给解码器，迟早会碰到坏文件。

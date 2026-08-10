@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "HLS 与 M3U8 播放列表基础"
-subtitle: "从媒体列表、主列表到直播更新和标签含义"
+subtitle: "播放列表结构和直播排错"
 date: 2022-04-19
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
@@ -12,8 +12,7 @@ tags:
   - M3U8
 ---
 
-很多人第一次接触 M3U8，都是因为抓到一个 `.m3u8` 地址，或者在播放器日志里看到一堆 `#EXTINF`、`#EXT-X-KEY`、`#EXT-X-TARGETDURATION`。  
-看久了会发现，M3U8 真正有用的地方不是“它是一种文件”，而是它把 HLS 这套流媒体分发方式组织得很规整。
+看 M3U8 播放日志时，满屏都是 `#EXTINF`、`#EXT-X-KEY` 和序号。我现在固定先判断它是 Master Playlist 还是 Media Playlist，再看片段、时间和加密，顺序会清楚很多。
 
 ## 1. M3U8 和 HLS 是什么关系
 
@@ -195,12 +194,12 @@ HLS 里比较常见的还有：
 - 是否存在 `DISCONTINUITY`
 - 媒体序号和时间线衔接是否处理正确
 
-## 11. 总结
+## 11. 我的排查顺序
 
-如果把 M3U8 只当成“一个文本文件”，很容易看着标签眼花。更好的理解方式是把它当作 HLS 的调度表：
+把 M3U8 当作 HLS 的调度表来看：
 
 - Master Playlist 负责选路
 - Media Playlist 负责列片段
 - 标签负责补时长、加密、序号和切换信息
 
-把这三层关系分清之后，后面无论是写解析器、接播放器，还是排查直播问题，都会更容易抓住重点。
+直播卡住时，不要只测某一个 TS 能不能下载。还要看列表有没有继续刷新、media sequence 是否推进、旧片段是否淘汰，以及 key 和 init segment 能不能访问。
