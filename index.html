@@ -1,94 +1,111 @@
 ---
 layout: home
-description: "Slow is smooth, smooth is fast."
+description: "嵌入式、系统软件、AI 与生活的长期笔记。"
 ---
 
-{% assign latest_posts = site.posts | slice: 0, 3 %}
+{% assign latest_posts = site.posts | slice: 0, 5 %}
+{% assign lead_post = latest_posts | first %}
+{% assign secondary_posts = latest_posts | slice: 1, 4 %}
 {% assign album_count = site.data.photos | size %}
 
-<div class="home-showcase">
-    <section class="home-hero">
-        <div class="home-hero-copy">
-            <span class="home-hero-kicker">{{ site.title }}</span>
-            <h2>一个在半导体嵌入式行业里写了 10 年多代码，还没把“喜欢折腾”这个毛病改掉的人。</h2>
-            <p>西电出身，主业是和芯片、驱动、系统还有各种“不太听话”的问题长期相处。平时信 AI 这股风不会白刮，所以也愿意一边写代码一边追新东西；顺手拍点照片，认真跑点步，努力让生活不要只剩下 log、串口和 deadline。</p>
-            <div class="home-hero-actions">
-                <a class="home-hero-primary" href="{{ '/series/' | prepend: site.baseurl }}">查看专题</a>
-                <a class="home-hero-secondary" href="{{ '/photos/' | prepend: site.baseurl }}">浏览相册</a>
+<header class="studio-hero">
+    <div class="studio-hero-grid">
+        <div class="studio-hero-copy">
+            <p class="studio-eyebrow"><span></span> Embedded systems · AI · Life</p>
+            <h1>把复杂系统，<br>写成可以复用的理解。</h1>
+            <p class="studio-intro">你好，我是 Yvain。一名在半导体嵌入式行业写了十多年代码的工程师。这里记录驱动、系统、无线网络，也记录 AI、摄影和那些值得慢慢想清楚的事。</p>
+            <div class="studio-actions">
+                {% if lead_post %}<a class="studio-button studio-button-primary" href="{{ lead_post.url | prepend: site.baseurl }}">阅读最新文章 <span aria-hidden="true">→</span></a>{% endif %}
+                <a class="studio-button studio-button-quiet" href="{{ '/series/' | prepend: site.baseurl }}">浏览全部主题</a>
             </div>
         </div>
-    </section>
+        <aside class="studio-console" aria-label="当前关注方向">
+            <div class="studio-console-head">
+                <span>FIELD NOTES / 2026</span>
+                <i aria-hidden="true"></i>
+            </div>
+            <ol>
+                <li><span>01</span><strong>DRIVER</strong><em>data path &amp; performance</em></li>
+                <li><span>02</span><strong>SYSTEM</strong><em>memory &amp; scheduling</em></li>
+                <li><span>03</span><strong>FRONTIER</strong><em>AI-native workflows</em></li>
+                <li><span>04</span><strong>OFFLINE</strong><em>running &amp; photography</em></li>
+            </ol>
+            <p><span class="studio-pulse" aria-hidden="true"></span> 持续整理中</p>
+        </aside>
+    </div>
+    <div class="studio-hero-foot">
+        <span>XI'AN → WUXI</span>
+        <span>ENGINEER / WRITER / OBSERVER</span>
+        <a href="#latest">向下阅读 ↓</a>
+    </div>
+</header>
 
-    <section class="home-explore">
-        <div class="home-explore-grid">
-            {% for group in site.data.series %}
-            {% assign group_posts = site.posts | where: "series", group.title %}
-            {% if group.title == "摄影" %}
-                {% assign entry_href = '/photos/' | prepend: site.baseurl %}
-            {% else %}
-                {% assign entry_href = '/series/#' | prepend: site.baseurl | append: group.slug %}
-            {% endif %}
-            {% assign latest_post = group_posts | first %}
-            <article class="home-explore-card home-explore-card-{{ group.slug }}">
-                <a href="{{ entry_href }}">
-                    <span class="home-explore-icon">{{ forloop.index }}</span>
-                    <div class="home-explore-copy">
-                        <h4>{{ group.title }}</h4>
-                        <p>{{ group.description }}</p>
-                    </div>
-                    <div class="home-explore-meta">
-                        {% if group.title == "摄影" %}
-                        <strong>{{ album_count }}</strong>
-                        <span>个相册</span>
-                        {% else %}
-                        <strong>{{ group_posts | size }}</strong>
-                        <span>篇文章</span>
-                        {% endif %}
-                    </div>
-                    {% if group.title == "摄影" and site.data.photos.first %}
-                    <div class="home-explore-latest">
-                        <em>最近整理</em>
-                        <span>{{ site.data.photos.last.album }}</span>
-                    </div>
-                    {% elsif latest_post %}
-                    <div class="home-explore-latest">
-                        <em>最近更新</em>
-                        <span>{{ latest_post.title }}</span>
-                    </div>
-                    {% endif %}
-                </a>
-            </article>
-            {% endfor %}
-        </div>
-    </section>
+<section class="studio-section studio-topics" aria-labelledby="topics-heading">
+    <div class="studio-section-heading">
+        <p>Explore / 01</p>
+        <h2 id="topics-heading">沿着兴趣，建立自己的知识地图。</h2>
+    </div>
+    <div class="studio-topic-list">
+        {% for group in site.data.series %}
+        {% assign group_posts = site.posts | where: "series", group.title %}
+        {% if group.title == "摄影" %}
+            {% assign entry_href = '/photos/' | prepend: site.baseurl %}
+            {% assign entry_count = album_count %}
+            {% assign entry_unit = '个相册' %}
+        {% else %}
+            {% assign entry_href = '/series/#' | prepend: site.baseurl | append: group.slug %}
+            {% assign entry_count = group_posts | size %}
+            {% assign entry_unit = '篇文章' %}
+        {% endif %}
+        <a class="studio-topic" href="{{ entry_href }}">
+            <span class="studio-topic-index">0{{ forloop.index }}</span>
+            <div><h3>{{ group.title }}</h3><p>{{ group.description }}</p></div>
+            <span class="studio-topic-count">{{ entry_count }} {{ entry_unit }}</span>
+            <span class="studio-topic-arrow" aria-hidden="true">↗</span>
+        </a>
+        {% endfor %}
+    </div>
+</section>
 
-    <section class="home-latest">
-        <div class="home-latest-grid">
-            {% for post in latest_posts %}
-            <article class="home-latest-card">
+{% if lead_post %}
+<section class="studio-section studio-latest" id="latest" aria-labelledby="latest-heading">
+    <div class="studio-section-heading studio-section-heading-row">
+        <div><p>Writing / 02</p><h2 id="latest-heading">最近写下的内容</h2></div>
+        <a href="{{ '/tags/' | prepend: site.baseurl }}">查看文章索引 <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="studio-writing-grid">
+        <article class="studio-lead-story">
+            <a href="{{ lead_post.url | prepend: site.baseurl }}">
+                <div class="studio-story-image" {% if lead_post.header-img %}style="background-image: url('{{ lead_post.header-img | prepend: site.baseurl | prepend: '/' | replace: '//', '/' }}')"{% endif %}>
+                    <span>Latest note</span>
+                </div>
+                <div class="studio-lead-copy">
+                    <p>{{ lead_post.date | date: "%Y.%m.%d" }} / {{ lead_post.series | default: lead_post.tags.first }}</p>
+                    <h3>{{ lead_post.title }}</h3>
+                    {% if lead_post.subtitle %}<span>{{ lead_post.subtitle }}</span>{% endif %}
+                </div>
+            </a>
+        </article>
+        <div class="studio-story-list">
+            {% for post in secondary_posts %}
+            <article>
                 <a href="{{ post.url | prepend: site.baseurl }}">
-                    <div class="home-latest-cover">
-                        {% if post.header-img %}
-                        <img src="{{ post.header-img | prepend: site.baseurl | prepend: '/' | replace: '//', '/' }}" alt="{{ post.title }}">
-                        {% else %}
-                        <div class="home-latest-cover-fallback">暂无预览</div>
-                        {% endif %}
-                    </div>
-                    <div class="home-latest-copy">
-                        <div class="home-latest-meta">
-                            <span>{% if post.series %}{{ post.series }}{% else %}{{ post.tags | first }}{% endif %}</span>
-                            <span>{{ post.date | date: "%Y-%m-%d" }}</span>
-                        </div>
-                        <h4>{{ post.title }}</h4>
-                        {% if post.subtitle %}
-                        <p>{{ post.subtitle }}</p>
-                        {% else %}
-                        <p>{{ post.content | strip_html | truncate: 88 }}</p>
-                        {% endif %}
-                    </div>
+                    <p>{{ post.date | date: "%Y.%m.%d" }} <span>{{ post.series | default: post.tags.first }}</span></p>
+                    <h3>{{ post.title }}</h3>
+                    {% if post.subtitle %}<span>{{ post.subtitle }}</span>{% endif %}
+                    <i aria-hidden="true">→</i>
                 </a>
             </article>
             {% endfor %}
         </div>
-    </section>
-</div>
+    </div>
+</section>
+{% endif %}
+
+<section class="studio-photo-note">
+    <div>
+        <p>Beyond the terminal</p>
+        <h2>偶尔离开屏幕，去看真实世界里的光。</h2>
+    </div>
+    <a href="{{ '/photos/' | prepend: site.baseurl }}">打开摄影集 <span aria-hidden="true">↗</span></a>
+</section>
