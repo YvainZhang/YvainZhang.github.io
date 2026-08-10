@@ -2,7 +2,8 @@
 layout: post
 title: "Wi-Fi P2P 基础"
 subtitle: "发现、协商、组网和并发限制"
-date: 2023-11-03
+date: 2024-08-18
+redirect_from: /2023/11/03/wifi-p2p-basics/
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
 series: "技术"

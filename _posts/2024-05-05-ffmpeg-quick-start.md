@@ -2,7 +2,8 @@
 layout: post
 title: "FFmpeg 快速上手"
 subtitle: "先分清容器、流和编码"
-date: 2023-04-27
+date: 2024-05-05
+redirect_from: /2023/04/27/ffmpeg-quick-start/
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
 series: "技术"

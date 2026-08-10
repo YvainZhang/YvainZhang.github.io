@@ -2,7 +2,8 @@
 layout: post
 title: "Wi-Fi 驱动内存占用分析"
 subtitle: "把静态、动态、峰值和泄漏趋势拆开算"
-date: 2025-02-05
+date: 2026-02-08
+redirect_from: /2025/02/05/wifi-driver-memory-analysis/
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
 series: "技术"

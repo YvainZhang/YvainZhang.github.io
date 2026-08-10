@@ -2,7 +2,8 @@
 layout: post
 title: "中断、多核、MMU 与 Cache 基础"
 subtitle: "一份给系统排错用的概念笔记"
-date: 2022-09-09
+date: 2021-11-21
+redirect_from: /2022/09/09/interrupts-multicore-mmu-cache/
 author: Yvain Zhang
 header-img: "img/post-bg-unix-linux.jpg"
 series: "技术"

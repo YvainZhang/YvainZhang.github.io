@@ -2,7 +2,8 @@
 layout: post
 title: "Wi-Fi 低功耗机制概览"
 subtitle: "PS-Poll、U-APSD 和性能代价"
-date: 2023-08-15
+date: 2024-05-26
+redirect_from: /2023/08/15/wifi-low-power-mechanisms/
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
 series: "技术"

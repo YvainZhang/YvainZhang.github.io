@@ -2,7 +2,8 @@
 layout: post
 title: "Ogg 容器基础"
 subtitle: "Page、逻辑流和 packet 拼接"
-date: 2021-11-30
+date: 2023-04-30
+redirect_from: /2021/11/30/ogg-container-basics/
 author: Yvain Zhang
 header-img: "img/post-bg-universe.jpg"
 series: "技术"

@@ -38,7 +38,7 @@ anchorjs: true                          # if you want to customize anchor. check
 
 
 # Plugins
-plugins: [jekyll-paginate]
+plugins: [jekyll-paginate, jekyll-redirect-from]
 
 
 

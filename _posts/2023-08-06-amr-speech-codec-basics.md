@@ -2,7 +2,8 @@
 layout: post
 title: "AMR 语音编码基础"
 subtitle: "NB / WB、帧格式和语音链路"
-date: 2022-01-21
+date: 2023-08-06
+redirect_from: /2022/01/21/amr-speech-codec-basics/
 author: Yvain Zhang
 header-img: "img/post-bg-digital-native.jpg"
 series: "技术"

@@ -2,7 +2,8 @@
 layout: post
 title: "IEEE 802.11 分片机制"
 subtitle: "分片如何发送、确认和重组"
-date: 2024-03-22
+date: 2024-12-08
+redirect_from: /2024/03/22/ieee-80211-fragmentation/
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
 series: "技术"

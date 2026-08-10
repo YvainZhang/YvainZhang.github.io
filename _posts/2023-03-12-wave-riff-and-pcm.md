@@ -2,7 +2,8 @@
 layout: post
 title: "WAVE、RIFF 与 PCM"
 subtitle: "读懂文件头和 chunk"
-date: 2021-10-28
+date: 2023-03-12
+redirect_from: /2021/10/28/wave-riff-and-pcm/
 author: Yvain Zhang
 header-img: "img/post-bg-desk.jpg"
 series: "技术"

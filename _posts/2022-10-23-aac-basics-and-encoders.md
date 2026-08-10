@@ -2,7 +2,8 @@
 layout: post
 title: "AAC 基础与编码工具"
 subtitle: "Profile、封装与兼容性检查"
-date: 2021-05-09
+date: 2022-10-23
+redirect_from: /2021/05/09/aac-basics-and-encoders/
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
 series: "技术"

@@ -2,7 +2,8 @@
 layout: post
 title: "ARM 启动流程"
 subtitle: "上电后每一个阶段做了什么"
-date: 2022-11-07
+date: 2022-01-09
+redirect_from: /2022/11/07/arm-boot-process/
 author: Yvain Zhang
 header-img: "img/post-bg-desk.jpg"
 series: "技术"

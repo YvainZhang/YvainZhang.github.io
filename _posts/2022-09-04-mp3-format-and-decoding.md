@@ -2,7 +2,8 @@
 layout: post
 title: "MP3 格式与解码流程"
 subtitle: "文件结构和完整解码链笔记"
-date: 2021-03-26
+date: 2022-09-04
+redirect_from: /2021/03/26/mp3-format-and-decoding/
 author: Yvain Zhang
 header-img: "img/post-bg-digital-native.jpg"
 series: "技术"

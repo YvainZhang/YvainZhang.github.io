@@ -2,7 +2,8 @@
 layout: post
 title: "Wi-Fi USB 驱动架构与性能调优"
 subtitle: "顺着 TX / RX 路径找吞吐瓶颈"
-date: 2024-07-16
+date: 2025-07-13
+redirect_from: /2024/07/16/wifi-usb-driver-performance-tuning/
 author: Yvain Zhang
 header-img: "img/post-bg-unix-linux.jpg"
 series: "技术"

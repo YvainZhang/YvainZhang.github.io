@@ -2,7 +2,8 @@
 layout: post
 title: "FreeRTOS 常见故障排查"
 subtitle: "优先级、栈、heap 和 printf 排错清单"
-date: 2023-02-11
+date: 2022-07-10
+redirect_from: /2023/02/11/freertos-troubleshooting-guide/
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
 series: "技术"

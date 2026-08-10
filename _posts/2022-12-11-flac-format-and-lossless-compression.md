@@ -2,7 +2,8 @@
 layout: post
 title: "FLAC 格式与无损压缩"
 subtitle: "文件结构、校验与无损压缩笔记"
-date: 2021-07-14
+date: 2022-12-11
+redirect_from: /2021/07/14/flac-format-and-lossless-compression/
 author: Yvain Zhang
 header-img: "img/post-bg-universe.jpg"
 series: "技术"

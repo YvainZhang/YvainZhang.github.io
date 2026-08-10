@@ -2,7 +2,8 @@
 layout: post
 title: "网络编程实践笔记"
 subtitle: "Socket 模型和常见排错顺序"
-date: 2022-12-02
+date: 2022-03-06
+redirect_from: /2022/12/02/network-programming-practical-notes/
 author: Yvain Zhang
 header-img: "img/post-bg-keybord.jpg"
 series: "技术"

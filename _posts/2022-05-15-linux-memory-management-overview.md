@@ -2,7 +2,8 @@
 layout: post
 title: "Linux 内存管理概览"
 subtitle: "页表、VMA、分配、回收和 OOM"
-date: 2023-01-19
+date: 2022-05-15
+redirect_from: /2023/01/19/linux-memory-management-overview/
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
 series: "技术"

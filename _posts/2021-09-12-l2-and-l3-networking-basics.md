@@ -2,7 +2,8 @@
 layout: post
 title: "L2 与 L3 网络基础"
 subtitle: "MAC、ARP、IP 和路由怎样接起来"
-date: 2022-08-18
+date: 2021-09-12
+redirect_from: /2022/08/18/l2-and-l3-networking-basics/
 author: Yvain Zhang
 header-img: "img/post-bg-unix-linux.jpg"
 series: "技术"

@@ -2,7 +2,8 @@
 layout: post
 title: "MP4 与 M4A 容器基础"
 subtitle: "Box、Track 和时间索引"
-date: 2021-09-23
+date: 2023-01-29
+redirect_from: /2021/09/23/mp4-and-m4a-container-basics/
 author: Yvain Zhang
 header-img: "img/post-bg-desk.jpg"
 series: "技术"

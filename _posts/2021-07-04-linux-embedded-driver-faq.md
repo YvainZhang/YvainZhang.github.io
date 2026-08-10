@@ -2,7 +2,8 @@
 layout: post
 title: "Linux 嵌入式基础问答"
 subtitle: "中断、锁、设备模型和内核边界笔记"
-date: 2022-06-28
+date: 2021-07-04
+redirect_from: /2022/06/28/linux-embedded-driver-faq/
 author: Yvain Zhang
 header-img: "img/post-bg-unix-linux.jpg"
 series: "技术"

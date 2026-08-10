@@ -2,7 +2,8 @@
 layout: post
 title: "FFmpeg 安装与常用处理"
 subtitle: "编译配置和项目常用处理记录"
-date: 2022-03-11
+date: 2023-10-15
+redirect_from: /2022/03/11/ffmpeg-install-and-common-workflows/
 author: Yvain Zhang
 header-img: "img/post-bg-debug.png"
 series: "技术"

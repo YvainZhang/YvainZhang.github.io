@@ -2,7 +2,8 @@
 layout: post
 title: "MPEG 标准谱系概览"
 subtitle: "MP3、AAC、MP4 和 H.264 分别在哪"
-date: 2021-12-14
+date: 2023-06-18
+redirect_from: /2021/12/14/mpeg-family-overview/
 author: Yvain Zhang
 header-img: "img/post-bg-universe.jpg"
 series: "技术"

@@ -2,7 +2,8 @@
 layout: post
 title: "数字音频基础与处理流程"
 subtitle: "采样参数、PCM、容器和编码分别是什么"
-date: 2021-02-18
+date: 2022-07-24
+redirect_from: /2021/02/18/digital-audio-basics/
 author: Yvain Zhang
 header-img: "img/post-bg-digital-native.jpg"
 series: "技术"

@@ -2,7 +2,8 @@
 layout: post
 title: "HLS 与 M3U8 播放列表基础"
 subtitle: "播放列表结构和直播排错"
-date: 2022-04-19
+date: 2024-01-21
+redirect_from: /2022/04/19/hls-m3u8-playlist-basics/
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
 series: "技术"

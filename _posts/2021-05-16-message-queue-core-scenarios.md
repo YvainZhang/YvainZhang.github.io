@@ -2,7 +2,8 @@
 layout: post
 title: "消息队列的三个核心场景"
 subtitle: "解耦、异步和消峰到底解决什么"
-date: 2022-05-06
+date: 2021-05-16
+redirect_from: /2022/05/06/message-queue-core-scenarios/
 author: Yvain Zhang
 header-img: "img/post-bg-keybord.jpg"
 series: "技术"
