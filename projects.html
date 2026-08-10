@@ -1,0 +1,49 @@
+---
+layout: page
+title: "Open Source"
+description: "把工程经验做成能运行、能复查、也能继续迭代的工具"
+header-img: "img/post-bg-unix-linux.jpg"
+nav_exclude: true
+permalink: /projects/
+---
+
+<div class="projects-page">
+    <div class="projects-page-intro">
+        <p>Projects / Work in public</p>
+        <h2>代码之外，也把分析方法和判断过程留下来。</h2>
+        <span>这里收录我持续维护的开源项目。每个项目都来自实际工程问题，重点不是堆功能，而是把排障过程变得可重复。</span>
+    </div>
+
+    {% for project in site.data.projects %}
+    <article class="project-detail" id="{{ project.slug }}">
+        <header>
+            <div>
+                <p>{{ project.eyebrow }} / {{ project.year }}</p>
+                <h2>{{ project.name }}</h2>
+            </div>
+            <div class="project-detail-status">
+                <span>{{ project.status }}</span>
+                <span>{{ project.license }}</span>
+            </div>
+        </header>
+
+        <p class="project-detail-lead">{{ project.description }}</p>
+
+        <div class="project-detail-grid">
+            <div>
+                <h3>它解决什么</h3>
+                <ul>{% for item in project.highlights %}<li>{{ item }}</li>{% endfor %}</ul>
+            </div>
+            <div>
+                <h3>分析链路</h3>
+                <ol>{% for stage in project.pipeline %}<li><span>0{{ forloop.index }}</span>{{ stage }}</li>{% endfor %}</ol>
+            </div>
+        </div>
+
+        <div class="project-detail-foot">
+            <div>{% for item in project.stack %}<span>{{ item }}</span>{% endfor %}</div>
+            <a href="{{ project.repo }}" target="_blank" rel="noopener noreferrer">github.com/YvainZhang/ai_wifi_analysis <span aria-hidden="true">↗</span></a>
+        </div>
+    </article>
+    {% endfor %}
+</div>

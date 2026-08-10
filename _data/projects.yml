@@ -1,0 +1,25 @@
+- slug: "ai-wifi-analysis"
+  name: "WiFi Analyzer"
+  repo: "https://github.com/YvainZhang/ai_wifi_analysis"
+  eyebrow: "Wi-Fi × AI"
+  year: "2026"
+  status: "Active"
+  license: "MIT"
+  language: "Python"
+  featured: true
+  summary: "把 Wi-Fi 空口抓包交给 AI，从数据提取、协议流和时间线一路分析到根因定位。"
+  description: "支持 pcapng 与 OmniPeek 抓包，以六层分析链路组织射频质量、802.11 帧、Block Ack、DHCP、TCP 重传和连接问题，输出可复查的因果链与排障建议。"
+  pipeline:
+    - "Capture"
+    - "Decode"
+    - "Detect"
+    - "Diagnose"
+  highlights:
+    - "纯 Python 标准库实现，无第三方依赖"
+    - "支持 AI CLI，也可独立连接多种 LLM API"
+    - "覆盖信号、重传、控制帧、BA、DHCP 与空口效率"
+  stack:
+    - "Python"
+    - "802.11"
+    - "pcapng"
+    - "LLM"

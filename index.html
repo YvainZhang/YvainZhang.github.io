@@ -67,10 +67,44 @@ description: "嵌入式、系统软件、AI 与生活的长期笔记。"
     </div>
 </section>
 
+{% assign featured_project = site.data.projects | where: "featured", true | first %}
+{% if featured_project %}
+<section class="studio-section studio-projects" aria-labelledby="projects-heading">
+    <div class="studio-section-heading studio-section-heading-row">
+        <div><p>Open Source / 02</p><h2 id="projects-heading">把工作里反复用的方法，做成开放工具。</h2></div>
+        <a href="{{ '/projects/' | prepend: site.baseurl }}">查看项目说明 <span aria-hidden="true">→</span></a>
+    </div>
+    <article class="studio-project-card">
+        <div class="studio-project-copy">
+            <div class="studio-project-meta">
+                <span>{{ featured_project.eyebrow }}</span>
+                <span>{{ featured_project.status }}</span>
+                <span>{{ featured_project.license }}</span>
+            </div>
+            <h3>{{ featured_project.name }}</h3>
+            <p>{{ featured_project.summary }}</p>
+            <ul>
+                {% for item in featured_project.highlights %}<li>{{ item }}</li>{% endfor %}
+            </ul>
+            <a class="studio-project-link" href="{{ featured_project.repo }}" target="_blank" rel="noopener noreferrer">在 GitHub 查看源码 <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="studio-project-flow" aria-label="项目分析流程">
+            <div class="studio-project-flow-head"><span>ANALYSIS PIPELINE</span><i>{{ featured_project.language }}</i></div>
+            <ol>
+                {% for stage in featured_project.pipeline %}
+                <li><span>0{{ forloop.index }}</span><strong>{{ stage }}</strong>{% unless forloop.last %}<i aria-hidden="true">→</i>{% endunless %}</li>
+                {% endfor %}
+            </ol>
+            <p><span aria-hidden="true"></span> pcapng / OmniPeek → Root Cause</p>
+        </div>
+    </article>
+</section>
+{% endif %}
+
 {% if lead_post %}
 <section class="studio-section studio-latest" id="latest" aria-labelledby="latest-heading">
     <div class="studio-section-heading studio-section-heading-row">
-        <div><p>Writing / 02</p><h2 id="latest-heading">最近写下的内容</h2></div>
+        <div><p>Writing / 03</p><h2 id="latest-heading">最近写下的内容</h2></div>
         <a href="{{ '/tags/' | prepend: site.baseurl }}">查看文章索引 <span aria-hidden="true">→</span></a>
     </div>
     <div class="studio-writing-grid">
