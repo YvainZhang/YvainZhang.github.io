@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreeRTOS 整体架构图集 · RISC-V 移植版</title>
+<style>
+  :root {
+    --bg: #f6f8fa; --bg-elev: #ffffff; --bg-soft: #eef1f5;
+    --text: #1f2937; --text-dim: #6b7280; --border: #e3e7ec;
+    --accent: #2563eb; --code-bg: #f3f4f6;
+    --c-app: #2563eb; --c-api: #6d28d9; --c-kernel: #059669;
+    --c-mem: #d97706; --c-port: #7c3aed; --c-startup: #db2777; --c-hw: #475569;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --bg-elev: #161b22; --bg-soft: #1c2128;
+      --text: #e6edf3; --text-dim: #9aa4b2; --border: #2a313c;
+      --accent: #58a6ff; --code-bg: #11161d;
+      --c-app: #58a6ff; --c-api: #a78bfa; --c-kernel: #3fb950;
+      --c-mem: #f0b429; --c-port: #bc8cff; --c-startup: #ff7eb6; --c-hw: #94a3b8;
+      --shadow: 0 1px 3px rgba(0,0,0,.4);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; font-size:15px; }
+  a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+  .layout { display:flex; align-items:flex-start; max-width:1320px; margin:0 auto; }
+  nav.side { position:sticky; top:0; align-self:flex-start; width:248px; flex-shrink:0; height:100vh; overflow-y:auto; padding:24px 16px; border-right:1px solid var(--border); background:var(--bg); font-size:13.5px; }
+  nav.side .brand { font-weight:700; font-size:15px; }
+  nav.side .brand-sub { color:var(--text-dim); font-size:12px; margin-bottom:18px; }
+  nav.side ol { list-style:none; padding:0; margin:0; counter-reset:nav; }
+  nav.side ol li { margin:2px 0; }
+  nav.side ol li a { display:block; padding:6px 10px; border-radius:6px; color:var(--text-dim); counter-increment:nav; }
+  nav.side ol li a::before { content:counter(nav) ". "; opacity:.6; }
+  nav.side ol li a:hover { background:var(--bg-soft); color:var(--text); text-decoration:none; }
+  nav.side ol li a.active { background:var(--bg-soft); color:var(--accent); font-weight:600; }
+  main { flex:1; min-width:0; padding:40px 48px 120px; }
+  @media (max-width:900px){ .layout{display:block;} nav.side{position:relative;width:auto;height:auto;border-right:none;border-bottom:1px solid var(--border);} main{padding:24px 18px 80px;} }
+  section { margin-bottom:56px; scroll-margin-top:24px; }
+  h1 { font-size:28px; margin:0 0 6px; letter-spacing:-.5px; }
+  h2 { font-size:22px; margin:0 0 18px; padding-bottom:10px; border-bottom:2px solid var(--border); display:flex; align-items:center; gap:10px; }
+  h2 .ico { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:8px; background:var(--accent); color:#fff; font-size:15px; font-weight:700; }
+  h3 { font-size:16px; margin:24px 0 8px; }
+  h4 { font-size:14px; margin:18px 0 6px; color:var(--text-dim); font-weight:600; }
+  .lead { color:var(--text-dim); font-size:14px; margin:0 0 24px; }
+  code,pre,.mono { font-family:"SF Mono","JetBrains Mono","Fira Code",Consolas,monospace; }
+  code { background:var(--code-bg); padding:2px 6px; border-radius:5px; font-size:12.5px; border:1px solid var(--border); }
+  pre { background:var(--code-bg); border:1px solid var(--border); border-radius:10px; padding:14px 16px; overflow-x:auto; font-size:12.5px; line-height:1.55; margin:0; }
+  pre code { background:none; border:none; padding:0; font-size:12.5px; }
+  .note { border-left:3px solid var(--accent); background:var(--bg-soft); padding:10px 14px; border-radius:0 8px 8px 0; margin:12px 0; font-size:13.5px; }
+  .warn { border-left:3px solid var(--c-startup); }
+  .layers { display:flex; flex-direction:column; gap:8px; margin:18px 0; }
+  .layer { border:1px solid var(--border); border-left:5px solid var(--lc,var(--accent)); border-radius:10px; background:var(--bg-elev); padding:14px 16px; box-shadow:var(--shadow); }
+  .layer .lhead { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+  .layer .lname { font-weight:700; font-size:15px; color:var(--lc,var(--accent)); }
+  .layer .ldesc { color:var(--text-dim); font-size:13px; }
+  .chips { display:flex; flex-wrap:wrap; gap:7px; }
+  .chip { background:color-mix(in srgb, var(--lc,var(--accent)) 10%, transparent); border:1px solid color-mix(in srgb, var(--lc,var(--accent)) 35%, transparent); color:var(--text); border-radius:7px; padding:5px 10px; font-size:12.5px; }
+  .chip b { color:var(--lc,var(--accent)); }
+  .arrow-down { text-align:center; color:var(--text-dim); font-size:16px; line-height:1; margin:-2px 0; }
+  .diagram { background:var(--bg-elev); border:1px solid var(--border); border-radius:12px; padding:22px; box-shadow:var(--shadow); margin:16px 0; }
+  .ds-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media (max-width:680px){ .ds-grid{grid-template-columns:1fr;} }
+  .group { border:1px dashed var(--border); border-radius:10px; padding:12px 14px; background:var(--bg-soft); }
+  .group .gtitle { font-size:13px; font-weight:700; color:var(--text-dim); margin-bottom:8px; text-transform:uppercase; letter-spacing:.5px; }
+  .node { border:1px solid var(--border); background:var(--bg-elev); border-radius:8px; padding:8px 11px; font-size:13px; margin-bottom:6px; }
+  .node b { display:block; } .node span { color:var(--text-dim); font-size:12px; }
+  .center-node { text-align:center; border:2px solid var(--accent); background:color-mix(in srgb, var(--accent) 10%, var(--bg-elev)); color:var(--accent); font-weight:700; }
+  .rel { font-size:12px; color:var(--text-dim); margin-top:8px; }
+  .flow { display:flex; flex-direction:column; align-items:center; gap:0; margin:14px 0; }
+  .fnode { border:1px solid var(--border); background:var(--bg-elev); border-radius:9px; padding:9px 14px; font-size:12.5px; text-align:center; min-width:230px; max-width:560px; box-shadow:var(--shadow); }
+  .fnode.start { border-radius:30px; background:color-mix(in srgb, var(--accent) 12%, var(--bg-elev)); border-color:var(--accent); font-weight:600; }
+  .fnode.term { border-radius:30px; background:color-mix(in srgb, var(--c-kernel) 14%, var(--bg-elev)); border-color:var(--c-kernel); font-weight:600; color:var(--c-kernel); }
+  .fnode.dec { background:color-mix(in srgb, var(--c-mem) 12%, var(--bg-elev)); border-color:var(--c-mem); }
+  .farrow { color:var(--text-dim); font-size:18px; line-height:1; padding:3px 0; }
+  .fbranch { display:flex; gap:28px; justify-content:center; align-items:stretch; flex-wrap:wrap; }
+  .fbranch .bcol { display:flex; flex-direction:column; align-items:center; gap:0; }
+  .blbl { font-size:11.5px; color:var(--text-dim); margin-bottom:3px; }
+  .timeline { border-left:2px solid var(--border); margin:18px 0 18px 8px; }
+  details.step { position:relative; margin:0 0 4px 6px; }
+  details.step::before { content:""; position:absolute; left:-17px; top:14px; width:12px; height:12px; border-radius:50%; background:var(--bg); border:2px solid var(--accent); }
+  details.step > summary { list-style:none; cursor:pointer; padding:9px 14px; border-radius:9px; background:var(--bg-elev); border:1px solid var(--border); display:flex; align-items:center; gap:12px; box-shadow:var(--shadow); transition:background .15s; font-size:14px; }
+  details.step > summary::-webkit-details-marker { display:none; }
+  details.step > summary:hover { background:var(--bg-soft); }
+  details.step .num { font-weight:700; color:var(--accent); min-width:20px; }
+  details.step .title { font-weight:600; flex:1; }
+  details.step .mods { font-size:11.5px; color:var(--text-dim); display:flex; gap:5px; flex-wrap:wrap; justify-content:flex-end; }
+  details.step .mods .m { background:var(--bg-soft); border:1px solid var(--border); border-radius:5px; padding:2px 7px; white-space:nowrap; }
+  details.step .body { padding:10px 16px 8px 46px; font-size:13px; color:var(--text-dim); }
+  details.step .body b { color:var(--text); }
+  details.step[open] > summary { border-color:var(--accent); }
+  details.step .body code { font-size:12px; }
+  .codeblock { margin:14px 0 18px; }
+  .codeblock .cap { font-size:12px; color:var(--text-dim); font-family:monospace; margin:0 0 5px 2px; }
+  .codeblock .cap b { color:var(--c-port); }
+  .table-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:10px; }
+  table { border-collapse:collapse; width:100%; font-size:13.5px; background:var(--bg-elev); }
+  th,td { padding:9px 12px; text-align:left; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { background:var(--bg-soft); font-weight:600; position:sticky; top:0; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--bg-soft); }
+  td code { white-space:nowrap; }
+  .search { margin-bottom:12px; }
+  .search input { width:100%; padding:9px 13px; border-radius:9px; border:1px solid var(--border); background:var(--bg-elev); color:var(--text); font-size:14px; font-family:inherit; }
+  .search input:focus { outline:2px solid var(--accent); border-color:var(--accent); }
+  tr.hidden { display:none; }
+  .stackframe .row { display:flex; gap:14px; padding:3px 0; font-size:12.5px; font-family:monospace; }
+  .stackframe .row .k { color:var(--text-dim); min-width:170px; }
+  .footer { color:var(--text-dim); font-size:12.5px; border-top:1px solid var(--border); padding-top:16px; }
+  .stage { margin:26px 0 6px; display:flex; align-items:center; gap:10px; }
+  .stage .badge { background:var(--c-port); color:#fff; border-radius:6px; padding:2px 9px; font-size:13px; font-weight:700; font-family:monospace; }
+  .stage .h { font-weight:600; }
+  .stage .src { font-size:12px; color:var(--text-dim); font-family:monospace; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="side">
+  <div class="brand">FreeRTOS 架构图集</div>
+  <div class="brand-sub">RISC-V 移植版 · 含真实代码</div>
+  <ol>
+    <li><a href="#s1">总体架构</a></li>
+    <li><a href="#s2">内核数据结构</a></li>
+    <li><a href="#s3">上电→运行全流程</a></li>
+    <li><a href="#s4">中断与上下文切换</a></li>
+    <li><a href="#s5">模块速查表</a></li>
+    <li><a href="#s6">附：vs Cortex-M</a></li>
+  </ol>
+</nav>
+
+<main>
+  <h1>FreeRTOS 整体架构图集</h1>
+  <p class="lead">以 <b>RISC-V（机器模式、单核）GCC 移植</b> 为锚点。<b>第 3、4 节的代码均摘自上游真实移植</b>（<code>port.c</code> / <code>portASM.S</code> / <code>portmacro.h</code>），为清晰做了裁剪与中文注释。</p>
+
+  <!-- ============================ 1 ============================ -->
+  <section id="s1">
+    <h2><span class="ico">1</span> 总体架构</h2>
+    <p>从上到下 6 层。应用只依赖 API 头文件；内核核心是纯 C、可移植；底部是架构相关的 port 与启动代码。</p>
+    <div class="layers">
+      <div class="layer" style="--lc:var(--c-app)"><div class="lhead"><span class="lname">应用层</span><span class="ldesc">用户业务逻辑</span></div><div class="chips"><span class="chip"><b>任务 A</b></span><span class="chip"><b>任务 B</b></span><span class="chip"><b>任务 C</b></span><span class="chip">中断 ISR</span></div></div>
+      <div class="arrow-down">▼</div>
+      <div class="layer" style="--lc:var(--c-api)"><div class="lhead"><span class="lname">API 层（头文件）</span><span class="ldesc">稳定接口</span></div><div class="chips"><span class="chip"><b>task.h</b></span><span class="chip"><b>queue.h</b>/semphr.h</span><span class="chip"><b>timers.h</b></span><span class="chip"><b>event_groups.h</b></span><span class="chip"><b>stream_buffer.h</b></span></div></div>
+      <div class="arrow-down">▼</div>
+      <div class="layer" style="--lc:var(--c-kernel)"><div class="lhead"><span class="lname">内核核心</span><span class="ldesc">架构无关</span></div><div class="chips"><span class="chip"><b>tasks.c</b> 调度/任务/延迟/通知</span><span class="chip"><b>queue.c</b> 队列/信号量/互斥量</span><span class="chip"><b>list.c</b> 双向链表</span><span class="chip"><b>timers.c</b></span><span class="chip"><b>event_groups.c</b></span><span class="chip"><b>stream_buffer.c</b></span></div></div>
+      <div class="arrow-down">▼</div>
+      <div class="layer" style="--lc:var(--c-mem)"><div class="lhead"><span class="lname">可移植层 · 内存</span></div><div class="chips"><span class="chip"><b>heap_1~5.c</b> pvPortMalloc / vPortFree</span></div></div>
+      <div class="arrow-down">▼</div>
+      <div class="layer" style="--lc:var(--c-port)"><div class="lhead"><span class="lname">port 移植层（RISC-V）</span><span class="ldesc">架构相关</span></div><div class="chips"><span class="chip"><b>port.c</b> 启动调度器/配 Tick</span><span class="chip"><b>portASM.S + portContext.h</b> trap handler/切换</span><span class="chip"><b>portmacro.h</b></span></div></div>
+      <div class="arrow-down">▼</div>
+      <div class="layer" style="--lc:var(--c-startup)"><div class="lhead"><span class="lname">启动与硬件抽象</span><span class="ldesc">复位初始化 + 装载 mtvec + 时钟</span></div><div class="chips"><span class="chip"><b>startup.S / crt0</b></span><span class="chip"><b>链接脚本 .ld</b></span><span class="chip"><b>BSP / HAL</b> 时钟 · CLINT</span></div></div>
+      <div class="arrow-down">▼</div>
+      <div class="layer" style="--lc:var(--c-hw)"><div class="lhead"><span class="lname">RISC-V 硬件</span><span class="ldesc">CSR + 机器定时器</span></div><div class="chips"><span class="chip"><b>mstatus</b> 全局中断使能</span><span class="chip"><b>mtvec</b> trap 入口</span><span class="chip"><b>mie / mip</b> 中断使能/挂起</span><span class="chip"><b>mcause / mepc</b> 异常原因/返回地址</span><span class="chip"><b>mtime / mtimecmp</b> 滴答源</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============================ 2 ============================ -->
+  <section id="s2">
+    <h2><span class="ico">2</span> 内核核心数据结构</h2>
+    <p>调度器的全部状态集中在 <code>tasks.c</code> 的若干全局变量里。</p>
+    <div class="diagram">
+      <div style="text-align:center;margin-bottom:14px;"><div class="node center-node" style="display:inline-block;min-width:220px;">调度器全局状态<br><span style="opacity:.8">pxCurrentTCB · uxTopReadyPriority · xTickCount</span></div></div>
+      <div class="ds-grid">
+        <div class="group"><div class="gtitle">就绪列表 pxReadyTasksLists[ ]</div><div class="node"><b>优先级 0</b><span>链表</span></div><div class="node"><b>优先级 1</b><span>链表</span></div><div class="node"><b>优先级 N</b><span>链表（最高）</span></div><div class="rel">uxTopReadyPriority 位图一步定位最高非空表</div></div>
+        <div class="group"><div class="gtitle">延迟列表（双表+指针）</div><div class="node"><b>xDelayedTaskList1 / List2</b></div><div class="node"><b>pxDelayedTaskList →</b><span>当前</span></div><div class="node"><b>pxOverflowDelayedTaskList →</b><span>Tick 回绕</span></div><div class="rel">vTaskDelay/等队列超时 → 此表；到期 → 回就绪</div></div>
+        <div class="group"><div class="gtitle">挂起 / 待搬运</div><div class="node"><b>xSuspendedTaskList</b><span>vTaskSuspend</span></div><div class="node"><b>xPendingReadyList</b><span>中断里就绪、待离开临界区再搬</span></div></div>
+        <div class="group"><div class="gtitle">TCB 内两个节点</div><div class="node"><b>xStateListItem</b><span>就绪/延迟/挂起</span></div><div class="node"><b>xEventListItem</b><span>队列/信号量事件表</span></div><div class="rel">一个任务：1 个状态表 + 至多 1 个事件表</div></div>
+      </div>
+    </div>
+    <h3>TCB 结构（关键字段）</h3>
+<pre><code>typedef struct tskTaskControlBlock {
+    volatile StackType_t *pxTopOfStack;   /* 必为首字段! portASM 靠固定偏移取栈顶 */
+    ListItem_t  xStateListItem;           /* 挂在 就绪/延迟/挂起 列表 */
+    ListItem_t  xEventListItem;           /* 挂在 队列/信号量 事件列表 */
+    UBaseType_t uxPriority;               /* 当前优先级 */
+    StackType_t *pxStack;                 /* 栈起始（分配 / 栈溢出检查） */
+    char        pcTaskName[configMAX_TASK_NAME_LEN];
+    UBaseType_t uxBasePriority;           /* 基础优先级（互斥量继承后还原） */
+    volatile uint32_t ulNotifiedValue[];  /* 任务通知 */
+} tskTCB;</code></pre>
+    <div class="note"><code>pxTopOfStack</code> 必须是结构体第一个字段——portASM 靠固定偏移读写它，不能改顺序。</div>
+  </section>
+
+  <!-- ============================ 3 ============================ -->
+  <section id="s3">
+    <h2><span class="ico">3</span> 上电 → 正常工作 全流程（RISC-V）</h2>
+    <p>从硬件复位到第一个任务运行。点击每步展开；下面每个阶段都附 <b>上游真实代码</b>。</p>
+
+    <div class="timeline">
+      <details class="step" open><summary><span class="num">1</span><span class="title">上电复位</span><span class="mods"><span class="m">硬件</span><span class="m">Boot ROM</span></span></summary><div class="body">PC 指向复位向量（SoC Boot ROM 固定地址）。</div></details>
+      <details class="step"><summary><span class="num">2</span><span class="title">_start：sp / .data / .bss</span><span class="mods"><span class="m">startup.S</span></span></summary><div class="body"><code>sp = __stack_top</code>；Flash→RAM 搬 <code>.data</code>；清 <code>.bss</code>。</div></details>
+      <details class="step"><summary><span class="num">3</span><span class="title">★ 装载 mtvec（port 不负责！）</span><span class="mods"><span class="m">startup.S</span></span></summary><div class="body"><code>csrw mtvec, freertos_risc_v_trap_handler</code>。<b>port 层自己不写 mtvec</b>，必须由 startup 装载，否则首个 Tick 中断找不到入口。</div></details>
+      <details class="step"><summary><span class="num">4</span><span class="title">call main()</span><span class="mods"><span class="m">main</span></span></summary><div class="body">进入用户 C 世界。</div></details>
+      <details class="step"><summary><span class="num">5</span><span class="title">prvInitHardware()</span><span class="mods"><span class="m">BSP/HAL</span></span></summary><div class="body">配置系统时钟、外设、CLINT。</div></details>
+      <details class="step"><summary><span class="num">6</span><span class="title">xTaskCreate() × N</span><span class="mods"><span class="m">tasks.c</span><span class="m">heap</span><span class="m">portASM</span></span></summary><div class="body"><code>pvPortMalloc</code> 分配 TCB+栈；<code>pxPortInitialiseStack()</code> <b>预填寄存器帧</b>；挂进就绪列表。</div></details>
+      <details class="step"><summary><span class="num">7</span><span class="title">vTaskStartScheduler() → xPortStartScheduler()</span><span class="mods"><span class="m">tasks.c</span><span class="m">port.c</span></span></summary><div class="body">进入 port 层做最后三件事（见下）。</div></details>
+      <details class="step"><summary><span class="num">8</span><span class="title">vPortSetupTimerInterrupt()</span><span class="mods"><span class="m">port.c</span><span class="m">CLINT</span></span></summary><div class="body">读 <code>mhartid</code> 算 mtimecmp 地址；原子读 <code>mtime</code>；<code>mtimecmp = mtime + 一个 Tick</code>。</div></details>
+      <details class="step"><summary><span class="num">9</span><span class="title">csrs mie, 0x880</span><span class="mods"><span class="m">port.c</span></span></summary><div class="body">bit7=<code>MTIE</code>（机器定时器）+ bit11=<code>MEIE</code>（外部中断）。</div></details>
+      <details class="step"><summary><span class="num">10</span><span class="title">xPortStartFirstTask()</span><span class="mods"><span class="m">portASM.S</span></span></summary><div class="body"><code>sp = pxCurrentTCB->pxTopOfStack</code>；直接载回 x1..x31；<code>csrw mstatus(MIE)</code>；<b>用 ret 进入任务（不是 mret！）</b>。</div></details>
+      <details class="step"><summary><span class="num">11</span><span class="title">进入任务函数</span><span class="mods"><span class="m">应用</span></span></summary><div class="body">中断已开，开始跑业务。</div></details>
+      <details class="step"><summary><span class="num">12</span><span class="title">正常运行</span><span class="mods"><span class="m">tasks.c</span><span class="m">queue.c</span></span></summary><div class="body">阻塞进延迟/事件表；更高优先级就绪即抢占。</div></details>
+      <details class="step"><summary><span class="num">13</span><span class="title">Tick 中断</span><span class="mods"><span class="m">portASM.S</span></span></summary><div class="body"><code>mtime ≥ mtimecmp</code> → 机器定时器中断（<code>mcause = MSB|7</code>）→ trap_handler。</div></details>
+      <details class="step"><summary><span class="num">14</span><span class="title">重配 mtimecmp + xTaskIncrementTick()</span><span class="mods"><span class="m">portASM.S</span><span class="m">tasks.c</span></span></summary><div class="body"><code>portUPDATE_MTIMER_COMPARE_REGISTER</code>；推进 Tick、搬到期任务回就绪表。</div></details>
+      <details class="step"><summary><span class="num">15</span><span class="title">vTaskSwitchContext()</span><span class="mods"><span class="m">tasks.c</span></span></summary><div class="body">用 <code>uxTopReadyPriority</code> 找最高优先级，更新 <code>pxCurrentTCB</code>。</div></details>
+      <details class="step"><summary><span class="num">16</span><span class="title">RESTORE_CONTEXT + mret</span><span class="mods"><span class="m">portASM.S</span></span></summary><div class="body">从新任务栈恢复寄存器 + mepc/mstatus；<code>mret</code> 跳进新任务。回到 12 循环。</div></details>
+    </div>
+
+    <h3>各阶段真实代码</h3>
+
+    <div class="stage"><span class="badge">①</span><span class="h">复位 → _start（startup.S）</span><span class="src">C 运行时初始化 + 装载 mtvec</span></div>
+    <div class="codeblock"><div class="cap"><b>startup.S</b> （示意，标准结构）</div><pre><code>.global _start
+_start:
+    csrw    mstatus, zero            # 关中断
+    la      sp, __stack_top          # 1) 栈顶（来自链接脚本）
+
+    /* 2) 搬 .data(Flash→RAM)、清 .bss —— 略 */
+
+    la      t0, freertos_risc_v_trap_handler
+    csrw    mtvec, t0                # 3) ★ 装 trap 入口（port 不负责！）
+
+    call    main                     # 4) 进 C 世界
+5:  wfi
+    j       5b</code></pre></div>
+    <div class="note warn">⚠ <b>mtvec 由 startup 装载，port 本身不写</b>。漏了这步，首次 Tick 中断就崩。</div>
+
+    <div class="stage"><span class="badge">②</span><span class="h">main()</span><span class="src">建任务 + 启动调度器</span></div>
+    <div class="codeblock"><div class="cap"><b>main.c</b></div><pre><code>int main(void)
+{
+    prvInitHardware();                 /* 时钟/外设/CLINT（BSP） */
+
+    xTaskCreate(vTaskA, "A", 256, NULL, tskIDLE_PRIORITY + 2, NULL);
+    xTaskCreate(vTaskB, "B", 256, NULL, tskIDLE_PRIORITY + 1, NULL);
+    /* xTaskCreate 内部: pvPortMalloc(TCB+栈) → pxPortInitialiseStack()
+                         → 挂进 pxReadyTasksLists[优先级] */
+
+    vTaskStartScheduler();             /* 不返回 */
+    for (;;) {}
+}</code></pre></div>
+
+    <div class="stage"><span class="badge">③</span><span class="h">xPortStartScheduler()</span><span class="src">port.c · 真实（裁剪）</span></div>
+    <div class="codeblock"><div class="cap"><b>portable/GCC/RISC-V/port.c</b></div><pre><code>BaseType_t xPortStartScheduler( void )
+{
+    extern void xPortStartFirstTask( void );
+
+    vPortSetupTimerInterrupt();                 /* 1) 配机器定时器 */
+    __asm volatile ( "csrs mie, %0" :: "r"(0x880) );  /* 2) 开 MTIE+MEIE */
+    xPortStartFirstTask();                      /* 3) 切到第一个任务（不返回）*/
+    return pdFAIL;
+}</code></pre></div>
+
+    <div class="stage"><span class="badge">④</span><span class="h">vPortSetupTimerInterrupt()</span><span class="src">port.c · 真实（CLINT）</span></div>
+    <div class="codeblock"><div class="cap"><b>port.c</b> &nbsp; configMTIME_BASE_ADDRESS / configMTIMECMP_BASE_ADDRESS 指向 CLINT</div><pre><code>void vPortSetupTimerInterrupt( void )   /* weak，可被应用覆盖 */
+{
+    volatile uint32_t * const pulTimeHigh = (volatile uint32_t*)(configMTIME_BASE_ADDRESS + 4);
+    volatile uint32_t * const pulTimeLow  = (volatile uint32_t*)(configMTIME_BASE_ADDRESS);
+    volatile uint32_t ulHartId;
+    uint32_t ulCurrentTimeHigh, ulCurrentTimeLow;
+
+    __asm volatile ( "csrr %0, mhartid" : "=r"(ulHartId) );
+
+    /* mtimecmp 按 hart 排列，每个 hart 一个 64 位比较器 */
+    pullMachineTimerCompareRegister =
+        (volatile uint64_t*)(configMTIMECMP_BASE_ADDRESS + ulHartId * sizeof(uint64_t));
+
+    do {                                     /* 原子读 64 位 mtime */
+        ulCurrentTimeHigh = *pulTimeHigh;
+        ulCurrentTimeLow  = *pulTimeLow;
+    } while (ulCurrentTimeHigh != *pulTimeHigh);
+
+    ullNextTime  = ((uint64_t)ulCurrentTimeHigh << 32) | ulCurrentTimeLow;
+    ullNextTime += uxTimerIncrementsForOneTick;        /* = CPU_CLOCK_HZ / TICK_RATE_HZ */
+    *pullMachineTimerCompareRegister = ullNextTime;     /* 到期触发第一个 Tick */
+}</code></pre></div>
+
+    <div class="stage"><span class="badge">⑤</span><span class="h">pxPortInitialiseStack()</span><span class="src">portASM.S · 真实（裁剪）</span></div>
+    <div class="codeblock"><div class="cap"><b>portASM.S</b> &nbsp; 从栈顶向下铺一帧，顺序与恢复镜像</div><pre><code># a0=栈顶, a1=任务函数 pxCode, a2=pvParameters
+pxPortInitialiseStack:
+    addi a0, a0, -portWORD_SIZE
+    store_x x0, 0(a0)                   # 临界区嵌套计数 = 0
+
+    addi a0, a0, -(22 * portWORD_SIZE)  # x10..x31
+    store_x a2, 0(a0)                   # pvParameters → x10/a0（任务参数）
+
+    addi a0, a0, -(6 * portWORD_SIZE)   # x5..x9 + x1(ra)
+    load_x  t0, xTaskReturnAddress
+    store_x t0, 0(a0)                   # ra = 任务"返回"地址
+
+    csrr t0, mstatus
+    andi t0, t0, ~0x8                   # 清 MIE
+    addi t1, x0, 0x188 ; slli t1, t1, 4 # t1 = 0x1880 = MPIE | MPP=Machine
+    or   t0, t0, t1
+    addi a0, a0, -portWORD_SIZE
+    store_x t0, 0(a0)                   # mstatus 入栈
+
+    addi a0, a0, -portWORD_SIZE
+    store_x a1, 0(a0)                   # pxCode 入栈（= pxTopOfStack 指向处）
+    ret</code></pre></div>
+    <div class="diagram stackframe">
+      <div class="cap" style="font-size:12px;color:var(--text-dim);font-family:monospace;margin-bottom:8px;">预填后的栈帧（自 pxTopOfStack 向上）</div>
+      <div style="border:1px solid var(--border);border-radius:9px;overflow:hidden;max-width:560px;padding:8px 12px;">
+        <div class="row"><span class="k">低地址 ← pxTopOfStack</span></div>
+        <div class="row"><span class="k">pxCode (= 任务入口)</span><span>偏移0：兼作 mret 的 mepc / 首次 ret 的 ra</span></div>
+        <div class="row"><span class="k">mstatus (= 0x1880)</span><span>MPIE=1 · MPP=Machine</span></div>
+        <div class="row"><span class="k">x1 ra (=xTaskReturnAddress)</span><span></span></div>
+        <div class="row"><span class="k">x5..x9</span><span></span></div>
+        <div class="row"><span class="k">x10/a0 (=pvParameters) … x31</span><span>任务参数从这里"恢复"进 a0</span></div>
+        <div class="row"><span class="k">临界区嵌套计数 (=0)</span><span></span></div>
+        <div class="row"><span class="k">高地址</span></div>
+      </div>
+    </div>
+
+    <div class="stage"><span class="badge">⑥</span><span class="h">xPortStartFirstTask()</span><span class="src">portASM.S · 真实（裁剪）—— 用 ret，不是 mret</span></div>
+    <div class="codeblock"><div class="cap"><b>portASM.S</b></div><pre><code>xPortStartFirstTask:
+    load_x  sp, pxCurrentTCB            # sp = &pxCurrentTCB
+    load_x  sp, 0(sp)                   # sp = pxCurrentTCB->pxTopOfStack（首字段）
+
+    load_x  x1, 0(sp)                   # x1/ra = 偏移0 = pxCode（任务入口）
+    # portasmRESTORE_ADDITIONAL_REGISTERS   # 恢复 chip-specific 寄存器
+
+    load_x  x5, 1*portWORD_SIZE(sp)     # x5 = 初始 mstatus
+    addi    x5, x5, 0x08                # 置 MIE（因下面用 ret 而非 mret）
+    csrw    mstatus, x5                 # ★ 此刻起中断开启
+
+    load_x  x7,  5*portWORD_SIZE(sp)    # t2
+    load_x  x8,  6*portWORD_SIZE(sp)    # s0/fp
+    # … 恢复 x9..x31 …
+    # 恢复该任务临界区嵌套计数 → xCriticalNesting
+
+    addi    sp, sp, portCONTEXT_SIZE    # 弹整帧
+    ret                                 # ★ 跳到 ra=pxCode，进第一个任务</code></pre></div>
+    <div class="note">为什么首任务用 <code>ret</code>？此时并没有"正在处理的中断"可以返回——内核是<b>主动</b>启动任务的。<code>mepc</code> 那套机制留给真实中断/异常后的恢复（第 4 节）。</div>
+  </section>
+
+  <!-- ============================ 4 ============================ -->
+  <section id="s4">
+    <h2><span class="ico">4</span> 关键中断与上下文切换（RISC-V）</h2>
+    <p>设 <b>直接模式 mtvec</b>：所有中断/异常进 <code>freertos_risc_v_trap_handler</code>，按 <code>mcause</code> 最高位分流。</p>
+
+    <div class="diagram">
+      <div class="flow">
+        <div class="fnode start">进入 freertos_risc_v_trap_handler</div>
+        <div class="farrow">▼</div>
+        <div class="fnode">portcontextSAVE_CONTEXT_INTERNAL<br>保存 x1..x31 + mepc + mstatus → 当前<b>任务栈</b>；更新 pxTopOfStack</div>
+        <div class="farrow">▼</div>
+        <div class="fnode">csrr a0,mcause &nbsp; csrr a1,mepc</div>
+        <div class="farrow">▼</div>
+        <div class="fnode dec">mcause ≥ 0 ?（看最高位）</div>
+        <div class="farrow"></div>
+        <div class="fbranch">
+          <div class="bcol">
+            <span class="blbl">0 = 同步异常</span>
+            <div class="fnode">mepc += 4（跳过触发指令）<br>sp = <b>xISRStackTop</b></div>
+            <div class="farrow">▼</div>
+            <div class="fnode dec">mcause == 11 ?<br>(M-mode ecall)</div>
+            <div class="farrow"></div>
+            <div class="fbranch">
+              <div class="bcol"><span class="blbl">是 → portYIELD()</span><div class="fnode">call vTaskSwitchContext</div></div>
+              <div class="bcol"><span class="blbl">否</span><div class="fnode">application_exception_handler<br>(默认 j . 挂死)</div></div>
+            </div>
+          </div>
+          <div class="bcol">
+            <span class="blbl">1 = 异步中断</span>
+            <div class="fnode">保存 mepc（不改）<br>sp = <b>xISRStackTop</b></div>
+            <div class="farrow">▼</div>
+            <div class="fnode dec">mcause == MSB|7 ?<br>机器定时器</div>
+            <div class="farrow"></div>
+            <div class="fbranch">
+              <div class="bcol"><span class="blbl">是 → Tick</span><div class="fnode">portUPDATE_MTIMER_COMPARE_REGISTER<br>call xTaskIncrementTick<br>非0 → vTaskSwitchContext</div></div>
+              <div class="bcol"><span class="blbl">否</span><div class="fnode">application_interrupt_handler<br>(用户外部中断)</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="farrow">▼</div>
+        <div class="fnode term">portcontextRESTORE_CONTEXT → mret</div>
+      </div>
+    </div>
+    <div class="note warn">注意：切到中断栈用的是软件变量 <code><b>xISRStackTop</b></code>，<b>不是 mscratch</b>。上下文存在任务自己的栈上；RISC-V 进 trap 时硬件清 MIE，处理期间不嵌套，故栈模型简单。</div>
+
+    <div class="stage"><span class="badge">A</span><span class="h">trap handler 汇编</span><span class="src">portASM.S · 真实（裁剪）</span></div>
+    <div class="codeblock"><div class="cap"><b>portASM.S</b></div><pre><code>freertos_risc_v_trap_handler:
+    portcontextSAVE_CONTEXT_INTERNAL      # 保存到任务栈；更新 pxCurrentTCB->pxTopOfStack
+    csrr a0, mcause
+    csrr a1, mepc
+    bge  a0, x0, synchronous_exception     # 最高位=0 → 同步异常
+
+asynchronous_interrupt:                    # ── 中断 ──
+    store_x a1, 0(sp)                     # 保存原 mepc
+    load_x  sp, xISRStackTop              # ★ 切到专用中断栈（非 mscratch）
+    j handle_interrupt
+
+synchronous_exception:                     # ── 异常（含 ecall）──
+    addi a1, a1, 4                        # mepc 前进一条（跳过 ecall）
+    store_x a1, 0(sp)
+    load_x  sp, xISRStackTop
+    j handle_exception
+
+handle_interrupt:                          # 是否机器定时器？mcause==(1<<(xlen-1))|7
+    li  t0, 1 ; slli t0, t0, __riscv_xlen-1 ; addi t1, t0, 7
+    bne a0, t1, application_interrupt_handler
+    portUPDATE_MTIMER_COMPARE_REGISTER     # 重配 mtimecmp
+    call xTaskIncrementTick
+    beqz a0, processed_source             # 没解阻塞 → 不切换
+    call vTaskSwitchContext
+    j processed_source
+
+handle_exception:
+    li  t0, 11                            # 11 = M-mode ecall（即 portYIELD）
+    bne a0, t0, application_exception_handler
+    call vTaskSwitchContext                # ecall 让出 → 直接切换
+
+processed_source:
+    portcontextRESTORE_CONTEXT            # 从（新）任务栈恢复；mret</code></pre></div>
+
+    <div class="stage"><span class="badge">B</span><span class="h">主动让出 = 一条 ecall</span><span class="src">portmacro.h · 真实</span></div>
+    <div class="codeblock"><div class="cap"><b>portmacro.h</b></div><pre><code>#define portYIELD()   __asm volatile ( "ecall" )
+
+/* 临界区 */
+#define portDISABLE_INTERRUPTS()  __asm volatile ( "csrc mstatus, 8" )   /* 清 MIE(bit3) */
+#define portENABLE_INTERRUPTS()   __asm volatile ( "csrs mstatus, 8" )   /* 置 MIE */
+
+#define portENTER_CRITICAL()  { portDISABLE_INTERRUPTS(); xCriticalNesting++; }
+#define portEXIT_CRITICAL()   { xCriticalNesting--; \
+                                if( xCriticalNesting == 0 ) portENABLE_INTERRUPTS(); }</code></pre></div>
+    <div class="note"><code>ecall</code> 触发 M-mode 环境调用异常（<code>mcause=11</code>）→ 走 <code>handle_exception → vTaskSwitchContext</code>。所以"主动让出"和"Tick 抢占"<b>共用同一套保存/恢复代码</b>——这正是 RISC-V 不需要 PendSV 的原因。<br><code>xCriticalNesting</code> 启动初值故意为 <code>0xaaaaaaaa</code>（非 0）防误开中断；退出临界区只有计数归零才真正开中断（支持嵌套）。</div>
+
+    <div class="stage"><span class="badge">C</span><span class="h">Tick 重配 mtimecmp</span><span class="src">portASM.S · 真实（64 位路径）</span></div>
+    <div class="codeblock"><div class="cap"><b>portASM.S</b> &nbsp; 每次 Tick 中断里把比较值往后推一个 Tick</div><pre><code>.macro portUPDATE_MTIMER_COMPARE_REGISTER
+    load_x a0, pullMachineTimerCompareRegister   # a0 = &mtimecmp
+    load_x a1, pullNextTime                       # a1 = &ullNextTime
+    ld     t2, 0(a1)                              # t2 = ullNextTime
+    sd     t2, 0(a0)                              # mtimecmp = ullNextTime
+    ld     t0, uxTimerIncrementsForOneTick
+    add    t4, t0, t2                             # 下一刻
+    sd     t4, 0(a1)                              # ullNextTime += 一个 Tick
+.endm</code></pre></div>
+
+    <h3>切换微观（任务 A → 任务 B）</h3>
+<pre><code>[任务 A 运行中] ──Tick/ecall──▶ 保存 A 的 x1..x31 + mepc + mstatus 到 A 的栈
+                                 pxCurrentTCB->pxTopOfStack = A.sp
+                                 sp = xISRStackTop              ← 切到中断栈跑 C
+                                 ▼
+                          xTaskIncrementTick() / vTaskSwitchContext()
+                                 pxCurrentTCB = B（最高优先级就绪）
+                                 ▼
+                          RESTORE_CONTEXT: sp = B.pxTopOfStack
+                                 从 B 栈恢复 x1..x31；mepc←栈; mstatus←栈
+                                 ▼
+                          mret ──▶ [任务 B 继续]</code></pre>
+
+    <h3>要点汇总</h3>
+    <div class="note"><b>不用 mscratch</b>：上下文存在任务自己的栈，随后 <code>sp = xISRStackTop</code> 切到专用中断栈执行 C handler。硬件清 MIE，处理期间不嵌套。</div>
+    <div class="note"><b>无 PendSV</b>：在同一个 trap handler 末尾完成 保存→选任务→恢复→<code>mret</code>。</div>
+    <div class="note"><b>让出即 ecall</b>：<code>portYIELD()</code> 一条指令 → <code>mcause=11</code> 异常 → 统一切换路径。</div>
+    <div class="note"><b>首任务用 ret</b>：<code>xPortStartFirstTask</code> 载回寄存器并 <code>ret</code>（见 3.2⑥）。</div>
+  </section>
+
+  <!-- ============================ 5 ============================ -->
+  <section id="s5">
+    <h2><span class="ico">5</span> 模块速查表</h2>
+    <div class="search"><input id="modfilter" type="text" placeholder="筛选模块 / 文件 / 关键函数…（如 queue、切换、mtime、ecall）"></div>
+    <div class="table-wrap">
+      <table id="modtable">
+        <thead><tr><th>模块（文件）</th><th>层</th><th>职责</th><th>关键符号</th></tr></thead>
+        <tbody>
+          <tr data-k="list.c 双向链表 vlistinitialise"><td><code>list.c</code></td><td>内核核心</td><td>通用双向链表 <code>List_t</code>，一切状态/事件队列的基础</td><td><code>vListInitialise</code> · <code>listINSERT_END</code> · <code>listGET_OWNER_OF_NEXT_ENTRY</code></td></tr>
+          <tr data-k="tasks.c 调度 任务 延迟 通知 切换"><td><code>tasks.c</code></td><td>内核核心</td><td>任务增删、调度器、就绪/延迟列表、阻塞超时、任务通知</td><td><code>xTaskCreate</code> · <code>vTaskStartScheduler</code> · <code>vTaskSwitchContext</code> · <code>xTaskIncrementTick</code></td></tr>
+          <tr data-k="queue.c 队列 信号量 互斥量"><td><code>queue.c</code></td><td>内核核心</td><td>队列 + 信号量 + 互斥量（优先级继承）；传数据 + 阻塞同步</td><td><code>xQueueSend</code> · <code>xQueueReceive</code> · <code>xSemaphoreTake</code></td></tr>
+          <tr data-k="timers.c 软件定时器 守护"><td><code>timers.c</code></td><td>内核核心</td><td>软件定时器，由守护任务调度回调</td><td><code>xTimerCreate</code> · <code>xTimerStart</code> · <code>prvTimerTask</code></td></tr>
+          <tr data-k="event_groups.c 事件组"><td><code>event_groups.c</code></td><td>内核核心</td><td>事件组（位级同步）</td><td><code>xEventGroupCreate</code> · <code>xEventGroupWaitBits</code></td></tr>
+          <tr data-k="stream_buffer.c 流缓冲 消息缓冲"><td><code>stream_buffer.c</code></td><td>内核核心</td><td>流/消息缓冲（单生产-单消费）</td><td><code>xStreamBufferSend</code> · <code>xMessageBufferSend</code></td></tr>
+          <tr data-k="heap 内存 pvportmalloc"><td><code>heap_1~5.c</code></td><td>可移植层·内存</td><td>内核对象内存分配，5 种策略</td><td><code>pvPortMalloc</code> · <code>vPortFree</code></td></tr>
+          <tr data-k="port.c 启动调度器 tick 临界区 clint mtime"><td><code>port.c</code></td><td>port 移植层</td><td>启动调度器、配 Tick、临界区计数</td><td><code>xPortStartScheduler</code> · <code>vPortSetupTimerInterrupt</code> · <code>xCriticalNesting</code></td></tr>
+          <tr data-k="portasm.s portcontext trap handler 切换 栈初始化 ret mret"><td><code>portASM.S + portContext.h</code></td><td>port 移植层</td><td>trap handler、栈初始化、首任务启动、上下文保存/恢复</td><td><code>freertos_risc_v_trap_handler</code> · <code>pxPortInitialiseStack</code> · <code>xPortStartFirstTask</code></td></tr>
+          <tr data-k="portmacro.h ecall yield 临界区 mstatus 类型"><td><code>portmacro.h</code></td><td>port 移植层</td><td>移植类型与宏（让出/临界区）</td><td><code>portYIELD</code>(ecall) · <code>portDISABLE/ENABLE_INTERRUPTS</code></td></tr>
+          <tr data-k="freertosconfig.h 配置 clint mtime mtimecmp"><td><code>FreeRTOSConfig.h</code></td><td>配置</td><td>裁剪内核 + CLINT 地址</td><td><code>configMAX_PRIORITIES</code> · <code>configMTIME_BASE_ADDRESS</code> · <code>configMTIMECMP_BASE_ADDRESS</code></td></tr>
+          <tr data-k="startup.s crt0 复位 段 mtvec main"><td><code>startup.S / crt0</code></td><td>启动</td><td>复位初始化 sp/.data/.bss、<b>装载 mtvec</b>、调用 main</td><td><code>_start</code></td></tr>
+          <tr data-k="链接脚本 ld 段布局 stack_top"><td>链接脚本 <code>.ld</code></td><td>启动</td><td>段布局、栈顶地址</td><td><code>__stack_top</code></td></tr>
+          <tr data-k="bsp hal 时钟 外设 clint"><td>BSP / HAL</td><td>硬件抽象</td><td>时钟、外设、CLINT</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================ 6 ============================ -->
+  <section id="s6">
+    <h2><span class="ico">附</span> 与 Cortex-M 的差异速记</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>维度</th><th>RISC-V（本图）</th><th>Cortex-M（对照）</th></tr></thead>
+        <tbody>
+          <tr><td>中断入口</td><td>单一 <code>mtvec</code>（直接模式）按 <code>mcause</code> 分流；也支持向量模式</td><td>向量表，每路独立 handler</td></tr>
+          <tr><td>Tick 源</td><td>机器定时器（<code>mtime</code>/<code>mtimecmp</code>，CLINT）</td><td>SysTick</td></tr>
+          <tr><td>切换专用中断</td><td>无，在 trap handler 末尾完成</td><td>PendSV</td></tr>
+          <tr><td>ISR 栈切换</td><td><code>sp = xISRStackTop</code>（软件变量），上下文存任务栈</td><td>PSP/MSP 由硬件分离</td></tr>
+          <tr><td>主动让出</td><td><code>ecall</code>（<code>mcause=11</code> 异常）</td><td>SCB->ICSR 写 PENDSVSET</td></tr>
+          <tr><td>首任务进入</td><td><code>ret</code>（载回寄存器 + 手动置 MIE）</td><td>SVC 指令 + SVCHandler</td></tr>
+          <tr><td>中断后返回</td><td><code>mret</code></td><td><code>bx lr</code>（EXC_RETURN）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footer">代码示例来源：<code>FreeRTOS-Kernel</code> 仓库 <code>portable/GCC/RISC-V/</code> 的 <code>port.c</code>、<code>portASM.S</code>、<code>portmacro.h</code>（main 分支）。本文为讲解做了裁剪与中文注释，精确实现以仓库源码为准。</p>
+  </section>
+
+</main>
+</div>
+
+<script>
+  const input = document.getElementById('modfilter');
+  if (input) input.addEventListener('input', function () {
+    const q = this.value.trim().toLowerCase();
+    document.querySelectorAll('#modtable tbody tr').forEach(function (tr) {
+      const hit = !q || (tr.dataset.k||'').toLowerCase().indexOf(q)!==-1 || tr.textContent.toLowerCase().indexOf(q)!==-1;
+      tr.classList.toggle('hidden', !hit);
+    });
+  });
+  const links = Array.from(document.querySelectorAll('nav.side ol li a'));
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const idx = sections.indexOf(e.target);
+        if (idx >= 0) links[idx].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => s && io.observe(s));
+</script>
+</body>
+</html>
