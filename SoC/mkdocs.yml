@@ -1,0 +1,181 @@
+site_name: SoC System Atlas
+site_description: 从芯片架构到 Linux、外设、调试与性能的 SoC 全栈知识库
+site_author: Yvain Zhang
+site_url: https://xidianedu.cc/tech/soc/
+docs_dir: .
+site_dir: ../SoC-site
+use_directory_urls: true
+exclude_docs: |
+  docs-site.md
+  mkdocs.yml
+  requirements-docs.txt
+  overrides/
+theme:
+  name: material
+  language: zh
+  custom_dir: overrides
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - navigation.footer
+    - search.highlight
+    - search.share
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: 切换至深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: 切换至浅色模式
+plugins:
+  - search:
+      lang: zh
+  - mermaid2
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+extra_css:
+  - stylesheets/extra.css
+extra:
+  generator: false
+copyright: Copyright &copy; 2026 Yvain Zhang · 持续整理中的工程知识库
+nav:
+  - 首页: README.md
+  - 总览与路线: 00-Overview/README.md
+  - 01 SoC 总体架构:
+      - 模块概览: 01-SoC-Architecture/README.md
+      - SoC 定义与组成: 01-SoC-Architecture/01-soc-fundamentals.md
+      - Block Diagram: 01-SoC-Architecture/02-block-diagram.md
+      - Address Map: 01-SoC-Architecture/03-address-map.md
+      - Clock Reset Power: 01-SoC-Architecture/04-clock-reset-power.md
+      - 系统数据与控制流: 01-SoC-Architecture/05-system-flows.md
+      - 通用 SoC 案例: 01-SoC-Architecture/06-generic-soc-case-study.md
+      - 审阅、调试与自测: 01-SoC-Architecture/07-review-debug-self-test.md
+  - 02 CPU 与处理器:
+      - 模块概览: 02-CPU-Architecture/README.md
+      - ISA 与流水线: 02-CPU-Architecture/01-isa-pipeline.md
+      - 特权级与异常: 02-CPU-Architecture/02-privilege-exception.md
+      - SMP 与内存序: 02-CPU-Architecture/03-smp-memory-order.md
+      - 启动与故障分析: 02-CPU-Architecture/04-cases-debug.md
+      - 工程推演: 02-CPU-Architecture/05-engineering-analysis.md
+      - 异常向量与上下文: 02-CPU-Architecture/06-exception-vector-context.md
+      - 原子与 Cache/TLB 维护: 02-CPU-Architecture/07-atomic-cache-tlb.md
+      - 处理器工程问题与规避: 02-CPU-Architecture/08-processor-engineering-guide.md
+  - 03 Cache 与内存:
+      - 模块概览: 03-Cache-Memory-Hierarchy/README.md
+      - Cache 组织: 03-Cache-Memory-Hierarchy/01-cache-organization.md
+      - 写策略与一致性: 03-Cache-Memory-Hierarchy/02-write-coherency.md
+      - SRAM DRAM DDR: 03-Cache-Memory-Hierarchy/03-sram-dram-ddr.md
+      - 性能与故障: 03-Cache-Memory-Hierarchy/04-performance-debug.md
+      - 容量与地址推演: 03-Cache-Memory-Hierarchy/05-engineering-analysis.md
+      - MESI 与 MOESI: 03-Cache-Memory-Hierarchy/06-mesi-moesi.md
+      - DDR 时序与交织: 03-Cache-Memory-Hierarchy/07-ddr-timing-interleave.md
+      - False Sharing 实验: 03-Cache-Memory-Hierarchy/08-false-sharing.md
+      - 存储层次工程问题与规避: 03-Cache-Memory-Hierarchy/09-memory-engineering-guide.md
+      - I-Cache 与 D-Cache 深度剖析: 03-Cache-Memory-Hierarchy/10-icache-dcache-deep-dive.md
+  - 04 MMU 与地址空间:
+      - 模块概览: 04-MMU-Address-Space/README.md
+      - 地址与页表: 04-MMU-Address-Space/01-address-page-table.md
+      - TLB 与内存属性: 04-MMU-Address-Space/02-tlb-attributes.md
+      - MPU 与 IOMMU: 04-MMU-Address-Space/03-mpu-iommu.md
+      - 映射与 Fault: 04-MMU-Address-Space/04-mapping-fault.md
+      - 页表失效推演: 04-MMU-Address-Space/05-engineering-analysis.md
+      - ARM64 四级页表: 04-MMU-Address-Space/06-arm64-page-table-attributes.md
+      - SMMU ATS PASID: 04-MMU-Address-Space/07-smmu-ats-pasid.md
+      - 地址翻译工程问题与规避: 04-MMU-Address-Space/08-address-translation-engineering-guide.md
+  - 05 总线与互联:
+      - 模块概览: 05-Bus-Interconnect/README.md
+      - AMBA 与 AXI: 05-Bus-Interconnect/01-amba-axi.md
+      - NoC QoS Ordering: 05-Bus-Interconnect/02-noc-qos-ordering.md
+      - Bridge 与错误: 05-Bus-Interconnect/03-bridge-error-performance.md
+      - 时序案例: 05-Bus-Interconnect/04-cases-debug.md
+      - 协议计算: 05-Bus-Interconnect/05-engineering-analysis.md
+      - AXI4 时序与乱序: 05-Bus-Interconnect/06-axi4-waveform-ordering.md
+      - NoC 路由与信用: 05-Bus-Interconnect/07-noc-routing-credit.md
+      - CDC 异步 FIFO: 05-Bus-Interconnect/08-cdc-async-fifo.md
+      - 互联工程问题与规避: 05-Bus-Interconnect/09-interconnect-engineering-guide.md
+  - 06 DMA 与一致性:
+      - 模块概览: 06-DMA-Cache-Coherency/README.md
+      - DMA 与 Descriptor: 06-DMA-Cache-Coherency/01-dma-descriptor.md
+      - 一致性与所有权: 06-DMA-Cache-Coherency/02-coherency-ownership.md
+      - Barrier API IOMMU: 06-DMA-Cache-Coherency/03-barrier-api-iommu.md
+      - 典型故障: 06-DMA-Cache-Coherency/04-cases-debug.md
+      - Buffer 生命周期: 06-DMA-Cache-Coherency/05-engineering-analysis.md
+      - Linux DMA API: 06-DMA-Cache-Coherency/06-linux-dma-api.md
+      - Ring 与 Scatter-Gather: 06-DMA-Cache-Coherency/07-ring-scatter-gather.md
+      - CCI CCN CMN: 06-DMA-Cache-Coherency/08-coherent-interconnect.md
+      - DMA 工程问题与规避: 06-DMA-Cache-Coherency/09-dma-engineering-guide.md
+  - 07 中断、时钟与电源:
+      - 模块概览: 07-Interrupt-Clock-Power/README.md
+      - 中断控制器: 07-Interrupt-Clock-Power/01-interrupt-controller.md
+      - Timer 与 Clock: 07-Interrupt-Clock-Power/02-timer-clock.md
+      - Reset Power DVFS: 07-Interrupt-Clock-Power/03-reset-power-dvfs.md
+      - 故障案例: 07-Interrupt-Clock-Power/04-cases-debug.md
+      - 状态推演: 07-Interrupt-Clock-Power/05-engineering-analysis.md
+      - GIC ITS MSI: 07-Interrupt-Clock-Power/06-gic-its-msi.md
+      - Linux CCF 与低功耗: 07-Interrupt-Clock-Power/07-linux-clock-power.md
+      - 中断时钟电源问题与规避: 07-Interrupt-Clock-Power/08-interrupt-power-engineering-guide.md
+  - 08 外设与高速接口:
+      - 模块概览: 08-Peripherals-High-Speed-IO/README.md
+      - GPIO UART SPI I2C: 08-Peripherals-High-Speed-IO/01-gpio-uart-spi-i2c.md
+      - 存储外设: 08-Peripherals-High-Speed-IO/02-storage.md
+      - 高速接口: 08-Peripherals-High-Speed-IO/03-high-speed.md
+      - Bring-up: 08-Peripherals-High-Speed-IO/04-bringup-debug.md
+      - 协议现场推演: 08-Peripherals-High-Speed-IO/05-engineering-analysis.md
+      - PCIe USB SerDes: 08-Peripherals-High-Speed-IO/06-pcie-usb-serdes.md
+      - eMMC UFS NVMe: 08-Peripherals-High-Speed-IO/07-storage-comparison.md
+      - 外设接口问题与规避: 08-Peripherals-High-Speed-IO/08-io-engineering-guide.md
+  - 09 Boot BSP OS:
+      - 模块概览: 09-Boot-BSP-OS/README.md
+      - Boot Chain: 09-Boot-BSP-OS/01-boot-chain.md
+      - DDR U-Boot Memory: 09-Boot-BSP-OS/02-ddr-uboot-memory.md
+      - DT BSP Driver: 09-Boot-BSP-OS/03-dt-bsp-driver.md
+      - OS 启动故障: 09-Boot-BSP-OS/04-os-debug.md
+      - 启动恢复推演: 09-Boot-BSP-OS/05-engineering-analysis.md
+      - ARM/RISC-V 启动链: 09-Boot-BSP-OS/06-boot-flow-parameters.md
+      - DTS 与 Platform Driver: 09-Boot-BSP-OS/07-dts-platform-driver.md
+      - 启动 BSP 问题与规避: 09-Boot-BSP-OS/08-boot-bsp-engineering-guide.md
+  - 10 调试与性能:
+      - 模块概览: 10-Debug-Performance/README.md
+      - 调试与 Trace: 10-Debug-Performance/01-debug-trace.md
+      - Crash 与寄存器: 10-Debug-Performance/02-crash-register.md
+      - 系统性能: 10-Debug-Performance/03-performance.md
+      - 工具与案例: 10-Debug-Performance/04-tools-cases.md
+      - 证据链: 10-Debug-Performance/05-engineering-analysis.md
+      - CoreSight 与 JTAG: 10-Debug-Performance/06-coresight-jtag.md
+      - Panic Abort Kdump: 10-Debug-Performance/07-crash-workflow.md
+      - perf ftrace eBPF: 10-Debug-Performance/08-linux-performance-tools.md
+      - 调试性能问题与规避: 10-Debug-Performance/09-debug-performance-engineering-guide.md
+  - 跨模块案例:
+      - 案例概览: Case-Studies/README.md
+      - 网卡 DMA 收包: Case-Studies/01-network-packet-rx-flow.md
+      - 冷启动到 Linux Shell: Case-Studies/02-cold-boot-to-linux-shell.md
+      - PCIe NVMe 读写: Case-Studies/03-pcie-nvme-read-write.md
+  - 横向专题:
+      - 专题概览: Cross-Topics/README.md
+      - SoC 安全: Cross-Topics/01-soc-security-trustzone-pmp.md
+      - 虚拟化与 Stage-2: Cross-Topics/02-virtualization-smmu-stage2.md
+      - 内存一致性模型: Cross-Topics/03-memory-consistency-models.md
+      - 功能安全与 RAS: Cross-Topics/04-functional-safety-ras.md
+  - 实验:
+      - 实验概览: Labs/README.md
+      - ARM64 裸机启动: Labs/lab01-qemu-arm64-baremetal-boot/README.md
+      - DMA Cache 一致性: Labs/lab02-dma-cache-coherency/README.md
+      - 弱内存序 Litmus: Labs/lab03-memory-barrier-litmus/README.md
+      - DTS Platform Driver: Labs/lab04-device-tree-driver/README.md
+  - 术语表: Glossary/README.md

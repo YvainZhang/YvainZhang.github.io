@@ -52,6 +52,10 @@ description: "嵌入式、系统软件、AI 与生活的长期笔记。"
             {% assign entry_href = '/photos/' | prepend: site.baseurl %}
             {% assign entry_count = album_count %}
             {% assign entry_unit = '个相册' %}
+        {% elsif group.title == "技术" %}
+            {% assign entry_href = '/tech/' | prepend: site.baseurl %}
+            {% assign entry_count = group_posts | size %}
+            {% assign entry_unit = '篇文章 · 1 个专题' %}
         {% else %}
             {% assign entry_href = '/series/#' | prepend: site.baseurl | append: group.slug %}
             {% assign entry_count = group_posts | size %}

@@ -1,0 +1,138 @@
+---
+layout: tech
+title: "技术"
+description: "从底层系统到无线网络，整理做过、踩过和验证过的东西。"
+permalink: /tech/
+---
+
+{% assign technical_posts = site.posts | where: "series", "技术" %}
+
+<header class="tech-hero">
+    <div class="tech-hero-inner">
+        <div class="tech-hero-copy">
+            <p class="tech-kicker"><span></span> Tech / System Notes</p>
+            <h1>技术，不只是<br>一串文章标题。</h1>
+            <p>零散问题写成工程笔记，反复遇到的知识整理成系统专题。这里既保留现场经验，也试着把硬件、驱动和系统之间的关系连起来。</p>
+            <div class="tech-hero-stats" aria-label="技术内容统计">
+                <span><strong>{{ technical_posts | size }}</strong> Articles</span>
+                <span><strong>01</strong> System collection</span>
+                <span><strong>04</strong> Domains</span>
+            </div>
+        </div>
+        <div class="tech-signal" aria-label="技术内容覆盖范围">
+            <div class="tech-signal-head"><span>SYSTEM PATH / ACTIVE</span><i></i></div>
+            <ol>
+                <li><span>01</span><strong>MCU / RTOS</strong><em>boot · scheduling · memory</em></li>
+                <li><span>02</span><strong>AUDIO</strong><em>codec · container · pipeline</em></li>
+                <li><span>03</span><strong>WI-FI</strong><em>protocol · driver · performance</em></li>
+                <li><span>04</span><strong>SYSTEM</strong><em>Linux · DMA · debug</em></li>
+            </ol>
+        </div>
+    </div>
+</header>
+
+<section class="tech-section tech-collection" aria-labelledby="collection-heading">
+    <div class="tech-section-heading">
+        <p>System Collection / 01</p>
+        <div>
+            <h2 id="collection-heading">先从一张完整的系统地图开始。</h2>
+            <span>专题不是文章合集，而是一条可以顺着走完、遇到问题还能回来查的路径。</span>
+        </div>
+    </div>
+
+    <a class="soc-feature" href="{{ '/tech/soc/' | prepend: site.baseurl }}" aria-label="进入 SoC 系统知识库">
+        <div class="soc-feature-copy">
+            <div class="soc-feature-meta"><span>SoC System Atlas</span><span>Living Notes</span></div>
+            <h3>SoC 系统知识库</h3>
+            <p>从 CPU、Cache、MMU 和 NoC，一路走到 DMA、外设、Boot、BSP、Linux 与系统调试。</p>
+            <div class="soc-feature-stats">
+                <span><strong>10</strong> Modules</span>
+                <span><strong>112</strong> Notes</span>
+                <span><strong>167</strong> Diagrams</span>
+                <span><strong>4</strong> Labs</span>
+            </div>
+            <span class="soc-feature-enter">进入知识库 <i aria-hidden="true">→</i></span>
+        </div>
+        <div class="soc-feature-map" aria-hidden="true">
+            <div class="soc-map-label">SYSTEM DATA PATH</div>
+            <div class="soc-map-row soc-map-row-top">
+                <span>CPU</span><i></i><span>MMU</span><i></i><span>CACHE</span>
+            </div>
+            <div class="soc-map-bus"><b>AXI / NoC</b></div>
+            <div class="soc-map-row soc-map-row-bottom">
+                <span>DDR</span><i></i><span>DMA</span><i></i><span>PERIPHERAL</span>
+            </div>
+            <div class="soc-map-control"><span>BOOT</span><span>IRQ</span><span>POWER</span><span>DEBUG</span></div>
+        </div>
+    </a>
+</section>
+
+<section class="tech-section tech-notes" aria-labelledby="notes-heading">
+    <div class="tech-section-heading tech-section-heading-row">
+        <div>
+            <p>Engineering Notes / 02</p>
+            <h2 id="notes-heading">现场问题，按时间留下证据。</h2>
+        </div>
+        <a href="{{ '/series/' | prepend: site.baseurl }}">查看全部主题 <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="tech-filter" role="group" aria-label="筛选技术文章">
+        <button class="active" type="button" data-tech-filter="all" aria-pressed="true">全部</button>
+        <button type="button" data-tech-filter="mcu" aria-pressed="false">MCU / RTOS</button>
+        <button type="button" data-tech-filter="audio" aria-pressed="false">Audio</button>
+        <button type="button" data-tech-filter="wifi" aria-pressed="false">Wi-Fi</button>
+        <button type="button" data-tech-filter="system" aria-pressed="false">System</button>
+    </div>
+
+    <div class="tech-note-list" id="techNoteList">
+        {% for post in technical_posts %}
+        {% assign domain = "system" %}
+        {% if post.tags contains "Wi-Fi" %}
+            {% assign domain = "wifi" %}
+        {% elsif post.tags contains "音频" %}
+            {% assign domain = "audio" %}
+        {% elsif post.tags contains "FreeRTOS" or post.tags contains "嵌入式" or post.tags contains "RISC-V" %}
+            {% assign domain = "mcu" %}
+        {% endif %}
+        <article class="tech-note" data-tech-domain="{{ domain }}">
+            <a href="{{ post.url | prepend: site.baseurl }}">
+                <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%Y.%m.%d" }}</time>
+                <div>
+                    <h3>{{ post.title }}</h3>
+                    {% if post.subtitle %}<p>{{ post.subtitle }}</p>{% endif %}
+                </div>
+                <span class="tech-note-tags">{% for tag in post.tags limit:2 %}<i>{{ tag }}</i>{% endfor %}</span>
+                <b aria-hidden="true">→</b>
+            </a>
+        </article>
+        {% endfor %}
+    </div>
+    <p class="tech-filter-empty" id="techFilterEmpty" hidden>这个分类暂时还没有文章。</p>
+</section>
+
+<script>
+(function () {
+    var buttons = Array.prototype.slice.call(document.querySelectorAll('[data-tech-filter]'));
+    var notes = Array.prototype.slice.call(document.querySelectorAll('[data-tech-domain]'));
+    var empty = document.getElementById('techFilterEmpty');
+    if (!buttons.length || !notes.length) return;
+
+    buttons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            var filter = button.getAttribute('data-tech-filter');
+            var visible = 0;
+            buttons.forEach(function (item) {
+                var selected = item === button;
+                item.classList.toggle('active', selected);
+                item.setAttribute('aria-pressed', selected ? 'true' : 'false');
+            });
+            notes.forEach(function (note) {
+                var show = filter === 'all' || note.getAttribute('data-tech-domain') === filter;
+                note.hidden = !show;
+                if (show) visible += 1;
+            });
+            empty.hidden = visible !== 0;
+        });
+    });
+})();
+</script>

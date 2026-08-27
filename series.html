@@ -28,6 +28,19 @@ nav_exclude: true
                     <strong>查看摄影相册</strong>
                     <i aria-hidden="true">→</i>
                 </a>
+            {% elsif group.title == "技术" %}
+                <a class="series-index-row series-index-collection" href="{{ '/tech/soc/' | prepend: site.baseurl }}">
+                    <span class="series-index-date">Collection</span>
+                    <strong>SoC 系统知识库</strong>
+                    <i aria-hidden="true">→</i>
+                </a>
+                {% for post in group_posts %}
+                <a class="series-index-row" href="{{ post.url | prepend: site.baseurl }}">
+                    <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%Y.%m.%d" }}</time>
+                    <strong>{{ post.title }}</strong>
+                    <i aria-hidden="true">→</i>
+                </a>
+                {% endfor %}
             {% elsif group_posts.size > 0 %}
                 {% for post in group_posts %}
                 <a class="series-index-row" href="{{ post.url | prepend: site.baseurl }}">
