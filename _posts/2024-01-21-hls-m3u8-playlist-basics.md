@@ -1,206 +1,151 @@
 ---
 layout: post
-title: "HLS 与 M3U8 播放列表基础"
-subtitle: "播放列表结构和直播排错"
+title: "HLS 协议与 M3U8 播放列表规范详解"
+subtitle: "从 Master/Media Playlist 结构、分片标签、自适应码率 (ABR) 到 AES-128 加密"
 date: 2024-01-21
-redirect_from: /2022/04/19/hls-m3u8-playlist-basics/
+redirect_from:
+  - /2022/04/19/hls-m3u8-playlist-basics/
+  - /2023/04/18/hls-m3u8-playlist-basics/
 author: Yvain Zhang
-header-img: "img/post-bg-map.jpg"
+header-img: "img/post-bg-rwd.jpg"
 series: "技术"
 tags:
   - 多媒体
   - 流媒体
+  - HLS
   - M3U8
+  - 网络协议
 ---
 
-看 M3U8 播放日志时，满屏都是 `#EXTINF`、`#EXT-X-KEY` 和序号。我现在固定先判断它是 Master Playlist 还是 Media Playlist，再看片段、时间和加密，顺序会清楚很多。
+**HLS（HTTP Live Streaming）** 是由苹果公司提出并已成为 RFC 8216 标准的流媒体网络传输协议。与基于长连接的传统流媒体协议（如基于 TCP 的 RTMP）或专用传输通道不同，HLS 将音视频连续流切片为一系列独立的 HTTP 文件（通常为 `.ts` 或 `.m4s/fmp4` 分片），并通过 **M3U8 文本索引播放列表（Playlist）** 驱动客户端拉流播放。
 
-## 1. M3U8 和 HLS 是什么关系
+由于完全基于标准 HTTP(S) 协议，HLS 具备良好的 CDN 缓存兼容性与穿透能力，并原生支持**自适应码率切换（ABR）**。本文剖析 M3U8 文件规范、Master/Media Playlist 分层、直播滑动窗口与 AES-128 加密机制。
 
-先把最容易混的两层拆开：
+---
 
-- HLS 是一种流媒体传输协议
-- M3U8 是 HLS 里最常见的播放列表文件
+## 1. HLS 核心架构：Master 与 Media Playlist
 
-也就是说，播放器拿到 M3U8，本质上是在拿一份“怎么去请求后续媒体资源”的说明书。
+一个完整的 HLS 流通常采用**主播放列表（Master Playlist）嵌套多级媒体播放列表（Media Playlist）**的两层架构：
 
-HLS 的核心思路很简单：
+```mermaid
+graph TD
+    Client[客户端播放器] --> Master[Master Playlist: master.m3u8]
 
-- 把一整段媒体拆成很多小片段
-- 用 HTTP 去拉这些片段
-- 用播放列表描述片段顺序、参数和切换关系
+    Master -->|480p 800kbps| P1[Media Playlist 1: 480p.m3u8]
+    Master -->|720p 1800kbps| P2[Media Playlist 2: 720p.m3u8]
+    Master -->|1080p 3500kbps| P3[Media Playlist 3: 1080p.m3u8]
 
-## 2. 为什么 HLS 适合大规模分发
+    P2 --> TS0[segment0.ts / 9.0s]
+    P2 --> TS1[segment1.ts / 9.0s]
+    P2 --> TS2[segment2.ts / 9.0s]
+```
 
-HLS 常见的几个优势都很实际：
+### 1.1 主播放列表 (Master Playlist)
+Master Playlist 聚合了同一内容的不同码率、分辨率及音频变体，供客户端根据实时网络带宽动态切换：
 
-- 基于 HTTP，容易走 CDN
-- 穿防火墙和代理更自然
-- 客户端可以按网络条件切码率
-- 点播和直播都能统一到一套播放列表思路上
+```ini
+#EXTM3U
+#EXT-X-VERSION:4
 
-这也是为什么很多在线视频、直播、移动端播放场景会大量使用它。
+# 480p 流定义
+#EXT-X-STREAM-INF:BANDWIDTH=800000,RESOLUTION=854x480,CODECS="avc1.4d401f,mp4a.40.2"
+480p/index.m3u8
 
-## 3. M3U8 文件其实有两类
+# 720p 流定义
+#EXT-X-STREAM-INF:BANDWIDTH=1800000,RESOLUTION=1280x720,CODECS="avc1.4d401f,mp4a.40.2"
+720p/index.m3u8
 
-M3U8 不止一种内容形态，最重要的是区分：
+# 1080p 流定义
+#EXT-X-STREAM-INF:BANDWIDTH=3500000,RESOLUTION=1920x1080,CODECS="avc1.640028,mp4a.40.2"
+1080p/index.m3u8
+```
 
-- Media Playlist
-- Master Playlist
+---
 
-### Media Playlist
+## 2. 媒体播放列表 (Media Playlist) 规范示例
 
-它里面列的是一段段实际媒体片段，比如 `.ts`、`.m4s` 等。
+Media Playlist 记录了具体媒体分片的 URI 路径与时长信息。按照 RFC 8216 规范，注释必须独占一行以 `#` 开头，不可在标签值后附加同行尾注释。
 
-播放器拿到它之后，基本就是按顺序去拉这些片段并播放。
+### 2.1 点播 (VOD) 播放列表
 
-### Master Playlist
+```ini
+#EXTM3U
+#EXT-X-VERSION:3
+# 允许的最大分片时长 (秒)
+#EXT-X-TARGETDURATION:10
+# 起始分片序列号
+#EXT-X-MEDIA-SEQUENCE:0
+# 声明为点播播放列表
+#EXT-X-PLAYLIST-TYPE:VOD
 
-它不直接列媒体片段，而是列出多路可选流，例如：
+# 第一个分片时长 9.009 秒
+#EXTINF:9.009,
+http://cdn.example.com/seg0.ts
+# 第二个分片时长 8.976 秒
+#EXTINF:8.976,
+http://cdn.example.com/seg1.ts
+# 第三个分片时长 9.009 秒
+#EXTINF:9.009,
+http://cdn.example.com/seg2.ts
 
-- 不同码率
-- 不同分辨率
-- 不同音轨
-- 不同字幕或语言版本
+# 结束标记，标识点播流全部结束
+#EXT-X-ENDLIST
+```
 
-播放器先根据 Master Playlist 选路，再进入对应的 Media Playlist。
+### 2.2 直播 (Live) 滑动窗口机制
 
-## 4. 点播和直播在列表层面有什么区别
+在直播场景中，**不包含 `#EXT-X-ENDLIST` 标记**。服务端持续生成新切片并移出过期切片，维护一个滑动窗口：
 
-点播和直播都能用 M3U8，但播放列表更新方式不一样。
+```
+时间推进 ───>
+[已淘汰 seg0] [在播 seg1] [seg2] [seg3 (最新生成)]
+  └── 客户端每隔 TARGETDURATION 周期重新请求 m3u8，比对 MEDIA-SEQUENCE 获取新增分片
+```
 
-### 点播
+- `#EXT-X-MEDIA-SEQUENCE`：每次移出最老切片时，该序号递增 1，帮助播放器识别分片连续性。
 
-点播列表通常是完整的，客户端顺着播到结尾就结束。很多点播列表会带：
+---
 
-- `#EXT-X-ENDLIST`
+## 3. HLS AES-128 内容加密
 
-告诉客户端这份列表到这里就结束了，不会再长。
+HLS 支持基于 AES-128 CBC 模式的分片级别对称加密：
 
-### 直播
+```ini
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:10
 
-直播列表通常会不断更新。客户端不能只请求一次，而是要周期性重新拉取 M3U8，看看有没有新的片段出现。
+# 声明解密密钥 URI 与 IV 向量
+#EXT-X-KEY:METHOD=AES-128,URI="https://auth.example.com/get_key?id=9527",IV=0x1234567890abcdef1234567890abcdef
 
-所以做直播播放时，一个关键点不是“怎么拉第一个片段”，而是“怎么持续刷新列表并衔接新片段”。
+#EXTINF:10.0,
+encrypted_segment0.ts
+#EXTINF:10.0,
+encrypted_segment1.ts
+```
 
-## 5. M3U8 文件最基本的规则
+1. **获取密钥**：客户端解析到 `#EXT-X-KEY` 后，向鉴权服务器请求 16 字节的原始解密密钥（Key）；
+2. **本地解密**：使用获取的 Key 与标签声明的 IV，在本地对下载的 TS 分片解密后再送入播放器管线。
 
-看格式时，先记住几条最基础的约束就够了：
+---
 
-- 文件一般用 UTF-8
-- 第一行通常是 `#EXTM3U`
-- 每一行要么是 URI，要么是标签，要么是空行
-- 以 `#EXT` 开头的是标签
+## 4. FFmpeg 生成 HLS 切片示例
 
-播放器解析时，很多兼容性问题其实就出在：
+```bash
+# 将输入视频转码为 6 秒切片的 HLS 点播流
+ffmpeg -i input.mp4 \
+    -c:v libx264 -preset veryfast -crf 22 \
+    -c:a aac -b:a 128k \
+    -hls_time 6 \
+    -hls_playlist_type vod \
+    -hls_segment_filename "output_%03d.ts" \
+    output.m3u8
+```
 
-- 编码不规范
-- 属性值大小写不对
-- 属性列表里混入非法空格
+---
 
-## 6. Media Playlist 里最常见的几个标签
+## 5. 总结
 
-### `#EXTINF`
-
-表示后面那个媒体片段的时长。  
-播放器会用它来估算时间轴、缓冲和播放进度。
-
-### `#EXT-X-TARGETDURATION`
-
-表示切片最大时长。这个值对播放器的缓冲和刷新策略很重要。
-
-### `#EXT-X-MEDIA-SEQUENCE`
-
-表示列表里第一个片段的序号。直播场景里，这个字段尤其关键，因为客户端要靠它判断新旧片段关系。
-
-### `#EXT-X-ENDLIST`
-
-表示播放列表结束。点播常见，直播初期通常不会带。
-
-### `#EXT-X-DISCONTINUITY`
-
-表示前后片段在时间线或编码上下文上存在不连续，比如插广告、切源、编码参数变化等。
-
-## 7. Master Playlist 里最常见的几个标签
-
-### `#EXT-X-STREAM-INF`
-
-它通常用来描述一条可选码流，比如：
-
-- BANDWIDTH
-- RESOLUTION
-- CODECS
-
-客户端会根据网络条件和设备能力，从这些候选项里选一条或动态切换。
-
-### `#EXT-X-MEDIA`
-
-常用于音频、字幕、不同语言等替代媒体资源描述。
-
-如果你的播放器要做多语言音轨或字幕切换，这个标签就会变得很重要。
-
-## 8. 加密和初始化信息怎么描述
-
-HLS 里比较常见的还有：
-
-### `#EXT-X-KEY`
-
-表示后续片段如何解密。做 DRM 或 AES-128 加密时，经常要关注它的：
-
-- METHOD
-- URI
-- IV
-
-### `#EXT-X-MAP`
-
-表示初始化段的位置。尤其在 fMP4 场景下，这个标签很关键。
-
-也就是说，播放器如果不是纯 TS 场景，而是 CMAF / fMP4 风格的 HLS，`MAP` 往往不能忽略。
-
-## 9. 客户端解析 M3U8 时真正该做什么
-
-工程里解析 M3U8，通常不是把所有标签都一口气实现，而是先抓主线：
-
-1. 判断它是 Master 还是 Media
-2. 如果是 Master，选合适变体流
-3. 如果是 Media，解析片段列表和时长
-4. 对直播定时刷新
-5. 处理加密、切片中断和时间线变化
-
-把这条线跑通后，再逐步补更多标签兼容。
-
-## 10. 常见问题一般出在哪
-
-### 播放器拿到 M3U8 但不出画
-
-优先查：
-
-- 是不是先拿到了 Master 却没继续进 Media
-- URI 是否能正确拼接
-- `CODECS` 是否超出设备支持范围
-
-### 直播越播越卡
-
-常见落点：
-
-- 刷新间隔不合理
-- 片段缓存策略不对
-- `TARGETDURATION` 和实际切片长度偏差大
-
-### 时间轴不准或跳变
-
-重点看：
-
-- `EXTINF` 是否可信
-- 是否存在 `DISCONTINUITY`
-- 媒体序号和时间线衔接是否处理正确
-
-## 11. 我的排查顺序
-
-把 M3U8 当作 HLS 的调度表来看：
-
-- Master Playlist 负责选路
-- Media Playlist 负责列片段
-- 标签负责补时长、加密、序号和切换信息
-
-直播卡住时，不要只测某一个 TS 能不能下载。还要看列表有没有继续刷新、media sequence 是否推进、旧片段是否淘汰，以及 key 和 init segment 能不能访问。
+1. **层级结构**：Master Playlist 负责 ABR 多码率描述，Media Playlist 负责分片时钟与分片定位；
+2. **规范语法**：严格遵守 RFC 8216 规范，注释独立成行，点播包含 `#EXT-X-ENDLIST`，直播依靠 `#EXT-X-MEDIA-SEQUENCE` 维护滑动窗口；
+3. **分发优势**：全基于 HTTP 协议，天然利于 CDN 缓存与大规模并发分发。

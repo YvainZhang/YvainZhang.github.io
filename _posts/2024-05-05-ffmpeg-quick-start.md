@@ -1,9 +1,10 @@
 ---
 layout: post
-title: "FFmpeg 快速上手"
-subtitle: "先分清容器、流和编码"
+title: "FFmpeg 快速上手与命令速查"
+subtitle: "从内部管线模型 (Demux->Decode->Filter->Encode->Mux) 到日常高频处理"
 date: 2024-05-05
-redirect_from: /2023/04/27/ffmpeg-quick-start/
+redirect_from:
+  - /2023/04/27/ffmpeg-quick-start/
 author: Yvain Zhang
 header-img: "img/post-bg-map.jpg"
 series: "技术"
@@ -11,275 +12,127 @@ tags:
   - 多媒体
   - FFmpeg
   - 音视频
+  - 命令行
+  - 速查指南
 ---
 
-刚开始用 FFmpeg，通常都是先找一条命令跑通。常见的坑也有两类：只想换容器却把音视频全部重编码，只想抽音频却顺手改了采样参数。问题都不是命令不会写，而是容器、流和编码没分清。
+初次使用 FFmpeg 时，容易遇到将换容器操作误写为全量重编码导致耗时过长，或抽取音频时误改采样参数等问题。
 
-这篇保留一组我常用的命令，也把每条命令到底有没有转码标出来。
+理解 FFmpeg 的内部处理管线模型，区分**容器（Container）、数据流（Stream）、原始帧（Raw Frame）与编解码器（Codec）**，有助于更高效地编写处理命令。
 
-## 1. 什么是 FFmpeg
+本文梳理 FFmpeg 数据流转架构，并提供日常音频视频高频处理命令参考。
 
-FFmpeg 是音视频处理领域最常用的开源工具链之一，常见用途包括：
+---
 
-- 音视频格式转换
-- 编码与转码
-- 解复用与复用
-- 截取、合并、抽帧
-- 获取媒体信息
-- 流媒体处理
+## 1. FFmpeg 内部处理全流程模型
 
-如果你要系统做播放器、多媒体处理、转码链路或者流媒体相关工作，FFmpeg 基本绕不过去。
+```mermaid
+graph LR
+    Input[输入媒体文件] --> Demuxer[解复用器 Demuxer]
+    Demuxer -->|AVPacket 压缩数据包| Decoder[解码器 Decoder]
+    Decoder -->|AVFrame 未压缩裸帧| Filter[Filter Graph 滤镜图]
+    Filter -->|AVFrame 滤镜后裸帧| Encoder[编码器 Encoder]
+    Encoder -->|AVPacket 重新压缩| Muxer[复用器 Muxer]
+    Muxer --> Output[输出媒体文件]
 
-最常见的几个名字分别负责不同事情：
-
-- `ffmpeg`：转码、抽流、合并、过滤、推流
-- `ffprobe`：查看媒体信息
-- `ffplay`：简单播放
-
-## 2. 先理解几个基本概念
-
-### 容器不等于编码
-
-MP4、AVI、MKV、TS、WAV 这些首先是容器。它们描述的是文件怎么组织，不等于内容具体怎么压缩。
-
-比如一个 `mp4` 文件里，视频可能是 H.264，也可能是 H.265；音频可能是 AAC，也可能是 MP3。
-
-### 一个容器里可能有多条流
-
-一个文件里不一定只有视频和音频两样，常见还有：
-
-- 视频流
-- 音频流
-- 字幕流
-- 附件流
-- 数据流或元数据
-
-所以“抽音频”“去视频流”“抽字幕”这些说法，本质上都是在重新组织流。
-
-### 复用 / 解复用
-
-- 复用（mux）：把多条流按容器规则重新打包
-- 解复用（demux）：把流从容器里拆出来
-
-比如 MP4 转 MKV、但音视频编码都不改，这其实是重新复用；从视频里提取 AAC，本质上就是把音频流拆出来。
-
-### 编码格式和编码器不是一回事
-
-H.264、H.265、AAC、MP3 这些是编码格式。`libx264`、`libx265`、`aac`、`libmp3lame` 这些是具体编码器实现。
-
-同一种编码格式，可能对应多个编码器实现，它们在速度、压缩率、质量和许可证上都可能不同。
-
-## 3. 用 FFmpeg 前，先看输入文件
-
-如果你还不熟悉 FFmpeg 本身支持什么，也可以先看它提供的能力范围：
-
-```bash
-ffmpeg -formats
-ffmpeg -codecs
-ffmpeg -encoders
+    Demuxer -.->|Stream Copy: -c copy 跳过编解码| Muxer
 ```
 
-很多误操作都不是命令本身有多复杂，而是还没看清输入文件就开始转。
+### 1.1 全流程转码 (Transcoding)
+数据经历完整的 `解封装 -> 解码 -> 滤镜加工 -> 重新编码 -> 重新封装`。这是最消耗 CPU 算力且可能引入压缩损失的过程。
 
-先养成这个习惯：
+### 1.2 媒体流拷贝 (Stream Copy `-c copy`)
+直接将 Demuxer 解出的压缩数据包（`AVPacket`）交给 Muxer 打包进新容器，跳过编解码，处理速度快且保持原始数据无损。
 
-```bash
-ffprobe input.mp4
+---
+
+## 2. 命令行参数结构语法
+
+```
+ffmpeg [全局参数] [输入文件参数] -i input.mp4 [输出文件参数] output.mp4
 ```
 
-或者：
+- **位置决定作用域**：`-i` 之前的参数作用于输入文件，`-i` 之后的参数作用于紧随其后的输出文件；
+- **Stream 指定语法 (`-map` / `-c:v` / `-c:a`)**：
+  - `-c:v copy`：视频流执行 Stream Copy；
+  - `-c:a aac -b:a 128k`：音频流用 aac 重新编码为 128 kbps；
+  - `-map 0:v:0 -map 0:a:0`：显式选取第 1 个输入文件的指定轨道输出。
+
+---
+
+## 3. 日常高频处理命令参考
+
+### 3.1 封装转换与轨道提取 (Stream Copy)
 
 ```bash
-ffmpeg -i input.mp4
+# 1. 仅转换容器 (MKV -> MP4 / TS -> MP4)，无重编码
+ffmpeg -i input.mkv -c copy -movflags faststart output.mp4
+
+# 2. 纯静音提取 (去除音频流，仅保留视频)
+ffmpeg -i input.mp4 -c:v copy -an video_only.mp4
+
+# 3. 纯音频提取 (去除视频流，提取原始音频)
+ffmpeg -i input.mp4 -vn -c:a copy audio_only.m4a
 ```
 
-至少先看清这些信息：
+---
 
-- 容器类型
-- 视频编码格式
-- 音频编码格式
-- 分辨率
-- 帧率
-- 采样率
-- 声道数
-- 码率
-
-输入看清楚了，后面很多判断就自然了：到底只是换容器，还是必须转码；到底需不需要重采样，还是只改输出封装就够。
-
-## 4. 命令行结构和常见参数
-
-一个典型的 FFmpeg 命令，通常就是这个结构：
+### 3.2 视频裁剪与 Seeking
 
 ```bash
-ffmpeg [全局参数] [输入参数] -i input [输出参数] output
+# 方案 A: 关键帧快速裁剪 (耗时短，对齐到最近的 I 帧)
+ffmpeg -ss 00:01:30 -to 00:03:00 -i input.mp4 -c copy cut_fast.mp4
+
+# 方案 B: 精确裁剪 (重新编码，起始点精确至目标时间戳)
+ffmpeg -ss 00:01:30.500 -to 00:03:00.000 -i input.mp4 -c:v libx264 -crf 22 -c:a aac cut_exact.mp4
 ```
 
-常见参数可以先记住这些：
+---
 
-- `-i`：输入文件
-- `-y`：覆盖输出文件
-- `-c:v`：指定视频编码器
-- `-c:a`：指定音频编码器
-- `-c copy`：直接拷贝流，不重新编码
-- `-vn`：去掉视频流
-- `-an`：去掉音频流
-- `-ss`：跳转到指定时间点
-- `-t`：输出指定时长
-- `-ar`：音频采样率
-- `-ac`：声道数
-- `-b:a`：音频码率
-
-这里最值得先记住的是 `-c copy`。看到它，就要想到这次大概率不是转码，而是在搬运流。
-
-## 5. 容器转换和转码不要混淆
-
-这是 FFmpeg 初学时最容易搞混的地方。
-
-### 只换容器
+### 3.3 视频画质与分辨率调整 (x264)
 
 ```bash
-ffmpeg -i input.mp4 -c copy output.mkv
+# 1. 恒定质量压缩 (CRF 推荐 18~28，23 为默认值)
+ffmpeg -i input.mp4 -c:v libx264 -preset medium -crf 22 -c:a copy output_compressed.mp4
+
+# 2. 等比例缩放 (宽度设为 1280，高度保持等比并对齐为偶数)
+ffmpeg -i input.mp4 -vf "scale=1280:-2" -c:v libx264 -crf 22 -c:a copy output_720p.mp4
+
+# 3. 画面裁剪 (从坐标 x=100, y=50 处裁剪宽 640、高 480 区域)
+ffmpeg -i input.mp4 -vf "crop=640:480:100:50" -c:a copy output_crop.mp4
 ```
 
-这条命令只是把流重新装进另一个容器，不改视频编码，也不改音频编码。
+---
 
-这种方式的好处很直接：
-
-- 快
-- 不损失质量
-- CPU 消耗低
-
-### 真正的转码
+### 3.4 音频转码与重采样
 
 ```bash
-ffmpeg -i input.mp4 -c:v libx265 -c:a aac output.mp4
+# 1. MP3 转换为 AAC (128 kbps 立体声)
+ffmpeg -i input.mp3 -c:a aac -b:a 128k output.m4a
+
+# 2. 提取 16kHz 16-bit 单声道 WAV (ASR 语音识别输入)
+ffmpeg -i input.mp4 -vn -ar 16000 -ac 1 -c:a pcm_s16le output_16k.wav
+
+# 3. 提取原始无头裸 PCM
+ffmpeg -i input.wav -f s16le -acodec pcm_s16le output.pcm
 ```
 
-这时就不是“换外壳”，而是视频和音频都重新编码了。目标平台不支持原编码，或者你需要调整体积、码率、分辨率时，才会走到这一步。
+---
 
-如果你想快速判断一条命令是不是转码，先看两件事：
+### 3.5 GIF 生成 (调色板优化)
 
-- 有没有 `-c copy`
-- 有没有显式指定新的编码器
-
-## 6. 最常见的几个处理任务
-
-### 查看文件信息
+直接生成 GIF 易因全局调色板量化产生噪点，采用两步法先提取调色板再生成：
 
 ```bash
-ffprobe input.mp4
+ffmpeg -ss 00:00:10 -t 5 -i input.mp4 \
+    -filter_complex "[0:v]fps=15,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+    output_hq.gif
 ```
 
-这是最基本的一步。
+---
 
-### 只换容器
+## 4. 总结
 
-```bash
-ffmpeg -i input.mp4 -c copy output.mkv
-```
-
-适合内容不变，只是目标平台更偏好另一个容器的场景。
-
-### 只提取音频
-
-```bash
-ffmpeg -i input.mp4 -vn -c:a copy output.aac
-```
-
-如果原始音频本来就是 AAC，这条命令会很高效。
-
-### WAV 转 MP3
-
-```bash
-ffmpeg -i input.wav -c:a libmp3lame -b:a 192k output.mp3
-```
-
-### WAV 转 AAC
-
-```bash
-ffmpeg -i input.wav -c:a aac -b:a 128k output.m4a
-```
-
-### 截取一段音视频
-
-```bash
-ffmpeg -ss 00:00:10 -i input.mp4 -t 00:00:20 -c copy output.mp4
-```
-
-如果只是粗剪，并且允许按关键帧切，`-c copy` 往往就够了。
-
-### 重采样 PCM
-
-```bash
-ffmpeg -f s16le -ar 48000 -ac 1 -i in.pcm -f s16le -ar 16000 -ac 1 out.pcm
-```
-
-这类操作在语音算法、AEC、ASR 前处理场景里很常见，因为很多算法要求固定采样率和声道数。
-
-## 7. 什么时候优先考虑 `-c copy`
-
-经验上，这几类任务优先考虑直接拷贝流：
-
-- 换容器
-- 抽流
-- 不要求重新压缩的裁剪
-- 快速验证媒体链路
-
-因为一旦重编码，你就得额外面对编码速度、码率选择、画质 / 音质损失、编码器兼容性这些问题。
-
-能不转码就别转码，这条经验在很多场景里都适用。
-
-## 8. 什么时候必须转码
-
-下面这些场景通常没法只靠拷贝流完成：
-
-- 目标设备不支持原编码
-- 需要降低码率或体积
-- 需要改分辨率
-- 需要改音频采样率或声道数
-- 需要做滤镜处理
-- 需要生成特定流媒体输出格式
-
-比如 H.265 视频要兼容旧设备，可能就得转回 H.264；48 kHz 双声道音频要给语音模型使用，也可能得转成 16 kHz 单声道。
-
-## 9. 使用 FFmpeg 时更实用的几个建议
-
-### 先明确目标，再写命令
-
-在敲命令前先想清楚：目标平台支持什么容器、支持什么编码、是否允许失真、是批处理还是单次调试。
-
-### 先确认输入，再决定输出
-
-不要一上来就转。先 `ffprobe` 看输入，再决定是拷贝、转码、重采样还是分片。
-
-### 参数尽量显式
-
-处理音频时，建议把这些参数写清楚：
-
-- `-ar`
-- `-ac`
-- `-b:a`
-- `-c:a`
-
-否则结果容易依赖默认值，不利于复现和排查。
-
-### 善用帮助系统
-
-很多时候不用到处搜二手资料，FFmpeg 自带帮助已经够用了：
-
-```bash
-ffmpeg -h muxer=flv
-ffmpeg -h filter=atempo
-ffmpeg -h encoder=libx264
-```
-
-## 10. 下命令前的四个问题
-
-我会先确认：
-
-- 文件外壳是什么
-- 里面有哪些流
-- 每条流用了什么编码
-- 目标输出到底要什么
-
-之后先用 `ffprobe` 看输入，再写输出选项。复制来的命令可以当提示，不能代替确认当前文件的流和当前 FFmpeg 的能力。
+1. **先辨类型**：使用 `ffprobe input.mp4` 查看文件的 Container、Stream 与 Codec 详情；
+2. **区分处理方式**：换容器、剥离流、快速粗截取优先使用 `-c copy`；
+3. **参数平衡**：重新编码时，根据目标场景在画质（CRF）、编码速度（preset）与文件大小之间权衡。

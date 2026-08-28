@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Wi-Fi P2P 基础"
-subtitle: "发现、协商、组网和并发限制"
+title: "Wi-Fi P2P (Wi-Fi Direct) 架构与协议全流程"
+subtitle: "从社交信道发现、GO 协商、WPS 配对到 SCC/MCC 多角色并发"
 date: 2024-08-18
 redirect_from: /2023/11/03/wifi-p2p-basics/
 author: Yvain Zhang
@@ -11,160 +11,170 @@ tags:
   - 无线网络
   - Wi-Fi
   - P2P
+  - wpa_supplicant
+  - Linux
 ---
 
-Wi-Fi P2P（Wi-Fi Direct）不用现成路由器也能让设备组网，但它并不是“跳过所有 Wi-Fi 流程直接连上”。发现、协商、组建立和安全配置一项都不少，系统适配时还会碰到并发角色限制。
+Wi-Fi P2P（商业推广名 **Wi-Fi Direct**）允许支持该协议的无线设备在**无需传统无线路由器（AP）介入**的前提下，直接建立点对点的无线局域网。它被广泛应用于无线投屏（Miracast / Wi-Fi Display）、文件快传（如基于 Wi-Fi Direct 的无线快传）、无线打印和无人机图传等场景。
 
-它的价值通常在这几件事上：
+然而在工程实现与驱动适配中，Wi-Fi P2P 包含**社交信道发现、服务查询、GO 角色协商（Intent 竞选）、WPS 配对、内部 DHCP 分配以及多角色并发（SCC/MCC）**等完整状态机。
 
-- 不依赖现成 AP
-- 建链速度较快
-- 带宽通常高于蓝牙
-- 适合近距离设备间通信
+---
 
-## 1. 它和传统 Wi-Fi 有什么区别
+## 1. 架构角色与 Group 模型
 
-传统 Wi-Fi 更常见的是基础设施模式：
+Wi-Fi Direct 在拓扑上仍然复用了经典的 802.11 基础设施架构，核心差异在于**AP 角色是在设备间动态竞选产生的**：
 
-- 终端接入 AP
-- AP 负责中转通信
+```
+                 ┌─────────────────────────┐
+                 │    P2P Group Owner      │
+                 │   (GO - 充当自主 AP)    │
+                 │  * 广播 Beacon/SSID     │
+                 │  * 运行内部 DHCP Server  │
+                 └───────────┬─────────────┘
+                             │
+            ┌────────────────┴────────────────┐
+            ▼                                 ▼
+┌───────────────────────┐         ┌───────────────────────┐
+│      P2P Client       │         │      P2P Client       │
+│ (充当 STA，获取 IP)   │         │ (充当 STA，获取 IP)   │
+└───────────────────────┘         └───────────────────────┘
+```
 
-Wi-Fi P2P 则更强调设备之间直接组网：
+1. **P2P Device**：
+   - 处于发现阶段的未入组实体，仅具备扫描与协商能力。
+2. **P2P Group Owner (GO)**：
+   - 在建立连接时被推选出来的“主设备”。GO 会对外广播以 `DIRECT-` 开头的 Beacon 帧，维护 BSSID，并在内核/用户态启动轻量级 DHCP Server（通常分配 `192.168.49.x` 网段），负责为 Client 分配 IP。
+3. **P2P Client**：
+   - 组内的“从设备”，以传统 Station 身份关联至 GO，通过 DHCP 获取 IP 地址。
+4. **Autonomous GO (自主 GO)**：
+   - 设备不经过双向协商，单方面直接以 GO 模式建组，其他设备通过扫码或输入 PIN 码直接加入。
 
-- 设备可直接发现彼此
-- 协商谁来承担“类似 AP”的角色
-- 建立临时组网关系后再进行数据通信
+---
 
-## 2. 典型角色
+## 2. P2P 连接全流程与状态机
 
-Wi-Fi P2P 里通常有几个核心角色：
+一次完整的 Wi-Fi Direct 建链过程包含以下 5 个核心阶段：
 
-### P2P Device
+```mermaid
+sequenceDiagram
+    autonumber
+    participant D1 as P2P Device A (Client)
+    participant D2 as P2P Device B (GO 胜出者)
 
-支持 P2P 功能、可参与发现和协商的设备。
+    Note over D1,D2: 阶段 1: 发现阶段 (Social Channels 1, 6, 11)
+    D1->>D2: Probe Request (P2P IE)
+    D2-->>D1: Probe Response (P2P IE: Device Info)
 
-### Group Owner（GO）
+    Note over D1,D2: 阶段 2: 服务发现 (可选 GAS/ANQP)
+    D1->>D2: GAS Initial Request (Bonjour/UPnP)
+    D2-->>D1: GAS Initial Response (支持投屏/传输)
 
-在一个 P2P Group 中承担类似 AP 的职责，负责组管理。
+    Note over D1,D2: 阶段 3: GO 角色协商 (GON 握手)
+    D1->>D2: GO Negotiation Request (GO Intent=5, Tie=0)
+    D2-->>D1: GO Negotiation Response (GO Intent=14, Tie=1)
+    D1->>D2: GO Negotiation Confirmation (Status: Success, B 胜出)
 
-### P2P Client
+    Note over D1,D2: 阶段 4: 安全配置与建链 (WPS + 4-Way HS)
+    D1->>D2: Provision Discovery (PBC / PIN)
+    D2-->>D1: Provision Discovery Response
+    D1->>D2: 802.11 Auth & Assoc (DIRECT-xx SSID)
+    D1->>D2: EAP-WSC (WPS 交换凭证与 PSK)
+    D1->>D2: WPA2 4-Way Handshake
 
-加入某个 P2P Group 的普通成员设备。
+    Note over D1,D2: 阶段 5: 地址分配与业务数据
+    D1->>D2: DHCP Discover
+    D2-->>D1: DHCP Offer / ACK (分配 192.168.49.x)
+    D1->>D2: TCP/UDP 数据高速传输
+    D2-->>D1: TCP/UDP 双向响应数据
+```
 
-P2P 这个名字容易让人误会成完全对等，但真正组起来以后，总要有一方承担更多组管理职责。
+### 2.1 设备发现（Discovery Phase）
 
-## 3. 基本流程
+为了避免在 2.4GHz 和 5GHz 所有频段盲目轮询造成耗电与延迟，Wi-Fi Direct 定义了 **3 个社交信道（Social Channels: 1, 6, 11）**：
+- **Listen 状态**：随机选取 1、6、11 某信道作为 Listen Channel，静默监听 Probe Request；
+- **Search 状态**：在 1、6、11 信道轮流发送携带 P2P Information Element (IE) 的 Probe Request 广播帧；
+- 状态机在 Search 与 Listen 之间随机切换，直到双方在同一社交信道上相遇并完成响应。
 
-一个典型的 Wi-Fi P2P 连接过程大致包括：
+### 2.2 GO 角色协商（GO Negotiation）
 
-1. 设备发现
-2. 服务发现
-3. 角色协商
-4. 建立连接
-5. 数据传输
+当用户发起连接时，两端通过 3 次握手协商出由谁当 AP：
+- **GO Intent（意愿值，0 ~ 15）**：
+  - 双方在 `GO Negotiation Request/Response` 报文中携带自己的 Intent 值；
+  - **Intent 规则**：拥有持续供电的设备通常配置较高的 Intent 值。当双方 Intent 不同时，**Intent 较大的一方胜出成为 GO**；
+  - **平局处理**：若双方 Intent 相同（$<15$），则比对协商报文中的 `Tie-Breaker` 比特位决定胜负；
+  - **特殊情况**：若双方均设置了最高意愿值 `Intent = 15`（均要求强制为 GO），协议规定协商失败（返回状态码 `FAIL_BOTH_GO_INTENT_15`），无法建立连接。
+- **Operating Channel 协商**：双方确定建组后的最终工作信道（可切至干净的 5GHz 频段）。
 
-### 设备发现
+### 2.3 安全与入网（WPS + 4-Way Handshake）
 
-设备发现阶段的目标是让支持 P2P 的终端彼此可见。
+- **WPS 配对**：支持 PBC（Push Button Configuration，虚拟按键确认）或 PIN 码；
+- **凭证分发**：通过 EAP-WSC 交互后，GO 向 Client 分发预共享密钥（PSK）与动态 SSID；
+- **4 次握手**：基于生成的 PSK 立即执行标准的 802.11i WPA2-PSK (AES-CCMP) 四次握手生成 PTK/GTK。
 
-常见方式包括：
+---
 
-- 主动扫描
-- 被动扫描
+## 3. 多角色并发：SCC vs MCC
 
-这一阶段解决的是“附近有哪些可连接设备”。
+在移动终端上，常见的并发场景为：手机既连接无线路由器上网（STA 模式），又要通过 Wi-Fi Direct 投屏到电视（P2P Client 或 P2P GO）。
 
-### 服务发现
+```
+        ┌─────────────┐
+        │  家用路由器 │ (例如工作在 Channel 36)
+        └──────┬──────┘
+               │ (STA 链路)
+               ▼
+        ┌─────────────┐ (单 RF 射频芯片)
+        │   智能终端  │
+        └──────┬──────┘
+               │ (P2P 链路)
+               ▼
+        ┌─────────────┐
+        │   智能电视  │ (若 P2P 工作在 Channel 149 -> 产生 MCC)
+        └─────────────┘
+```
 
-设备发现之后，还可能继续判断：
+### 3.1 单信道并发（SCC - Single Channel Concurrency）
+- **原理**：STA 接口与 P2P 接口工作在**完全相同的信道**（例如均为 Ch 36）；
+- **优势**：单 RF 射频无需在多个频点间跳变，开销最低，吞吐性能最好；
+- **限制**：要求 GO 协商或建组时服从当前已有 STA 连接的信道。
 
-- 对方支持哪些服务
-- 是否具备目标功能
-- 是否值得进一步建立连接
+### 3.2 多信道并发（MCC - Multi Channel Concurrency）
+- **原理**：当 STA 必须工作在 Ch 36，而 P2P 必须工作在 Ch 149 时，单 RF 芯片需以**时分复用（Time Division Multiplexing）**方式在两个信道间切换；
+- **特点与机制**：
+  1. **吞吐下降**：由于信道切换存在锁相环稳定时间与空口保护时间，有效吞吐通常显著降低；
+  2. **TBTT 同步**：需协调两个信道的 Beacon 接收，防止错过 STA 端的信标帧；
+  3. **NoA (Notice of Absence) 与 CTWindow**：P2P GO 可在 Beacon 帧或管理帧中携带 NoA（缺席通知）或使用 Client Traffic Window（CTWindow）机制声明离信道时间，协调组内 Client 在 GO 切换至另一信道期间暂缓发包。
 
-这一阶段更偏向“连谁”和“为什么连”。
+---
 
-### 角色协商
+## 4. Linux 下 `wpa_cli` 实操与调试
 
-P2P 建链时，双方需要协商谁来担任 Group Owner。
+在 Linux 系统下，`wpa_supplicant` 完整实现了 P2P 协议状态机。以下是通过 `wpa_cli` 调试 P2P 的常用命令链路：
 
-可以把它理解为：
+```bash
+# 1. 启动 P2P 设备搜索
+$ wpa_cli -i wlan0 p2p_find
 
-- 连接两端不完全对等
-- 总要有一方承担更多的组管理职责
+# 2. 列出附近发现的 P2P 节点信息
+$ wpa_cli -i wlan0 p2p_peers
+$ wpa_cli -i wlan0 p2p_peer <PEER_MAC_ADDR>
 
-### 建立连接
+# 3. 向对端设备发起 PBC 按钮配对连接
+$ wpa_cli -i wlan0 p2p_connect <PEER_MAC_ADDR> pbc go_intent=14
 
-建立成功后，就形成一个 P2P Group，后续设备可以以组的形式继续维护和通信。
+# 4. (可选) 以自主 GO (Autonomous GO) 方式直接建组
+$ wpa_cli -i wlan0 p2p_group_add freq=5180
 
-## 4. 安全性为什么总是重点
+# 5. 查看当前 P2P 状态与组接口名 (如 p2p-wlan0-0)
+$ wpa_cli -i wlan0 p2p_group_status
+$ wpa_cli status
+```
 
-P2P 不是“裸连”，它也需要安全机制保障。
+---
 
-常见关注点包括：
+## 5. 总结
 
-- 配对认证
-- WPA2 / WPA3 加密
-- WPS 相关流程
-
-排查 P2P 连接失败时，安全协商往往是重点路径之一。
-
-## 5. 常见应用场景
-
-Wi-Fi P2P 常见于以下场景：
-
-- 文件传输
-- 屏幕投屏
-- 无线打印
-- 设备间近距离互联
-- 某些 IoT / 智能终端之间的直连
-
-它的优势通常在于无需额外网络基础设施，也能建立较高带宽连接。
-
-## 6. 常见问题与限制
-
-### 兼容性
-
-不同芯片、驱动、系统版本之间，P2P 兼容性可能并不一致。
-
-### 功耗
-
-设备发现、建链和持续维持连接都会带来额外功耗。
-
-### 角色冲突
-
-某些场景下，设备同时承担 STA / AP / P2P 角色，会涉及并发能力限制。
-
-### 稳定性
-
-P2P 在不同平台上的状态机实现差异较大，容易出现：
-
-- 发现阶段能否正常互相看到
-- 协商失败
-- 连接建立后掉线
-- 重连不稳定
-
-## 7. Linux / Android 视角
-
-在实际开发中，P2P 常见落点包括：
-
-- Android 上层 P2P API
-- `wpa_supplicant` 的 P2P 能力
-- 驱动对并发角色、扫描、建链、功耗的支持
-
-如果你做的是系统适配或驱动联调，真正的难点通常不在概念，而在：
-
-- 状态机是否完整
-- 扫描与并发角色是否冲突
-- 安全协商是否兼容
-- 上下层接口是否对齐
-
-## 8. 联调时我会画出的状态线
-
-先把流程按日志标出来：
-
-- 设备发现彼此
-- 协商临时组网关系
-- 在不依赖传统路由器的前提下直接通信
-
-然后对齐两端时间线。只看一侧经常会把“对端没响应”和“本端没发出去”混在一起。涉及 STA + P2P 并发时，还要把扫描、信道切换和固件能力一起查。
+1. **架构本质**：Wi-Fi P2P 是建立在 802.11 传统架构上的“动态 AP/STA 临时组网”，通过意愿值（GO Intent）协商与自主 GO 实现灵活自治。
+2. **三步核心**：**社交信道发现（1/6/11）** $\rightarrow$ **GON 握手与 WPS 配对** $\rightarrow$ **内部 DHCP 分配与 WPA2 通信**。
+3. **驱动适配重点**：在单芯片多接口场景下，优先推动系统策略实现 **SCC（同信道并发）**；若必须使用 **MCC（多信道时分切换）**，需严格校验 NoA 机制与 Beacon 保护时序，防止投屏或传输卡顿。

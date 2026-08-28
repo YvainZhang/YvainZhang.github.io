@@ -1,165 +1,146 @@
 ---
 layout: post
-title: "Linux 嵌入式基础问答"
-subtitle: "中断、锁、设备模型和内核边界笔记"
+title: "Linux 嵌入式驱动开发基础与常见问题"
+subtitle: "从字符设备注册、Platform 总线匹配、中断锁选型到 ioremap 与 Oops 调试"
 date: 2021-07-04
-redirect_from: /2022/06/28/linux-embedded-driver-faq/
+redirect_from:
+  - /2022/06/28/linux-embedded-driver-faq/
 author: Yvain Zhang
 header-img: "img/post-bg-unix-linux.jpg"
 series: "技术"
 tags:
   - 操作系统
   - 嵌入式
-  - 驱动
+  - Linux
+  - 驱动开发
+  - C语言
 ---
 
-这份笔记最初就是驱动开发中反复查的几个问题，后来慢慢攒到一起。内容不按内核子系统完整展开，只保留四条常用线索：
+在嵌入式 Linux 驱动开发与底层调试中，常遇到以下基础机制问题：
+- 字符设备注册后，`/dev` 目录下如何生成设备节点；
+- 在驱动中操作硬件寄存器为何需要执行 `ioremap()`；
+- 中断服务例程（ISR）与普通进程共享数据时自旋锁的选型；
+- 发生内核 Oops 调用栈时如何定位对应的 C 代码行号。
 
-- 中断怎么处理
-- 共享资源怎么保护
-- 驱动和设备怎么匹配
-- 用户态怎么和内核态交互
+本文梳理 Linux 字符设备模型、同步机制、I/O 内存映射与驱动调试方法。
 
-有些内容看起来像面试题，但我更关心它在代码里什么时候会出错。
+---
 
-## 1. 设备文件为什么会出现
+## 1. 字符设备注册与 `/dev/` 节点创建
 
-Linux 把很多硬件访问都抽象成文件接口。字符设备节点创建方式常见有三类：
+Linux 驱动中，动态创建 `/dev/my_dev` 设备节点的过程如下：
 
-- 手动 `mknod`
-- 用户态设备管理工具自动创建，如 `udev` / `mdev`
-- 早期机制如 `devfs`
+```mermaid
+graph LR
+    Step1[1. alloc_chrdev_region: 申请主次设备号] --> Step2[2. cdev_init & cdev_add: 绑定 file_operations 注册 cdev]
+    Step2 --> Step3[3. class_create: 在 /sys/class 创建设备类]
+    Step3 --> Step4[4. device_create: 向 sysfs 注册设备并发送 uevent]
+    Step4 --> Step5[5. udev / mdev 接收 uevent 自动在 /dev 创建节点]
+```
 
-设备节点本身只是最终露给用户态看的入口。前面真正要做的是把设备号、设备类和一组文件操作先注册好，不然 `/dev` 下就算有名字也没有意义。
+- **`mknod` 与 `udev/mdev` 的关系**：
+  - `mknod /dev/my_dev c <major> <minor>` 为手动创建设备节点的方式；
+  - `device_create()` 会在 `/sys/class/<class_name>/` 下生成设备属性并向用户态广播 `uevent`，系统中的 `mdev`（BusyBox）或 `udev` 守护进程捕获事件后，在用户空间自动创建 `/dev/my_dev` 节点。
 
-## 2. 中断处理为什么强调快进快出
+---
 
-中断上下文最忌讳把重活都放在上半部。原因很简单：
+## 2. Linux 设备驱动模型：Platform 平台总线匹配
 
-- 中断处理时间过长会拖慢系统响应
-- 很多操作在中断上下文里不能睡眠
-- 多核和高频中断场景下容易放大竞争
+对于集成在 SoC 内部的独立控制器（如片上 UART、I2C、GPIO 控制器），由于缺少物理总线的硬件枚举能力，Linux 抽象出虚拟的 **`platform_bus_type`（平台总线）** 进行设备与驱动的绑定：
 
-更常见的做法是：
+```
+[ Device Tree 设备树 .dts ]          [ Platform 驱动 .c (platform_driver) ]
+  compatible = "vendor,my-sensor";       .of_match_table = { { .compatible = "vendor,my-sensor" } }
+           │                                          │
+           └───────────────────┬──────────────────────┘
+                               ▼
+        [ platform_bus_type 匹配引擎 ]
+                               │
+                 字符串一致 -> 匹配成功
+                               ▼
+        调用 driver 的 .probe(struct platform_device *pdev)
+```
 
-- 上半部快速确认来源、保存必要状态
-- 下半部、tasklet、softirq 或 workqueue 再处理耗时逻辑
+- **常见匹配方式**：
+  1. **设备树匹配（OF Table）**：比对 `of_match_table` 中的 `compatible` 字符串（主流方式）；
+  2. **ID 表匹配**：比对 `platform_device_id` 数组；
+  3. **名称匹配**：直接比对 `driver.name` 与 `device.name`。
 
-看 ISR 写得好不好，通常不是看它“功能多不多”，而是看它有没有把必须马上做的事情和可以往后放的事情分开。
+---
 
-## 3. 自旋锁、信号量、mutex 到底怎么选
+## 3. 驱动同步原语与锁选型
 
-最常见的区分方式是看上下文能不能睡眠。
+| 同步机制 | 核心原理 | 中断上下文可用性 | 适用场景 |
+| :--- | :--- | :--- | :--- |
+| **`atomic_t`** | 基于硬件指令（如 ARM `LDREX/STREX`） | 支持 | 简单的整数计数与状态标志位。 |
+| **`spinlock_t`** | 忙等待自旋，不让出 CPU | 支持（需注意关抢占/中断） | 极短时间（微秒级）的临界区保护。 |
+| **`mutex`** | 阻塞睡眠，让出 CPU | 不支持 | 涉及 I/O 操作、内存申请等耗时较长的临界区。 |
+| **`spin_lock_irqsave`** | 自旋锁 + 保存中断状态并关本地中断 | 支持 | **共享数据同时被进程上下文与硬件 ISR 访问时使用**（避免中断打断进程持锁导致死锁）。 |
 
-### 自旋锁
+---
 
-- 不能睡眠
-- 适合短临界区
-- 常见于中断上下文或高频共享数据保护
+## 4. 硬件寄存器地址映射：`ioremap` 的作用
 
-### 信号量 / mutex
+```
+物理内存总线 (Physical Address) ──[ 硬件 MMU (禁止直接物理寻址) ]──> 虚拟地址 (Kernel Virtual Address)
+                                                ▲
+                                                │
+                                  ioremap(phys_addr, size) 建立页表映射
+```
 
-- 可以睡眠
-- 更适合进程上下文
-- 适合可能阻塞的资源访问
+- **原因**：启用 MMU 后，CPU 执行的所有指针解引用操作都会被当作虚拟地址处理；
+- **作用**：若直接向 `0x01C20800`（物理 GPIO 地址）写入，会因页表无该映射而触发异常。需通过 `ioremap()` 为该段物理 I/O 地址分配内核虚拟地址并建立页表映射，再通过 `readl()` / `writel()` 进行读写访问。
 
-所以中断里一般先想自旋锁，信号量和 mutex 往往是进程上下文里的选择。
+---
 
-## 4. 什么是原子操作
+## 5. 驱动调试：分析内核 Oops 调用栈
 
-原子操作强调的是“不可分割”。  
-它常用于计数器、标志位、状态切换等简单共享变量场景，避免为了极小的状态保护动用更重的锁。
+当驱动发生空指针或非法内存访问时，内核会打印 Oops 诊断信息：
 
-但要注意，原子操作不是万能互斥。  
-它更适合简单变量更新，不适合需要保护一整段复杂临界区的场景。
+```
+[  12.345678] Unable to handle kernel NULL pointer dereference at virtual address 00000010
+[  12.345680] Internal error: Oops: 80000005 [#1] PREEMPT SMP ARM
+[  12.345700] PC is at my_driver_write+0x24/0x80 [my_driver]
+[  12.345710] LR is at vfs_write+0xb8/0x1c8
+[  12.345720] Call trace:
+[  12.345730]  my_driver_write+0x24/0x80 [my_driver]
+[  12.345740]  vfs_write+0xb8/0x1c8
+[  12.345750]  ksys_write+0x58/0xd0
+```
 
-## 5. 为什么寄存器访问前常要 `ioremap`
+### 定位崩溃源码行号的方法
 
-驱动拿到的很多硬件资源，本质上是物理地址。内核不能随手把物理地址当虚拟地址直接访问，所以要先通过 `ioremap` 建立映射，再用合适的 I/O 接口访问。
+#### 方式 A（推荐）：使用内核自带的 `scripts/faddr2line`
+内核源码树提供了专用脚本，可直接解析 `function+offset/size` 格式：
 
-这里其实是在碰一个很基本的事实：
+```bash
+# 语法：./scripts/faddr2line <带调试信息的.ko或vmlinux> <函数名+偏移/函数大小>
+./scripts/faddr2line my_driver.ko my_driver_write+0x24/0x80
 
-- 设备资源在物理地址空间里
-- 驱动运行在内核虚拟地址环境里
-- 中间需要映射桥梁
+# 输出定位结果：
+# my_driver_write+0x24/0x80:
+# my_driver_write at /home/user/project/drivers/my_driver.c:142
+```
 
-## 6. platform 总线解决了什么
+#### 方式 B：使用 `nm` 获取基址并传给 `addr2line`
+GNU `addr2line` 需要十六进制数值地址，可通过符号表计算：
 
-并不是所有设备都挂在 PCI、USB、I2C、SPI 这类显式总线上。对 SoC 内部很多集成设备来说，Linux 通过 platform 设备和 platform 驱动来统一管理。
+```bash
+# 1. 查找函数符号的起始基址
+FUNC_ADDR=$(nm my_driver.ko | grep "T my_driver_write" | awk '{print "0x"$1}')
 
-它的价值主要在于：
+# 2. 加上崩溃偏移量 0x24
+TARGET_ADDR=$(printf "0x%x" $((FUNC_ADDR + 0x24)))
 
-- 统一设备 / 驱动匹配模型
-- 统一资源描述方式
-- 方便中断、时钟、寄存器、DMA 等平台资源管理
+# 3. 传给 addr2line 转换行号
+arm-linux-gnueabihf-addr2line -e my_driver.ko $TARGET_ADDR
+# 输出：/home/user/project/drivers/my_driver.c:142
+```
 
-做 SoC 内部设备时，先把 platform 这一套想明白，通常比死背某几个 API 更有用。
+---
 
-## 7. 用户态和内核态为什么不能直接互访
+## 6. 总结
 
-用户态和内核态不只是“权限不同”，还意味着：
-
-- 地址空间隔离
-- 用户指针未必可靠
-- 访问过程可能触发换页和异常
-
-因此，内核和用户态通信要走受控机制，例如：
-
-- 系统调用
-- `ioctl`
-- `procfs`
-- `sysfs`
-- `mmap`
-- `netlink`
-
-驱动接口只要通向用户态，输入就默认不能直接信，边界和合法性检查不能省。
-
-## 8. 软中断、tasklet、workqueue 的区别
-
-它们都属于“延后处理”，但上下文不同。
-
-### softirq
-
-更底层、更偏性能，适合网络等高频场景。
-
-### tasklet
-
-基于 softirq，使用更方便，但能力和限制也继承了 softirq 的特点。
-
-### workqueue
-
-运行在进程上下文，可睡眠，适合较重、较复杂的后处理任务。
-
-到底该选哪种，通常就看几件事：
-
-- 是否需要睡眠
-- 是否追求极低时延
-- 工作量是否较重
-
-## 9. 驱动开发里并发控制为什么总是绕不开
-
-驱动经常会遇到多种并发来源同时落到一份硬件资源上：
-
-- 多线程并发调用
-- 中断和进程上下文同时访问
-- 多核同时执行
-
-这也是为什么驱动开发里要长期和这些东西打交道：
-
-- 原子操作
-- 自旋锁
-- mutex / semaphore
-- 禁中断保护
-
-这不是 Linux 故意把事情搞复杂，而是硬件访问本来就伴随共享、抢占和竞争。
-
-## 10. 我会先查的边界
-
-遇到驱动问题，先把下面几条边界确认掉：
-
-- 中断上下文和进程上下文的区别
-- 并发保护怎么选
-- 设备模型如何组织驱动
-- 用户态和内核态边界如何处理
-
-边界错了，API 换来换去也没用。特别是中断上下文里睡眠、物理地址直接解引用、用户指针直接访问这几类错误，应该先排除。
+1. **设备模型**：Platform 总线用于解耦板级硬件描述（Device Tree）与驱动实现代码；
+2. **内核边界**：用户空间与内核空间传递数据使用 `copy_to_user()` / `copy_from_user()`，物理寄存器访问需经过 `ioremap()` 映射；
+3. **并发保护**：进程与 ISR 共享数据采用 `spin_lock_irqsave()` 避免中断重入竞争。

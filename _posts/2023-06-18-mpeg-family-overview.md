@@ -1,120 +1,105 @@
 ---
 layout: post
-title: "MPEG 标准谱系概览"
-subtitle: "MP3、AAC、MP4 和 H.264 分别在哪"
+title: "MPEG 系列标准谱系全景"
+subtitle: "从 MPEG-1/2 (VCD/DVD)、MPEG-4 (AVC/AAC/ISOBMFF) 到 MPEG-7/21 多媒体演进"
 date: 2023-06-18
-redirect_from: /2021/12/14/mpeg-family-overview/
+redirect_from:
+  - /2021/12/14/mpeg-family-overview/
+  - /2021/12/26/mpeg-family-overview/
 author: Yvain Zhang
-header-img: "img/post-bg-universe.jpg"
+header-img: "img/post-bg-rwd.jpg"
 series: "技术"
 tags:
   - 多媒体
   - MPEG
-  - 标准
+  - 编解码
+  - 标准组织
 ---
 
-我最早记 MP3、AAC、MP4、H.264 时也是一项一项记，后来查标准号才发现它们大都能放回 MPEG 这条线上。把谱系画出来的用处不是考试，而是查文档时知道该往哪一份标准里找。
+在数字音视频领域，**MPEG（Moving Picture Experts Group，动态图像专家组）** 制定了一系列流媒体与数字视听标准。
 
-## 1. MPEG 到底是什么
+从 **MPEG-1 Layer 3、MPEG-2 AAC、MPEG-4 Part 10 (AVC/H.264)、MPEG-4 Part 14 (MP4)** 到 **MPEG-H (HEVC/H.265)**，MPEG 包含多个代际与众多的 Part 子规范。
 
-MPEG 是 Moving Picture Experts Group 的缩写。真正重要的不是这个全称，而是它长期定下了大量音视频相关标准：
+MPEG 是由 **ISO（国际标准化组织）** 与 **IEC（国际电工委员会）** 于 1988 年联合成立的专家组（ISO/IEC JTC 1/SC 29/WG 11）。本文梳理 MPEG 系列标准的演进脉络、各代代表技术及核心 Part 划分。
 
-- 音频压缩
-- 视频压缩
-- 多媒体系统
-- 文件封装
-- 内容描述
+---
 
-很多今天仍在广泛使用的格式，背后都有 MPEG 的影子。
+## 1. MPEG 标准演进概览
 
-## 2. 为什么要了解 MPEG 谱系
+```
+MPEG-1 (1993, ISO/IEC 11172) ──> VCD / 1.5 Mbps / MP3 音频
+   │
+MPEG-2 (1995, ISO/IEC 13818) ──> DVD / 数字电视 DVB / TS/PS 流 / AAC 诞生
+   │
+MPEG-4 (1998, ISO/IEC 14496) ──> 现代网络媒体 (H.264/AVC + AAC + MP4/ISOBMFF)
+   │
+MPEG-7 / 21 ───────────────────> 多媒体内容元数据描述 (MPEG-7) 与数字版权框架 (MPEG-21)
+   │
+MPEG-H (2013, ISO/IEC 23008) ──> 4K/8K 时代 (H.265/HEVC + 3D 音频 + MMT 传输)
+```
 
-如果不把这些概念放回标准体系里看，容易出现一种状态：
+---
 
-- 知道 MP3
-- 听过 AAC
-- 见过 MP4
-- 用过 H.264
+## 2. MPEG-1 (ISO/IEC 11172)：光盘多媒体标准
 
-但彼此是什么关系，经常说不清。这个关系一乱，看标准、文档、FFmpeg 输出时就会一直像在看碎片。
+为 **CD-ROM / VCD** 介质定制，优化 1.5 Mbps 码率下的音视频存储：
+- **Part 1 (Systems)**：系统时钟同步与音视频复用流；
+- **Part 2 (Video)**：基于 DCT（离散余弦变换）与运动补偿（I/P/B 帧）的视频压缩；
+- **Part 3 (Audio)**：划分为三层，层数越高压缩率越高且向下兼容：
+  - **Layer I (MP1)**：约 4:1 压缩比；
+  - **Layer II (MP2)**：约 6:1~8:1 压缩比（VCD 音轨、DAB 广播）；
+  - **Layer III (MP3)**：约 10:1~12:1 压缩比，引入心理声学模型与哈夫曼熵编码。
 
-## 3. MPEG-1：最常被记住的是 MP3
+---
 
-MPEG-1 面向较早期、较低码率的数字音视频应用场景。今天回头看，它最著名的遗产之一就是：
+## 3. MPEG-2 (ISO/IEC 13818)：数字广播与 DVD
 
-- MPEG-1 Layer 3，也就是 MP3
+针对广播级画质、多声道环绕声及不可靠传输信道设计：
+- **Part 1 (Systems)**：
+  - **TS (Transport Stream, 188 字节固定包长)**：专为有线电视、卫星广播和网络流媒体（如 HLS）等易丢包环境设计，具备自同步与纠错能力；
+  - **PS (Program Stream)**：专为 DVD 等存储介质设计。
+- **Part 2 (Video)**：支持隔行扫描（Interlaced），DVD 与 1080i 高清广播常用；
+- **Part 7 (AAC)**：高级音频编码作为独立子标准制定。
 
-MP3 的流行也说明了一个事实：很多标准真正被人记住的，不是标准号，而是它最终落成的工程产物。
+---
 
-## 4. MPEG-2：广播和更高质量媒体场景
+## 4. MPEG-4 (ISO/IEC 14496)：网络流媒体规范
 
-MPEG-2 相比 MPEG-1 更偏向更高质量的视频和广播场景。它常见于：
+MPEG-4 面向对象化编码与网络流媒体构建了多项子规范体系：
 
-- DVD
-- 数字电视
-- 广播系统
+```mermaid
+graph LR
+    MPEG4[MPEG-4 核心规范 ISO/IEC 14496] --> P3[Part 3: Audio AAC/HE-AAC/ALS]
+    MPEG4 --> P10[Part 10: Video H.264 / AVC 联合制定]
+    MPEG4 --> P12[Part 12: ISOBMFF 基础媒体文件格式]
+    MPEG4 --> P14[Part 14: MP4 文件容器规范]
+    MPEG4 --> P15[Part 15: NALU 单元封装与打包]
+```
 
-在音频体系里，AAC 也和 MPEG-2 有直接关联。  
-所以 AAC 不是“凭空冒出来的新名字”，它是在 MPEG 音频标准演进中的重要一环。
+### 关键子规范 (Parts)
 
-## 5. MPEG-4：现代多媒体体系里最重要的一代
+| 子规范编号 | 标准名称 | 实际应用 |
+| :--- | :--- | :--- |
+| **Part 2** | Visual (ASP) | 早期 DivX / Xvid 编码格式 |
+| **Part 3** | Audio | 定义 AAC-LC, HE-AAC, CELP 语音, ALS 无损音频 |
+| **Part 10** | **AVC (Advanced Video Coding)** | 即与 ITU-T 联合制定的 **H.264** |
+| **Part 12** | **ISO Base Media File Format (ISOBMFF)** | MP4, MOV, 3GP, HEIF, CMAF 的通用对象基类 |
+| **Part 14** | **MP4 File Format** | 多媒体封装文件格式（`.mp4`, `.m4a`） |
 
-MPEG-4 非常关键，因为它不再只是讨论单纯压缩率，而是更强调：
+---
 
-- 更灵活的多媒体系统
-- 网络友好性
-- 更完整的媒体组织和应用场景支持
+## 5. MPEG-7 与 MPEG-21：元数据与版权框架
 
-和工程实践最相关的几条高频关联包括：
+- **MPEG-7 (ISO/IEC 15938)**：**多媒体内容描述接口**。通过 XML 对音频特征（音高、音色、静音段）和图像特征（颜色直方图、纹理、边缘形状）进行结构化标注，用于多媒体检索；
+- **MPEG-21 (ISO/IEC 21000)**：多媒体框架，定义数字版权管理（DRM）、电子知识产权保护与跨平台分发协议。
 
-- AAC 音频体系
-- MP4 容器
-- AVC / H.264
+---
 
-很多今天的播放器、点播文件和移动端媒体格式，都能在 MPEG-4 体系里找到位置。
+## 6. 总结
 
-## 6. MPEG-7 和 MPEG-21 为什么也值得知道
-
-它们不像 MPEG-1/2/4 那样高频，但了解它们有助于建立标准视角。
-
-### MPEG-7
-
-更偏向媒体内容描述，例如：
-
-- 标注
-- 分类
-- 检索
-
-它不是典型压缩标准，更偏内容描述这一层。
-
-### MPEG-21
-
-更偏向完整多媒体应用框架，关注：
-
-- 内容标识
-- 权限表达
-- 更完整的应用体系
-
-对日常开发来说接触没那么频繁，但它能帮助理解多媒体标准化并不只关心编解码。
-
-## 7. 最值得记住的几条关系
-
-如果只想建立工程上的整体感，先记住下面这些关系就够用了：
-
-- MP3 <- MPEG-1 Layer 3
-- AAC <- MPEG-2 / MPEG-4 音频体系
-- MP4 <- MPEG-4 Part 14
-- ISO Base Media File Format <- MPEG-4 Part 12
-- AVC / H.264 <- MPEG-4 Part 10
-
-一旦把这些连接起来，你再看文件格式、封装说明或标准文档时，就不会觉得它们像一堆互不相关的名词。
-
-## 8. 我的记法
-
-Part 编号不用全背，先留住这条主干：
-
-- MPEG 是重要的音视频标准来源
-- MPEG-1 / 2 / 4 是工程里最常见的主干
-- MP3、AAC、MP4、H.264 都不是孤立名词，而是这条主线上的节点
-
-遇到新名词再回到标准号确认它是音频、视频还是 Systems / File Format。这样比靠后缀和产品名猜可靠。
+| 时代/标准 | 代表视频标准 | 代表音频标准 | 代表容器/封装 |
+| :--- | :--- | :--- | :--- |
+| **MPEG-1** | MPEG-1 Video | MP3 (Layer III), MP2 | System Stream (VCD) |
+| **MPEG-2** | MPEG-2 Video | MPEG-2 AAC, AC-3 | MPEG-2 TS / PS (DVD) |
+| **MPEG-4** | **H.264 / AVC** | **AAC (LC/HE), ALS** | **MP4, ISOBMFF, M4A** |
+| **MPEG-H** | **H.265 / HEVC** | MPEG-H 3D Audio | MMT, MP4, CMAF |

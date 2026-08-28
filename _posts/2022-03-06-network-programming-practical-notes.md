@@ -1,212 +1,145 @@
 ---
 layout: post
-title: "网络编程实践笔记"
-subtitle: "Socket 模型和常见排错顺序"
+title: "网络编程与 Socket 实践指南"
+subtitle: "从 TCP 状态机、I/O 多路复用 (epoll)、TCP_NODELAY 到 lwIP 嵌入式协议栈调优"
 date: 2022-03-06
-redirect_from: /2022/12/02/network-programming-practical-notes/
+redirect_from:
+  - /2022/12/02/network-programming-practical-notes/
+  - /2022/10/09/network-programming-practical-notes/
 author: Yvain Zhang
-header-img: "img/post-bg-keybord.jpg"
+header-img: "img/post-bg-os-metro.jpg"
 series: "技术"
 tags:
-  - 操作系统
-  - 网络
+  - 网络编程
+  - TCP/IP
   - Socket
+  - 嵌入式
+  - Linux
 ---
 
-这篇是我做网络程序时留下的基础笔记。TCP、UDP、Socket、阻塞模型和并发模型都只讲到够用的程度，重点放在选型和排错，不做协议大全。
+无论是在 Linux 服务端开发，还是在嵌入式系统（Linux / RTOS lwIP）上开发联网组件，除了基础的 `socket()`、`bind()`、`listen()`、`connect()` API 之外，深入理解传输层行为对于排查网络异常至关重要。
+
+在弱网或高并发环境中，开发者常遇到以下问题：
+- 小包交互时偶发约 40ms 延迟抖动；
+- 服务端重启时提示 `Address already in use` 无法绑定；
+- 对端断网后，本端连接长时间处于假死状态；
+- 嵌入式协议栈（如 lwIP）中网络驱动与应用层的数据传递开销。
+
+本文梳理 Socket 编程的状态机、I/O 模型、常用 Socket 选项与嵌入式网络优化策略。
+
+---
+
+## 1. TCP 连接生命周期与状态机
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client as 客户端 (Client)
+    participant Server as 服务端 (Server)
+
+    Note over Server: socket() -> bind() -> listen()
+    Note over Client: socket() -> connect()
+    Client->>Server: SYN (seq=x)
+    Server-->>Client: SYN+ACK (seq=y, ack=x+1)
+    Client->>Server: ACK (ack=y+1)
+    Note over Client,Server: 连接建立: ESTABLISHED
+
+    Note over Client: 主动关闭 close()
+    Client->>Server: FIN (seq=u)
+    Note over Client: 进入 FIN_WAIT_1
+    Server-->>Client: ACK (ack=u+1)
+    Note over Client: 进入 FIN_WAIT_2
+    Note over Server: 进入 CLOSE_WAIT
+
+    Note over Server: 被动关闭 close()
+    Server->>Client: FIN (seq=w)
+    Note over Server: 进入 LAST_ACK
+    Client-->>Server: ACK (ack=w+1)
+    Note over Client: 进入 TIME_WAIT (维持 2*MSL)
+    Note over Server: CLOSED
+```
+
+### 1.1 `TIME_WAIT` 与 `SO_REUSEADDR` 选项
+- **为什么需要维持 2*MSL（通常为 1~2 分钟）？**
+  1. 保证最后一个 ACK 能够送达对端（若丢失，对端重发的 FIN 会在 2*MSL 窗口内到达，本端可补发 ACK）；
+  2. 允许网络中残留的延迟报文自然消亡，避免新建的同四元组连接接收到旧连接的历史数据。
+- **端口复用**：服务端异常退出并重启时，监听端口常因处于 `TIME_WAIT` 导致 `bind: Address already in use`。在 `bind()` 前开启 **`SO_REUSEADDR`** 允许端口快速重用：
+  ```c
+  int opt = 1;
+  setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+  ```
+
+---
+
+## 2. 常用 Socket 调优选项
+
+### 2.1 降低小包时延：禁用 Nagle 算法 (`TCP_NODELAY`)
+- **Nagle 算法与延迟确认（Delayed ACK）的交互**：
+  - **Nagle 算法**：本端若存在未确认的在途数据包，会将后续应用层的小包暂存，等待攒满一个 MSS（最大段大小）或收到对端 ACK 后再发出；
+  - **接收端 Delayed ACK**：接收端为减少空口报文数，通常延迟几十毫秒等待与回传数据合并发送 ACK；
+  - **影响**：两者叠加会导致交互式小包通信（如遥控指令、按键事件、RPC）出现约 40ms 的等待延迟。
+- **处理方式**：在交互式通信中开启 `TCP_NODELAY` 禁用 Nagle：
+  ```c
+  int enable = 1;
+  setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &enable, sizeof(enable));
+  ```
+
+### 2.2 异常断连探测：`SO_KEEPALIVE` 与保活定时器
+当对端异常断电或物理链路中断，若本端不主动发送数据，TCP 协议栈默认不会主动感知对端状态。可配置系统级 Keepalive 探测：
+```c
+int keepalive = 1;
+int keepidle = 30;   // 空闲 30 秒后开始发送探测包
+int keepinterval = 5;// 探测包发送间隔 5 秒
+int keepcount = 3;   // 连续 3 次无应答判定连接断开
+
+setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, &keepalive, sizeof(keepalive));
+setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE, &keepidle, sizeof(keepidle));
+setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, &keepinterval, sizeof(keepinterval));
+setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, &keepcount, sizeof(keepcount));
+```
+
+---
+
+## 3. I/O 多路复用：`epoll` 机制 (ET vs LT)
+
+处理大量并发连接时，通常使用 `epoll` 管理文件描述符：
+
+```
+                    ┌─────────────────────────┐
+                    │      epoll_create()     │
+                    │ (内核红黑树管理监听 fd) │
+                    └────────────┬────────────┘
+                                 │
+           ┌─────────────────────┴─────────────────────┐
+           ▼                                           ▼
+┌───────────────────────┐                   ┌───────────────────────┐
+│ 水平触发 (Level-Trigger)│                   │ 边缘触发 (Edge-Trigger) │
+│ * 缓冲区有数据即持续通知│                   │ * 仅状态发生变化时通知│
+│ * 编程模型相对直观    │                   │ * 需循环读取至 EAGAIN │
+└───────────────────────┘                   └───────────────────────┘
+```
 
-## 1. 网络编程到底在做什么
+> **ET 模式注意点**：在边缘触发（`EPOLLET`）模式下，**socket 需设置为非阻塞模式（`O_NONBLOCK`）**，且事件到达后需循环读取直至 `read()` 返回 `-1` 且 `errno == EAGAIN`，防止残留数据未被及时处理。
 
-从很朴素的角度看，网络编程做的事情就是：
+---
 
-- 在不同主机之间传数据
-- 处理连接和断开
-- 处理发送、接收、超时、重试
+## 4. 嵌入式协议栈 (lwIP) 内存模型
 
-但一旦进到真实工程里，它马上会扩展成几个问题：
+在资源受限的 MCU/RTOS 环境下，常使用轻量级协议栈 **lwIP**。
 
-- 用 TCP 还是 UDP
-- 用阻塞还是非阻塞
-- 高并发时怎么处理连接
-- 性能和稳定性怎么平衡
+### 4.1 `pbuf` 四类内存模型
+1. **`PBUF_RAM`**：在动态堆内存中分配，头部与载荷连续存储，常用于发送端数据组装；
+2. **`PBUF_POOL`**：在固定大小的预分配内存池中管理，常用于网卡接收中断中的快速分配；
+3. **`PBUF_ROM` / `PBUF_REF`**：载荷直接指向外部只读 Flash 或外部全局内存，以指针引用方式减少数据拷贝。
 
-## 2. TCP 和 UDP 先怎么区分
+### 4.2 线程安全与驱动接口
+- **Mailbox 消息转发**：lwIP 核心线程（`tcpip_thread`）非线程安全，外部应用线程通过消息邮箱向核心线程传递请求；
+- **驱动递交**：以太网或 Wi-Fi 驱动在接收到报文后，从 `PBUF_POOL` 分配 `pbuf`，通过 `netif->input(p, netif)` 递交协议栈处理。
 
-这个问题不只是面试题，而是决定代码结构的第一步。
+---
 
-### TCP
+## 5. 总结
 
-更适合：
-
-- 需要可靠传输
-- 需要顺序
-- 需要连接状态
-
-它会帮你处理：
-
-- 重传
-- 有序
-- 流量控制
-- 拥塞控制
-
-### UDP
-
-更适合：
-
-- 简单快速
-- 对时延更敏感
-- 能自己接受丢包或上层处理丢包
-
-所以选型时，重点不是“哪个更高级”，而是业务到底更怕什么：
-
-- 怕丢
-- 还是怕慢
-
-## 3. Socket 在程序里扮演什么角色
-
-Socket 可以先理解成操作系统提供的网络通信接口。
-
-常见流程一般是：
-
-- 创建 socket
-- 绑定地址
-- 监听或主动连接
-- 发送和接收
-- 关闭连接
-
-服务端和客户端在细节上不同，但主线差不多。
-
-## 4. 阻塞和非阻塞为什么会影响整个程序结构
-
-这不是一个小选项，而是会直接影响你怎么组织线程和事件循环。
-
-### 阻塞式
-
-优点是直观，代码好理解。缺点是一个 I/O 卡住，线程就得等。
-
-### 非阻塞式
-
-优点是更适合高并发和事件驱动；缺点是代码复杂度会明显上升，需要处理：
-
-- 可读 / 可写事件
-- 状态机
-- 重试和边界情况
-
-如果连接数不多，阻塞模型可能完全够用；如果连接很多，再继续用“一连接一线程”就可能代价过高。
-
-## 5. 写网络程序时最容易忽略什么
-
-很多初学者会把 `send()` 和 `recv()` 想得过于理想，默认：
-
-- 一次 `send()` 就发完
-- 一次 `recv()` 就收完整包
-
-真实情况经常不是这样。  
-TCP 是字节流，不保证应用层消息边界，所以你要自己处理：
-
-- 粘包
-- 拆包
-- 半包
-
-如果这层没想清楚，后面协议解析经常一塌糊涂。
-
-## 6. 高并发连接为什么会把问题放大
-
-连接一多，原本单连接下不明显的问题都会被放大，比如：
-
-- 每连接一个线程导致线程开销过大
-- 内存占用持续膨胀
-- 锁竞争明显
-- 超时和异常处理难以统一
-
-这也是为什么高并发网络服务常见要在下面几类模型里做取舍：
-
-- 多线程
-- 多进程
-- 事件驱动
-- Reactor / Proactor
-
-选型不是为了追时髦，而是要看连接规模、CPU 模型、业务复杂度和团队维护成本。
-
-## 7. TCP 调优一般都在调什么
-
-很多时候不是“代码错了”，而是默认参数和业务不匹配。
-
-比较常见的调优点包括：
-
-- 发送 / 接收缓冲区
-- 超时重传相关参数
-- backlog
-- keepalive
-- `TCP_NODELAY`
-
-其中最容易被频繁提到的就是：
-
-### Nagle 算法
-
-它会尽量合并小包，提高带宽利用率，但有时会增加时延。
-
-### 延迟确认
-
-它和 Nagle 配合不当时，可能把小包交互的时延拉长。
-
-所以如果业务是那种高频小包、强交互场景，经常会考虑是否关闭 Nagle。
-
-## 8. 嵌入式场景下网络编程有什么额外特点
-
-嵌入式网络编程和服务器开发相比，往往资源更紧，约束更多。
-
-你通常还得额外考虑：
-
-- 内存紧不紧
-- 网络栈是不是裁剪版
-- 驱动和协议栈交界有没有瓶颈
-- 中断和收发路径是否会放大抖动
-
-这意味着很多桌面 / 服务器环境里“理所当然”的做法，在嵌入式上不一定合适。
-
-## 9. 排查网络问题时更有效的顺序
-
-网络问题通常不要一上来就盯业务代码，先把层次拆开更稳。
-
-### 先看连接有没有建立
-
-- 三次握手是否正常
-- 本地监听和远端地址是否正确
-
-### 再看收发是否顺畅
-
-- 是否有重传
-- 是否有窗口受限
-- 是否有明显超时
-
-### 再看应用层协议
-
-- 是否有粘包拆包问题
-- 包头包尾和长度字段是否正确
-- 编解码是否一致
-
-这样排会比一开始就猜“是不是协议 bug”更有效。
-
-## 10. 工程里真正值得积累的经验是什么
-
-如果只积累“某个命令怎么用”，价值有限。更有用的是形成一些固定判断：
-
-- 连接问题先分层
-- TCP 稳定性问题别只看应用层
-- UDP 丢包问题别默认是代码错
-- 高并发问题通常不只是一处函数慢，而是模型不合适
-
-这些判断一旦形成，很多问题会比单纯查资料更快进入正轨。
-
-## 11. 出问题时我先问什么
-
-先把下面几件事说清楚：
-
-- TCP 和 UDP 的取舍
-- Socket 的基本收发模型
-- 阻塞与非阻塞的结构差异
-- 高并发连接的处理方式
-- 调优和排障时的分层思路
-
-然后拿抓包和两端日志互相验证。只看一次 `send()` / `recv()` 的返回值，很难说明数据在网络上到底发生了什么；只看服务端或客户端一边，也经常会漏掉返回路径问题。
+1. **状态机把控**：理解 `TIME_WAIT` 与 `CLOSE_WAIT` 的产生时机，合理配置 `SO_REUSEADDR`；
+2. **时延与保活**：对时延敏感的小包交互可开启 `TCP_NODELAY`，对静默长连接可配置 `SO_KEEPALIVE`；
+3. **架构选型**：Linux 服务端采用非阻塞与 epoll 模型，嵌入式环境关注 lwIP `pbuf` 内存池与驱动数据流转。
