@@ -15,7 +15,6 @@ theme:
   language: zh
   custom_dir: overrides
   features:
-    - navigation.sections
     - navigation.top
     - navigation.indexes
     - navigation.footer
@@ -51,6 +50,8 @@ markdown_extensions:
   - pymdownx.superfences
 extra_css:
   - stylesheets/extra.css
+extra_javascript:
+  - javascripts/soc-controls.js
 extra:
   generator: false
 copyright: Copyright &copy; 2026 Yvain Zhang · 持续整理中的工程知识库
