@@ -40,3 +40,13 @@ vendor/bundle
 vendor/cache
 node_modules
 SoC-site/
+
+# Local AI assistant instructions and generated plans
+/AGENTS.md
+/CLAUDE.md
+/GEMINI.md
+/docs/superpowers/
+
+# Local source and reference material
+/html_files/
+/记录/
