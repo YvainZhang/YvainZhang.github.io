@@ -1,0 +1,64 @@
+INHERIT: ../SoC/mkdocs.yml
+
+site_name: SoC System Atlas
+site_author: Yvain Zhang
+site_url: https://xidianedu.cc/tech/soc/
+docs_dir: ../SoC
+use_directory_urls: true
+
+exclude_docs: |
+  mkdocs.yml
+  requirements-docs.txt
+  overrides/
+
+theme:
+  name: material
+  language: zh
+  custom_dir: ../SoC/overrides
+  features:
+    - navigation.top
+    - navigation.indexes
+    - navigation.footer
+    - search.highlight
+    - search.share
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: 切换至浅色模式
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: 切换至深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: 切换至自动模式
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+
+extra_css:
+  - stylesheets/extra.css
+extra_javascript:
+  - javascripts/soc-controls.js
+extra:
+  generator: false
+copyright: Copyright &copy; 2026 Yvain Zhang · 持续整理中的工程知识库

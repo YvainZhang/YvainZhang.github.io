@@ -44,7 +44,7 @@ jobs:
         run: bundle exec jekyll build --destination _site
 
       - name: Build SoC knowledge base
-        run: mkdocs build --strict --config-file SoC/mkdocs.yml --site-dir "$GITHUB_WORKSPACE/_site/tech/soc"
+        run: mkdocs build --strict --config-file _soc_publish/mkdocs.yml --site-dir "$GITHUB_WORKSPACE/_site/tech/soc"
 
       - name: Verify combined site
         run: |

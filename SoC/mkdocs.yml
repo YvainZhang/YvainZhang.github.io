@@ -1,31 +1,17 @@
-site_name: SoC System Atlas
+site_name: SoC 系统知识集合
 site_description: 从芯片架构到 Linux、外设、调试与性能的 SoC 全栈知识库
-site_author: Yvain Zhang
-site_url: https://xidianedu.cc/tech/soc/
 docs_dir: .
 site_dir: ../SoC-site
-use_directory_urls: true
-exclude_docs: |
-  docs-site.md
-  mkdocs.yml
-  requirements-docs.txt
-  overrides/
 theme:
   name: material
   language: zh
-  custom_dir: overrides
   features:
+    - navigation.sections
     - navigation.top
     - navigation.indexes
-    - navigation.footer
     - search.highlight
-    - search.share
     - content.code.copy
   palette:
-    - media: "(prefers-color-scheme)"
-      toggle:
-        icon: material/brightness-auto
-        name: 切换至浅色模式
     - media: "(prefers-color-scheme: light)"
       scheme: default
       toggle:
@@ -35,7 +21,7 @@ theme:
       scheme: slate
       toggle:
         icon: material/brightness-4
-        name: 切换至自动模式
+        name: 切换至浅色模式
 plugins:
   - search:
       lang: zh
@@ -51,18 +37,7 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.highlight:
       anchor_linenums: true
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:mermaid2.fence_mermaid_custom
-extra_css:
-  - stylesheets/extra.css
-extra_javascript:
-  - javascripts/soc-controls.js
-extra:
-  generator: false
-copyright: Copyright &copy; 2026 Yvain Zhang · 持续整理中的工程知识库
+  - pymdownx.superfences
 nav:
   - 首页: README.md
   - 总览与路线: 00-Overview/README.md
@@ -170,6 +145,16 @@ nav:
       - Panic Abort Kdump: 10-Debug-Performance/07-crash-workflow.md
       - perf ftrace eBPF: 10-Debug-Performance/08-linux-performance-tools.md
       - 调试性能问题与规避: 10-Debug-Performance/09-debug-performance-engineering-guide.md
+  - 11 核间通信与多核协作:
+      - 模块概览: 11-Inter-Core-Communication/README.md
+      - 通信模型与系统边界: 11-Inter-Core-Communication/01-models-topology.md
+      - 共享内存与 Mailbox: 11-Inter-Core-Communication/02-shared-memory-mailbox.md
+      - IPI Doorbell 与中断: 11-Inter-Core-Communication/03-ipi-doorbell-interrupt.md
+      - Ring 与无锁队列: 11-Inter-Core-Communication/04-ring-lockfree-memory-order.md
+      - remoteproc RPMsg OpenAMP: 11-Inter-Core-Communication/05-remoteproc-rpmsg-openamp.md
+      - 生命周期与故障恢复: 11-Inter-Core-Communication/06-lifecycle-recovery.md
+      - 调试性能与案例: 11-Inter-Core-Communication/07-debug-performance-cases.md
+      - 工程检查表: 11-Inter-Core-Communication/08-engineering-checklist.md
   - 跨模块案例:
       - 案例概览: Case-Studies/README.md
       - 网卡 DMA 收包: Case-Studies/01-network-packet-rx-flow.md
@@ -187,4 +172,6 @@ nav:
       - DMA Cache 一致性: Labs/lab02-dma-cache-coherency/README.md
       - 弱内存序 Litmus: Labs/lab03-memory-barrier-litmus/README.md
       - DTS Platform Driver: Labs/lab04-device-tree-driver/README.md
+      - 核间 Ring 与 Doorbell: Labs/lab05-inter-core-ring-doorbell/README.md
   - 术语表: Glossary/README.md
+  - 文档站使用说明: docs-site.md

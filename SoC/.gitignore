@@ -1,0 +1,25 @@
+.DS_Store
+site/
+.cache/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Native build products
+*.o
+*.a
+*.so
+*.dylib
+*.elf
+*.bin
+*.map
+
+# Lab executables and generated firmware images
+Labs/lab01-qemu-arm64-baremetal-boot/build/
+Labs/lab02-dma-cache-coherency/dma-cache-demo
+Labs/lab03-memory-barrier-litmus/store-buffering
+Labs/lab04-device-tree-driver/*.ko
+Labs/lab04-device-tree-driver/*.mod*
+Labs/lab04-device-tree-driver/Module.symvers
+Labs/lab04-device-tree-driver/modules.order
+Labs/lab05-inter-core-ring-doorbell/inter-core-ring

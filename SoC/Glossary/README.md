@@ -16,6 +16,8 @@
 | IPA | Intermediate Physical Address | 虚拟化 Stage-1 与 Stage-2 之间的地址 |
 | ISA | Instruction Set Architecture | 指令、寄存器、异常和内存模型的软硬件契约 |
 | ISR | Interrupt Service Routine | 中断服务程序 |
+| IPC | Inter-Processor Communication | 处理器核心或异构处理器之间的数据交换、通知与同步机制 |
+| AMP | Asymmetric Multiprocessing | 不同处理器运行独立 OS/固件并通过显式协议协作的系统形态 |
 | MMIO | Memory-Mapped I/O | 通过地址空间中的 Load/Store 访问设备寄存器 |
 | MMU | Memory Management Unit | CPU 虚拟地址转换和权限检查单元 |
 | MPU | Memory Protection Unit | 以 Region 提供权限和属性、通常不转换地址的单元 |
@@ -71,6 +73,15 @@ Master/Slave 与 Initiator/Target 在不少资料中表达相同端口角色。�
 | CHI | Coherent Hub Interface | ARM 可扩展一致性互联协议 |
 | ITS | Interrupt Translation Service | GIC 中把设备 Event/MSI 翻译成 LPI 的单元 |
 | LPI | Locality-specific Peripheral Interrupt | GICv3 面向大量消息中断的中断类型 |
+| Mailbox | Hardware Mailbox | 在处理器或电源域之间传递事件和少量数据的硬件通知单元 |
+| Doorbell | Doorbell Register | 通过寄存器写通知对端检查共享队列的机制 |
+| SGI | Software Generated Interrupt | ARM GIC 体系中由软件触发的目标核核间中断 |
+| IMSIC | Incoming MSI Controller | RISC-V AIA 体系中接收和路由消息中断/IPI 的控制器 |
+| Vring | VirtIO Ring | VirtIO 使用的共享描述符环形队列 |
+| RPMsg | Remote Processor Messaging | 基于 VirtIO/Vring 的异构处理器消息总线 |
+| remoteproc | Remote Processor Framework | Linux 中负责辅核固件装载、启动、停止和崩溃恢复的框架 |
+| OpenAMP | Open Asymmetric Multi-Processing | 面向异构多核系统的跨平台开源通信与生命周期框架 |
+| UCIe | Universal Chiplet Interconnect Express | 开放式 Chiplet 芯粒间高带宽低延迟互联标准 |
 
 ## 时钟、电源与接口
 
