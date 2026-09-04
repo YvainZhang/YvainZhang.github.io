@@ -11,7 +11,10 @@ Interface Ready → Scan → Select BSS → Authentication → Association
 
 任一步都应具有明确的进入条件、成功事件、失败原因与超时。日志只打印“connect fail”会丢失最重要的状态信息。
 
-继续阅读：[扫描到可用网络的完整生命周期](01-connection-lifecycle.md)。
+继续阅读：
+
+- [扫描到可用网络的完整生命周期](01-connection-lifecycle.md)
+- [Key、PN 与 Replay Protection](02-key-pn-replay.md)
 
 ## 本章检查点
 

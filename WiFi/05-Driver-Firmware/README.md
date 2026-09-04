@@ -12,7 +12,11 @@ TX Data  ──────────────────→ scheduler / M
 RX Data  ←────────────────── reorder / decap
 ```
 
-继续阅读：[命令、事件、数据与故障恢复](01-control-data-recovery.md)。
+继续阅读：
+
+- [命令、事件、数据与故障恢复](01-control-data-recovery.md)
+- [Host–Device ABI：Descriptor、Command 与 Event](02-host-device-abi.md)
+- [Firmware RTOS、状态机与实时调度](03-firmware-state-machines.md)
 
 ## 本章检查点
 

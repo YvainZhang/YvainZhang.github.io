@@ -13,7 +13,10 @@ Linux 把 Wi-Fi 能力分散在用户态守护进程、nl80211/cfg80211、mac802
 | mac80211 | SoftMAC 通用 MLME、队列与帧处理能力 |
 | Vendor Driver/Firmware | 设备数据通路、硬件与卸载状态机 |
 
-继续阅读：[cfg80211、mac80211 与用户态组件](01-linux-wifi-stack.md)。
+继续阅读：
+
+- [cfg80211、mac80211 与用户态组件](01-linux-wifi-stack.md)
+- [SKB、Netdev Queue 与 NAPI](02-skb-netdev-napi.md)
 
 ## 本章检查点
 

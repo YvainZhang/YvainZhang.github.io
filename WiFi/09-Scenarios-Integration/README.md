@@ -9,7 +9,10 @@
 - 网络：桥接、NAT、DHCP、IPv6 与防火墙。
 - 平台：HAL、supplicant/hostapd、权限、服务启动与电源策略。
 
-继续阅读：[P2P、并发与 Android 集成](01-p2p-concurrency-android.md)。
+继续阅读：
+
+- [P2P、并发与 Android 集成](01-p2p-concurrency-android.md)
+- [SCC/MCC/双频并发与 BT Coexistence](02-concurrency-coexistence.md)
 
 ## 本章检查点
 

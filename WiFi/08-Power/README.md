@@ -9,7 +9,10 @@ Wi-Fi 低功耗跨越空口协议、Firmware 状态机、Host 总线和系统 su
 - **设备电源**：Firmware sleep、clock gate、radio off、chip power state。
 - **Host 系统**：Runtime PM、autosuspend、system suspend/resume 与 wake source。
 
-继续阅读：[空口与系统电源状态机](01-power-state-machine.md)。
+继续阅读：
+
+- [空口与系统电源状态机](01-power-state-machine.md)
+- [WoWLAN、Suspend/Resume 与状态恢复](02-wowlan-suspend-resume.md)
 
 ## 本章检查点
 

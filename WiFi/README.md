@@ -9,8 +9,8 @@ hide:
   <h1>Wi-Fi System Atlas</h1>
   <p class="wifi-home-lead">从应用发出一个数据包开始，沿着 Linux 网络栈、Host Driver、USB / SDIO / PCIe、Firmware、MAC 与 PHY，一直追到空口；再沿事件、确认和错误恢复路径返回系统。</p>
   <div class="wifi-home-stats">
-    <span><strong>10</strong>核心模块</span>
-    <span><strong>20</strong>篇核心指南</span>
+    <span><strong>12</strong>核心模块</span>
+    <span><strong>40</strong>篇核心指南</span>
     <span><strong>4</strong>个系统案例</span>
     <span><strong>4</strong>个实验</span>
   </div>
@@ -33,7 +33,7 @@ hide:
 </section>
 
 <section class="wifi-home-section">
-  <div class="wifi-home-head"><p>Core Modules / 03</p><h2>十个模块，把协议、软件和硬件重新连成系统。</h2></div>
+  <div class="wifi-home-head"><p>Core Modules / 03</p><h2>十二个模块，从软件数据路径一直深入到芯片与量产。</h2></div>
   <div class="wifi-module-grid">
     <a href="01-System-Architecture/"><span>01</span><strong>Wi-Fi 系统架构</strong><em>Host · Device · Packet</em></a>
     <a href="02-80211-MAC/"><span>02</span><strong>802.11 MAC 与空口</strong><em>Frame · Access · BA</em></a>
@@ -45,6 +45,8 @@ hide:
     <a href="08-Power/"><span>08</span><strong>低功耗</strong><em>PS · U-APSD · TWT</em></a>
     <a href="09-Scenarios-Integration/"><span>09</span><strong>场景与平台集成</strong><em>P2P · MCC · Android</em></a>
     <a href="10-Debug-Recovery/"><span>10</span><strong>调试与恢复</strong><em>Capture · Trace · Recovery</em></a>
+    <a href="11-PHY-RF-Calibration/"><span>11</span><strong>PHY、RF 与校准</strong><em>Vector · EVM · Calibration</em></a>
+    <a href="12-Validation-Productization/"><span>12</span><strong>验证、认证与量产</strong><em>UVM · Bring-up · ATE</em></a>
   </div>
 </section>
 

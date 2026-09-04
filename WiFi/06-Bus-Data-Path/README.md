@@ -10,7 +10,10 @@ USB、SDIO 与 PCIe 不只是不同带宽的管道，它们的事务模型、并
 | SDIO | CMD53、Block、Function | 嵌入式常见、引脚少 | 中断/轮询、block size、claim host |
 | PCIe | DMA Ring、MSI/MSI-X | 高吞吐、低时延 | Ring 管理、IOMMU、顺序与恢复 |
 
-继续阅读：[USB、SDIO 与 PCIe 数据路径](01-usb-sdio-pcie.md)。
+继续阅读：
+
+- [USB、SDIO 与 PCIe 数据路径](01-usb-sdio-pcie.md)
+- [DMA Ring、Doorbell 与内存顺序](02-ring-dma-memory-ordering.md)
 
 ## 本章检查点
 

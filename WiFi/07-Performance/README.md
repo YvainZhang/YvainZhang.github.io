@@ -16,7 +16,11 @@ PHY Rate
 = Application Goodput
 ```
 
-继续阅读：[吞吐、时延与 CPU 开销分析](01-throughput-latency.md)。
+继续阅读：
+
+- [吞吐、时延与 CPU 开销分析](01-throughput-latency.md)
+- [Rate Control 与链路自适应](02-rate-control-link-adaptation.md)
+- [从 PHY Rate 到 Goodput 的性能预算](03-throughput-budget-model.md)
 
 ## 本章检查点
 

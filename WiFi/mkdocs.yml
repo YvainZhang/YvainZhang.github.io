@@ -72,33 +72,55 @@ nav:
   - 01 Wi-Fi 系统架构:
       - 模块概览: 01-System-Architecture/README.md
       - 一次数据传输的端到端路径: 01-System-Architecture/01-end-to-end-data-path.md
+      - 芯片参考架构与责任边界: 01-System-Architecture/02-chip-reference-architecture.md
   - 02 802.11 MAC 与空口:
       - 模块概览: 02-80211-MAC/README.md
       - 帧、信道访问、可靠性与聚合: 02-80211-MAC/01-mac-air-interface.md
+      - Hardware MAC 实时路径: 02-80211-MAC/02-hardware-mac-realtime-path.md
+      - 802.11ax OFDMA 与 Trigger: 02-80211-MAC/03-he-ofdma-trigger-path.md
+      - BlockAck、Sequence 与 Reorder: 02-80211-MAC/04-blockack-reorder-engine.md
   - 03 建链与安全:
       - 模块概览: 03-Connection-Security/README.md
       - 扫描到可用网络的完整生命周期: 03-Connection-Security/01-connection-lifecycle.md
+      - Key、PN 与 Replay Protection: 03-Connection-Security/02-key-pn-replay.md
   - 04 Linux Wi-Fi 软件栈:
       - 模块概览: 04-Linux-Stack/README.md
       - cfg80211、mac80211 与用户态组件: 04-Linux-Stack/01-linux-wifi-stack.md
+      - SKB、Netdev Queue 与 NAPI: 04-Linux-Stack/02-skb-netdev-napi.md
   - 05 Host Driver 与 Firmware:
       - 模块概览: 05-Driver-Firmware/README.md
       - 命令、事件、数据与故障恢复: 05-Driver-Firmware/01-control-data-recovery.md
+      - Host–Device ABI: 05-Driver-Firmware/02-host-device-abi.md
+      - Firmware RTOS 与状态机: 05-Driver-Firmware/03-firmware-state-machines.md
   - 06 总线与数据通路:
       - 模块概览: 06-Bus-Data-Path/README.md
       - USB、SDIO 与 PCIe 数据路径: 06-Bus-Data-Path/01-usb-sdio-pcie.md
+      - DMA Ring 与内存顺序: 06-Bus-Data-Path/02-ring-dma-memory-ordering.md
   - 07 性能工程:
       - 模块概览: 07-Performance/README.md
       - 吞吐、时延与 CPU 开销分析: 07-Performance/01-throughput-latency.md
+      - Rate Control 与链路自适应: 07-Performance/02-rate-control-link-adaptation.md
+      - PHY Rate 到 Goodput 的预算: 07-Performance/03-throughput-budget-model.md
   - 08 低功耗:
       - 模块概览: 08-Power/README.md
       - 空口与系统电源状态机: 08-Power/01-power-state-machine.md
+      - WoWLAN 与 Suspend/Resume: 08-Power/02-wowlan-suspend-resume.md
   - 09 场景与平台集成:
       - 模块概览: 09-Scenarios-Integration/README.md
       - P2P、并发与 Android 集成: 09-Scenarios-Integration/01-p2p-concurrency-android.md
+      - SCC/MCC/双频并发与 BT 共存: 09-Scenarios-Integration/02-concurrency-coexistence.md
   - 10 调试与恢复:
       - 模块概览: 10-Debug-Recovery/README.md
       - 建立可复现的 Wi-Fi 证据链: 10-Debug-Recovery/01-evidence-workflow.md
+      - Host 到 Sniffer 多源对齐: 10-Debug-Recovery/02-multi-source-trace.md
+  - 11 PHY、RF 与 Calibration:
+      - 模块概览: 11-PHY-RF-Calibration/README.md
+      - PHY TX/RX 与 Vector: 11-PHY-RF-Calibration/01-phy-tx-rx-vector.md
+      - RF 指标与校准: 11-PHY-RF-Calibration/02-rf-calibration-metrics.md
+  - 12 验证、认证与量产:
+      - 模块概览: 12-Validation-Productization/README.md
+      - Golden Model 到 First Silicon: 12-Validation-Productization/01-validation-bringup.md
+      - 认证、法规与量产测试: 12-Validation-Productization/02-certification-production.md
   - 跨模块案例:
       - 案例概览: Case-Studies/README.md
       - STA 从扫描到 DHCP: Case-Studies/01-sta-connect-dhcp.md

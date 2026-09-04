@@ -9,7 +9,10 @@
 - Firmware/Device：命令事件、队列、assert、dump、MAC 统计。
 - 空口：管理帧、EAPOL、数据、ACK/BA、RSSI/MCS/Retry。
 
-继续阅读：[建立可复现的 Wi-Fi 证据链](01-evidence-workflow.md)。
+继续阅读：
+
+- [建立可复现的 Wi-Fi 证据链](01-evidence-workflow.md)
+- [Host、Firmware、MAC、PHY 与 Sniffer 多源对齐](02-multi-source-trace.md)
 
 ## 本章检查点
 

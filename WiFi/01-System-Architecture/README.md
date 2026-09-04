@@ -16,7 +16,10 @@
 - **FullMAC**：建链与多数 MAC 状态机下沉到 Firmware，Host 通过命令/事件控制。
 - **混合卸载**：现实产品常介于两者之间，必须以实际命令、事件和数据格式确认边界。
 
-继续阅读：[一次数据传输的端到端路径](01-end-to-end-data-path.md)。
+继续阅读：
+
+- [一次数据传输的端到端路径](01-end-to-end-data-path.md)
+- [Wi-Fi 芯片参考架构与责任边界](02-chip-reference-architecture.md)
 
 ## 本章检查点
 
