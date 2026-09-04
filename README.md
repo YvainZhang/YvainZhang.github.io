@@ -1,6 +1,6 @@
 # Yvain Zhang Blog
 
-This repository hosts the Jekyll-based GitHub Pages site for `YvainZhang.github.io`.
+This repository hosts the Jekyll-based GitHub Pages site for `YvainZhang.github.io`, including the SoC and Wi-Fi system knowledge collections.
 
 ## Local development
 
@@ -19,6 +19,13 @@ Run the site locally:
 bundle exec jekyll serve --livereload
 ```
 
+Build the two system knowledge collections into the combined site:
+
+```bash
+mkdocs build --strict --config-file _soc_publish/mkdocs.yml --site-dir "$PWD/_site/tech/soc"
+mkdocs build --strict --config-file WiFi/mkdocs.yml --site-dir "$PWD/_site/tech/wifi"
+```
+
 Rebuild frontend assets when editing files in `less/` or `js/`:
 
 ```bash
@@ -32,18 +39,18 @@ npm run watch:assets
 - `_layouts/`, `_includes/`: shared Jekyll templates
 - `less/`: stylesheet sources compiled into `css/`
 - `js/`: unminified scripts; commit minified output when source changes
+- `SoC/`, `WiFi/`: MkDocs-based system knowledge collections
 - `_config.yml`: site metadata and plugin configuration
 
 ## Deployment
 
-Use GitHub Pages built-in Jekyll publishing from the repository root.
+The GitHub Actions Pages workflow builds Jekyll together with both MkDocs collections.
 
 On GitHub:
 
 1. Open `Settings > Pages`.
-2. Set `Source` to `Deploy from a branch`.
-3. Set `Branch` to `master` and folder to `/ (root)`.
-4. Save and wait for GitHub Pages to finish building.
+2. Set `Source` to `GitHub Actions`.
+3. Push to `master` or manually run the Pages workflow.
 
 ## Notes
 

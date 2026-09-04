@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  <meta name="author" content="Yvain Zhang">
+  <meta name="theme-color" content="#071a31">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Yvain Zhang Blog">
+{% endblock %}
+
+{% block announce %}
+  <div class="wifi-announce">
+    <a href="/tech/" aria-label="返回博客技术主页"><span class="wifi-announce-mark">YZ</span><b>Yvain Blog</b><i>/</i><strong>技术</strong></a>
+    <em>Wi-Fi System Atlas · Living Notes</em>
+  </div>
+{% endblock %}

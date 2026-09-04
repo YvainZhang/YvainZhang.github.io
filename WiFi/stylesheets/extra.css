@@ -1,0 +1,74 @@
+:root {
+  --wifi-navy: #071a31;
+  --wifi-blue: #1769aa;
+  --wifi-sky: #73c7ef;
+  --wifi-signal: #26c6a1;
+  --wifi-amber: #ffb44a;
+  --md-primary-fg-color: #071a31;
+  --md-primary-fg-color--light: #123d68;
+  --md-primary-fg-color--dark: #04101f;
+  --md-accent-fg-color: #087f6b;
+  --md-default-bg-color: #f5f8fb;
+  --md-code-bg-color: #eaf0f5;
+}
+[data-md-color-scheme="slate"] { --md-default-bg-color: #07111d; --md-code-bg-color: #0d1c2b; --md-typeset-a-color: #73c7ef; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+.md-header { background: linear-gradient(105deg, #04101f, var(--wifi-navy)); box-shadow: none; }
+.md-search__form { border: 1px solid rgba(115,199,239,.18); background: rgba(255,255,255,.07); }
+.md-banner { color: rgba(236,247,255,.76); background: #030c17; }
+.md-typeset h1, .md-typeset h2, .md-typeset h3 { letter-spacing: -.025em; }
+.md-typeset h1 { color: var(--wifi-navy); font-weight: 800; }
+[data-md-color-scheme="slate"] .md-typeset h1 { color: #edf8ff; }
+.md-typeset h2 { padding-bottom: .45rem; border-bottom: 1px solid rgba(7,26,49,.13); font-weight: 750; }
+.md-nav__link--active { font-weight: 700; }
+
+.wifi-announce { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: min(100%,76rem); margin: 0 auto; font-size: .58rem; }
+.wifi-announce a { display: inline-flex; align-items: center; gap: .42rem; color: #fff; }
+.wifi-announce a:hover { color: var(--wifi-amber); }
+.wifi-announce i, .wifi-announce em { color: rgba(115,199,239,.65); font-style: normal; }
+.wifi-announce em { font-family: monospace; letter-spacing: .08em; text-transform: uppercase; }
+.wifi-announce-mark { display: inline-grid; place-items: center; width: 1.45rem; height: 1.45rem; border: 1px solid rgba(115,199,239,.35); color: var(--wifi-sky); font: 800 .48rem/1 monospace; }
+
+.wifi-reading-track { position: fixed; z-index: 20; top: 0; left: 0; width: 100%; height: 3px; pointer-events: none; }
+.wifi-reading-bar { display: block; width: 0; height: 100%; background: linear-gradient(90deg,var(--wifi-signal),var(--wifi-sky),var(--wifi-amber)); }
+.wifi-side-tools { position: sticky; z-index: 2; top: 0; margin: .35rem .6rem 1rem; padding: .75rem; border: 1px solid var(--md-default-fg-color--lightest); border-radius: .5rem; background: var(--md-code-bg-color); }
+.wifi-side-tools div { display: flex; justify-content: space-between; margin-bottom: .45rem; color: var(--md-default-fg-color--light); font: 700 .5rem/1.3 monospace; letter-spacing: .06em; }
+.wifi-side-tools output { color: var(--wifi-signal); }
+.wifi-side-tools progress { display: block; width: 100%; height: .22rem; border: 0; border-radius: 999px; accent-color: var(--wifi-blue); }
+
+.wifi-home-hero { position: relative; isolation: isolate; overflow: hidden; margin: 0 0 4rem; padding: clamp(2rem,6vw,4.5rem); color: #eff9ff; background: radial-gradient(circle at 82% 30%,rgba(38,198,161,.24),transparent 23%), radial-gradient(circle at 82% 30%,transparent 0 14%,rgba(115,199,239,.18) 14.5% 15%,transparent 15.5% 24%,rgba(115,199,239,.12) 24.5% 25%,transparent 25.5%), linear-gradient(135deg,#0a2a4d,#04101f); box-shadow: 1rem 1rem 0 rgba(23,105,170,.1); }
+.wifi-home-hero::after { content:""; position:absolute; z-index:-1; inset:0; opacity:.1; background-image:linear-gradient(rgba(255,255,255,.25) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.25) 1px,transparent 1px); background-size:2rem 2rem; mask-image:linear-gradient(90deg,transparent,#000 58%); }
+.wifi-home-kicker { display:flex; align-items:center; gap:.6rem; margin:0 0 1.35rem; color:var(--wifi-sky); font:800 .56rem/1.4 monospace; letter-spacing:.16em; text-transform:uppercase; }
+.wifi-home-kicker span { width:1.4rem; height:1px; background:var(--wifi-amber); }
+.md-typeset .wifi-home-hero h1 { max-width:38rem; margin:0; color:#fff; font-size:clamp(2.4rem,7vw,4.8rem); line-height:.98; letter-spacing:-.06em; }
+.wifi-home-lead { max-width:43rem; margin:1.35rem 0 0; color:rgba(239,249,255,.7); font-size:.82rem; line-height:1.85; }
+.wifi-home-stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.8rem; max-width:39rem; margin-top:2rem; }
+.wifi-home-stats span { color:rgba(239,249,255,.52); font:700 .5rem/1.45 monospace; letter-spacing:.06em; text-transform:uppercase; }
+.wifi-home-stats strong { display:block; margin-bottom:.2rem; color:var(--wifi-amber); font-size:1rem; }
+.wifi-home-section { margin:4.2rem 0; }
+.wifi-home-head { display:grid; grid-template-columns:7.2rem minmax(0,1fr); gap:1.2rem; margin-bottom:1.8rem; }
+.wifi-home-head p { margin:.15rem 0 0; color:var(--wifi-blue); font:800 .52rem/1.4 monospace; letter-spacing:.13em; text-transform:uppercase; }
+.md-typeset .wifi-home-head h2 { max-width:36rem; margin:0; padding:0; border:0; font-size:clamp(1.55rem,4vw,2.25rem); line-height:1.18; }
+.wifi-path { display:flex; align-items:center; gap:.4rem; padding:1.35rem; overflow-x:auto; border:1px solid rgba(7,26,49,.13); background:rgba(255,255,255,.38); }
+.wifi-path a { flex:1 0 4.5rem; display:grid; place-items:center; min-height:3rem; border:1px solid rgba(23,105,170,.25); color:var(--wifi-navy); background:rgba(255,255,255,.7); font:800 .55rem/1 monospace; text-align:center; }
+.wifi-path a:hover { color:#fff; background:var(--wifi-blue); }
+.wifi-path i { color:var(--wifi-amber); font-style:normal; }
+.wifi-route-grid,.wifi-practice-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.8rem; }
+.wifi-route-grid a,.wifi-practice-grid a { display:block; min-height:9rem; padding:1.2rem; border:1px solid rgba(7,26,49,.13); color:var(--md-default-fg-color); background:rgba(255,255,255,.42); transition:transform 160ms ease,background 160ms ease; }
+.wifi-route-grid a:hover,.wifi-practice-grid a:hover { color:var(--md-default-fg-color); background:rgba(255,255,255,.78); transform:translateY(-.18rem); }
+.wifi-route-grid span,.wifi-practice-grid span { color:var(--wifi-blue); font:800 .48rem/1 monospace; letter-spacing:.1em; text-transform:uppercase; }
+.wifi-route-grid strong,.wifi-practice-grid strong { display:block; margin:.9rem 0 .5rem; font-size:.82rem; }
+.wifi-route-grid p,.wifi-practice-grid p { margin:0; color:var(--md-default-fg-color--light); font-size:.63rem; line-height:1.7; }
+.wifi-module-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-top:1px solid rgba(7,26,49,.14); }
+.wifi-module-grid a { display:grid; grid-template-columns:2rem minmax(0,1fr) auto; gap:.8rem; align-items:center; min-height:4.1rem; padding:.75rem .7rem .75rem 0; border-bottom:1px solid rgba(7,26,49,.12); color:var(--md-default-fg-color); }
+.wifi-module-grid a:nth-child(odd) { margin-right:1.1rem; }
+.wifi-module-grid a:nth-child(even) { margin-left:1.1rem; }
+.wifi-module-grid a:hover { color:var(--wifi-blue); padding-left:.35rem; }
+.wifi-module-grid span { color:var(--wifi-blue); font:800 .54rem/1 monospace; }
+.wifi-module-grid strong { font-size:.72rem; }
+.wifi-module-grid em { color:var(--md-default-fg-color--light); font:600 .48rem/1 monospace; font-style:normal; }
+[data-md-color-scheme="slate"] .wifi-path,[data-md-color-scheme="slate"] .wifi-route-grid a,[data-md-color-scheme="slate"] .wifi-practice-grid a { background:rgba(255,255,255,.025); }
+[data-md-color-scheme="slate"] .wifi-path a { color:#edf8ff; background:rgba(255,255,255,.035); }
+[data-md-color-scheme="slate"] .wifi-route-grid a:hover,[data-md-color-scheme="slate"] .wifi-practice-grid a:hover { background:rgba(255,255,255,.06); }
+@media screen and (max-width:760px) { .wifi-announce em{display:none}.wifi-home-hero{padding:2.2rem 1.25rem;box-shadow:.55rem .55rem 0 rgba(23,105,170,.1)}.wifi-home-stats{grid-template-columns:1fr 1fr}.wifi-home-head{display:block}.wifi-home-head p{margin-bottom:.7rem}.wifi-route-grid,.wifi-practice-grid,.wifi-module-grid{grid-template-columns:1fr}.wifi-route-grid a,.wifi-practice-grid a{min-height:0}.wifi-module-grid a:nth-child(odd),.wifi-module-grid a:nth-child(even){margin:0}.wifi-module-grid a{grid-template-columns:1.7rem minmax(0,1fr)}.wifi-module-grid em{display:none} }
+@media (prefers-reduced-motion:reduce) { .wifi-reading-bar,.wifi-route-grid a,.wifi-practice-grid a{transition:none} }

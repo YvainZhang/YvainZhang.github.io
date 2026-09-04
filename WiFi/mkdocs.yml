@@ -1,0 +1,114 @@
+site_name: Wi-Fi System Atlas
+site_description: 从应用、Linux、驱动与总线一直追到 Firmware、MAC、PHY 和空口的 Wi-Fi 系统知识库
+site_author: Yvain Zhang
+site_url: https://xidianedu.cc/tech/wifi/
+docs_dir: .
+use_directory_urls: true
+
+theme:
+  name: material
+  language: zh
+  custom_dir: overrides
+  features:
+    - navigation.top
+    - navigation.indexes
+    - navigation.footer
+    - search.highlight
+    - search.share
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: 切换至浅色模式
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: 切换至深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: 切换至自动模式
+
+plugins:
+  - search:
+      lang: zh
+  - mermaid2
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+
+extra_css:
+  - stylesheets/extra.css
+extra_javascript:
+  - javascripts/wifi-controls.js
+extra:
+  generator: false
+copyright: Copyright &copy; 2026 Yvain Zhang · 持续整理中的工程知识库
+
+exclude_docs: |
+  mkdocs.yml
+  overrides/
+
+nav:
+  - 首页: README.md
+  - 总览与阅读路线: 00-Overview/README.md
+  - 01 Wi-Fi 系统架构:
+      - 模块概览: 01-System-Architecture/README.md
+      - 一次数据传输的端到端路径: 01-System-Architecture/01-end-to-end-data-path.md
+  - 02 802.11 MAC 与空口:
+      - 模块概览: 02-80211-MAC/README.md
+      - 帧、信道访问、可靠性与聚合: 02-80211-MAC/01-mac-air-interface.md
+  - 03 建链与安全:
+      - 模块概览: 03-Connection-Security/README.md
+      - 扫描到可用网络的完整生命周期: 03-Connection-Security/01-connection-lifecycle.md
+  - 04 Linux Wi-Fi 软件栈:
+      - 模块概览: 04-Linux-Stack/README.md
+      - cfg80211、mac80211 与用户态组件: 04-Linux-Stack/01-linux-wifi-stack.md
+  - 05 Host Driver 与 Firmware:
+      - 模块概览: 05-Driver-Firmware/README.md
+      - 命令、事件、数据与故障恢复: 05-Driver-Firmware/01-control-data-recovery.md
+  - 06 总线与数据通路:
+      - 模块概览: 06-Bus-Data-Path/README.md
+      - USB、SDIO 与 PCIe 数据路径: 06-Bus-Data-Path/01-usb-sdio-pcie.md
+  - 07 性能工程:
+      - 模块概览: 07-Performance/README.md
+      - 吞吐、时延与 CPU 开销分析: 07-Performance/01-throughput-latency.md
+  - 08 低功耗:
+      - 模块概览: 08-Power/README.md
+      - 空口与系统电源状态机: 08-Power/01-power-state-machine.md
+  - 09 场景与平台集成:
+      - 模块概览: 09-Scenarios-Integration/README.md
+      - P2P、并发与 Android 集成: 09-Scenarios-Integration/01-p2p-concurrency-android.md
+  - 10 调试与恢复:
+      - 模块概览: 10-Debug-Recovery/README.md
+      - 建立可复现的 Wi-Fi 证据链: 10-Debug-Recovery/01-evidence-workflow.md
+  - 跨模块案例:
+      - 案例概览: Case-Studies/README.md
+      - STA 从扫描到 DHCP: Case-Studies/01-sta-connect-dhcp.md
+      - USB RX 吞吐瓶颈: Case-Studies/02-usb-rx-throughput.md
+      - ADDBA 异常导致业务失败: Case-Studies/03-addba-failure.md
+      - 休眠唤醒后断流: Case-Studies/04-resume-no-traffic.md
+  - 实验:
+      - 实验概览: Labs/README.md
+      - mac80211_hwsim 虚拟建链: Labs/lab01-hwsim-connection/README.md
+      - 管理帧抓取与状态机对齐: Labs/lab02-frame-capture/README.md
+      - iperf3 吞吐基线: Labs/lab03-throughput-baseline/README.md
+      - Linux 电源事件观测: Labs/lab04-power-trace/README.md
+  - 术语表: Glossary/README.md

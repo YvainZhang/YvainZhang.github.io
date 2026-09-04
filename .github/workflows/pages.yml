@@ -46,11 +46,15 @@ jobs:
       - name: Build SoC knowledge base
         run: mkdocs build --strict --config-file _soc_publish/mkdocs.yml --site-dir "$GITHUB_WORKSPACE/_site/tech/soc"
 
+      - name: Build Wi-Fi knowledge base
+        run: mkdocs build --strict --config-file WiFi/mkdocs.yml --site-dir "$GITHUB_WORKSPACE/_site/tech/wifi"
+
       - name: Verify combined site
         run: |
           test -f _site/index.html
           test -f _site/tech/index.html
           test -f _site/tech/soc/index.html
+          test -f _site/tech/wifi/index.html
           test -f _site/CNAME
 
       - name: Upload Pages artifact

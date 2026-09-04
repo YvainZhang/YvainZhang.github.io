@@ -16,7 +16,7 @@ body_class: tech-page
             <p>零散问题写成工程笔记，反复遇到的知识整理成系统专题。这里既保留现场经验，也试着把硬件、驱动和系统之间的关系连起来。</p>
             <div class="tech-hero-stats" aria-label="技术内容统计">
                 <span><strong>{{ technical_posts | size }}</strong> Articles</span>
-                <span><strong>01</strong> System collection</span>
+                <span><strong>02</strong> System collections</span>
                 <span><strong>04</strong> Domains</span>
             </div>
         </div>
@@ -34,13 +34,14 @@ body_class: tech-page
 
 <section class="tech-section tech-collection" aria-labelledby="collection-heading">
     <div class="tech-section-heading">
-        <p>System Collection / 01</p>
+        <p>System Collections / 01—02</p>
         <div>
             <h2 id="collection-heading">先从一张完整的系统地图开始。</h2>
             <span>专题不是文章合集，而是一条可以顺着走完、遇到问题还能回来查的路径。</span>
         </div>
     </div>
 
+    <div class="tech-collection-list">
     <a class="soc-feature" href="{{ '/tech/soc/' | prepend: site.baseurl }}" aria-label="进入 SoC 系统知识库">
         <div class="soc-feature-copy">
             <div class="soc-feature-meta"><span>SoC System Atlas</span><span>Living Notes</span></div>
@@ -66,6 +67,33 @@ body_class: tech-page
             <div class="soc-map-control"><span>BOOT</span><span>IRQ</span><span>POWER</span><span>DEBUG</span></div>
         </div>
     </a>
+
+    <a class="soc-feature wifi-feature" href="{{ '/tech/wifi/' | prepend: site.baseurl }}" aria-label="进入 Wi-Fi 系统知识库">
+        <div class="soc-feature-copy">
+            <div class="soc-feature-meta"><span>Wi-Fi System Atlas</span><span>Packet Path</span></div>
+            <h3>Wi-Fi 系统知识库</h3>
+            <p>从应用、Linux 网络栈和 Host Driver 出发，穿过 USB / SDIO / PCIe、Firmware、MAC 与 PHY，一直追到空口。</p>
+            <div class="soc-feature-stats">
+                <span><strong>10</strong> Modules</span>
+                <span><strong>20</strong> Guides</span>
+                <span><strong>4</strong> Cases</span>
+                <span><strong>4</strong> Labs</span>
+            </div>
+            <span class="soc-feature-enter">进入知识库 <i aria-hidden="true">→</i></span>
+        </div>
+        <div class="soc-feature-map" aria-hidden="true">
+            <div class="soc-map-label">END-TO-END PACKET PATH</div>
+            <div class="soc-map-row soc-map-row-top">
+                <span>APP / TCP</span><i></i><span>DRIVER</span><i></i><span>BUS</span>
+            </div>
+            <div class="soc-map-bus"><b>CONTROL + DATA</b></div>
+            <div class="soc-map-row soc-map-row-bottom">
+                <span>FIRMWARE</span><i></i><span>MAC / PHY</span><i></i><span>AIR</span>
+            </div>
+            <div class="soc-map-control"><span>CONNECT</span><span>SECURITY</span><span>POWER</span><span>DEBUG</span></div>
+        </div>
+    </a>
+    </div>
 </section>
 
 <section class="tech-section tech-notes" aria-labelledby="notes-heading">

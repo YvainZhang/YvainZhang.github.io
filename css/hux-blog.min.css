@@ -3638,6 +3638,41 @@ body.tech-page .navbar-custom .navbar-toggle .icon-bar {
 .soc-feature:hover .soc-feature-enter i {
   transform: translateX(5px);
 }
+.tech-collection-list {
+  display: grid;
+  gap: 22px;
+}
+.wifi-feature:hover,
+.wifi-feature:focus {
+  border-color: rgba(5, 150, 105, 0.55);
+}
+.wifi-feature .soc-feature-meta span {
+  border-color: rgba(5, 150, 105, 0.28);
+  color: var(--tech-green);
+  background: rgba(5, 150, 105, 0.07);
+}
+.wifi-feature .soc-feature-stats strong,
+.wifi-feature .soc-map-label {
+  color: var(--tech-green);
+}
+.wifi-feature .soc-feature-enter {
+  border-color: var(--tech-green);
+  background: var(--tech-green);
+}
+.wifi-feature .soc-feature-map {
+  background-image: radial-gradient(circle at 84% 22%, rgba(5, 150, 105, 0.13), transparent 25%), linear-gradient(rgba(5, 150, 105, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(5, 150, 105, 0.04) 1px, transparent 1px);
+}
+.wifi-feature .soc-map-row i,
+.wifi-feature .soc-map-bus:before,
+.wifi-feature .soc-map-bus:after {
+  background: rgba(5, 150, 105, 0.55);
+}
+.wifi-feature .soc-map-bus {
+  border-top-color: rgba(5, 150, 105, 0.7);
+}
+.wifi-feature .soc-map-bus b {
+  color: var(--tech-green);
+}
 .soc-feature-copy {
   padding: 42px;
 }
