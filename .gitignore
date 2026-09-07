@@ -40,6 +40,8 @@ vendor/bundle
 vendor/cache
 node_modules
 SoC-site/
+GPU-site/
+NPU-site/
 
 # Local AI assistant instructions and generated plans
 /AGENTS.md

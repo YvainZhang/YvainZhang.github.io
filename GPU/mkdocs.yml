@@ -1,0 +1,163 @@
+site_name: GPU 芯片全栈知识体系（原厂视角）
+site_description: 从硬件微架构、显存互联到 Linux 驱动、AI 编译器与分布式集群的 GPU 全栈知识库
+site_url: https://xidianedu.cc/tech/gpu/
+docs_dir: .
+site_dir: ../GPU-site
+exclude_docs: |
+  mkdocs.yml
+  requirements-docs.txt
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - search.highlight
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: 切换至深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: 切换至浅色模式
+extra_css:
+  - stylesheets/extra.css
+plugins:
+  - search:
+      lang: zh
+  - mermaid2
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+nav:
+  - 首页: README.md
+  - 总览与路线: 00-Overview/README.md
+  - 01 GPU 总体架构:
+      - 模块概览: 01-GPU-Architecture/README.md
+      - GPU 芯片定义与 PPA: 01-GPU-Architecture/01-gpu-fundamentals.md
+      - Block Diagram 与 GPC/SM 拓扑: 01-GPU-Architecture/02-block-diagram-gpc-sm.md
+      - PCIe BAR 空间与 MMIO 映射: 01-GPU-Architecture/03-memory-map-bar-space.md
+      - 架构启动与 Bring-up 故障案例: 01-GPU-Architecture/08-cases-debug.md
+      - 算力、面积与显存带宽推演: 01-GPU-Architecture/09-engineering-analysis.md
+      - Clock Power Domains 时钟电源域: 01-GPU-Architecture/04-clock-power-domains.md
+      - 软硬件交互边界与执行模型: 01-GPU-Architecture/05-hardware-software-boundary.md
+      - 流片与 Bring-up 方法论: 01-GPU-Architecture/06-tapeout-bringup-methodology.md
+      - 审阅、调试与自测: 01-GPU-Architecture/07-review-debug-self-test.md
+  - 02 计算核心与 SIMT:
+      - 模块概览: 02-Compute-Core-SIMT/README.md
+      - SIMT 执行模型与线程映射: 02-Compute-Core-SIMT/01-simt-execution-model.md
+      - Warp 调度器与 Scoreboard: 02-Compute-Core-SIMT/02-warp-scheduler-scoreboard.md
+      - 寄存器堆微架构与 Spill: 02-Compute-Core-SIMT/03-register-file-allocation.md
+      - ALU FPU 与 Tensor Core: 02-Compute-Core-SIMT/04-alu-fpu-tensor-core.md
+      - 分支分化与重聚机制: 02-Compute-Core-SIMT/05-branch-divergence-reconvergence.md
+      - 计算核心工程问题与规避: 02-Compute-Core-SIMT/06-core-engineering-guide.md
+  - 03 显存系统与存储层次:
+      - 模块概览: 03-Memory-Hierarchy-VRAM/README.md
+      - HBM3e 与 GDDR7 显存物理层: 03-Memory-Hierarchy-VRAM/01-vram-hbm-gddr.md
+      - L2 Cache 与 Shared Memory: 03-Memory-Hierarchy-VRAM/02-l2-l1-shared-memory.md
+      - Bank Conflict 与 Coalescing: 03-Memory-Hierarchy-VRAM/03-bank-conflict-coalescing.md
+      - 显存系统故障案例与排查: 03-Memory-Hierarchy-VRAM/06-cases-debug.md
+      - 显存容量与 Bank 冲突定量计算: 03-Memory-Hierarchy-VRAM/07-engineering-analysis.md
+      - Cache 一致性与原子操作: 03-Memory-Hierarchy-VRAM/04-memory-coherency-consistency.md
+      - 存储系统工程问题与规避: 03-Memory-Hierarchy-VRAM/05-memory-engineering-guide.md
+  - 04 地址空间与统一内存:
+      - 模块概览: 04-Address-Space-Unified-Memory/README.md
+      - GPU MMU 与 TLB 架构: 04-Address-Space-Unified-Memory/01-gpu-mmu-tlb.md
+      - UVM 与 Page Fault 处理: 04-Address-Space-Unified-Memory/02-uvm-page-fault.md
+      - ATS PASID 与异构共享 SVM: 04-Address-Space-Unified-Memory/03-ats-pasid-svm.md
+      - 地址翻译工程问题与规避: 04-Address-Space-Unified-Memory/04-address-translation-guide.md
+      - UVM 缺页风暴与 Fault 现场定位: 04-Address-Space-Unified-Memory/05-cases-debug.md
+      - 页表层级与 TLB 命中率定量推演: 04-Address-Space-Unified-Memory/06-engineering-analysis.md
+  - 05 片上与片间高速互联:
+      - 模块概览: 05-Interconnect-Multi-GPU/README.md
+      - PCIe Gen5/Gen6 物理与事务层: 05-Interconnect-Multi-GPU/01-pcie-gen5-gen6.md
+      - NVLink 与 Infinity Fabric: 05-Interconnect-Multi-GPU/02-nvlink-infinity-fabric.md
+      - NVSwitch 交换架构与拓扑: 05-Interconnect-Multi-GPU/03-nvswitch-topology.md
+      - 高速互联工程问题与规避: 05-Interconnect-Multi-GPU/04-interconnect-engineering-guide.md
+      - 互联链路协商与 CRC 错误排查: 05-Interconnect-Multi-GPU/05-cases-debug.md
+      - NVLink 传输开销与带宽推导: 05-Interconnect-Multi-GPU/06-engineering-analysis.md
+  - 06 异步数据搬运与 DMA:
+      - 模块概览: 06-DMA-Async-Data-Transfer/README.md
+      - Copy Engine 硬件架构: 06-DMA-Async-Data-Transfer/01-copy-engine-dma.md
+      - GPUDirect RDMA 与 Storage: 06-DMA-Async-Data-Transfer/02-gpudirect-rdma-storage.md
+      - 异步 Stream 与 CUDA Graph: 06-DMA-Async-Data-Transfer/03-async-stream-concurrency.md
+      - DMA 搬运工程问题与规避: 06-DMA-Async-Data-Transfer/04-dma-engineering-guide.md
+      - GPUDirect 死锁与 DMA 同步案例: 06-DMA-Async-Data-Transfer/05-cases-debug.md
+      - Copy Engine 重叠效率定量推导: 06-DMA-Async-Data-Transfer/06-engineering-analysis.md
+  - 07 频率功耗与电源管理:
+      - 模块概览: 07-Clock-Power-Thermal-DVFS/README.md
+      - DVFS 与 P-States 状态机: 07-Clock-Power-Thermal-DVFS/01-dvfs-power-states.md
+      - Thermal Throttling 与温控: 07-Clock-Power-Thermal-DVFS/02-thermal-throttling.md
+      - PMU 固件与 Power Capping: 07-Clock-Power-Thermal-DVFS/03-pmu-firmware.md
+      - 电源功耗工程问题与规避: 07-Clock-Power-Thermal-DVFS/04-power-engineering-guide.md
+      - 浪涌电流掉电与过温降频案例: 07-Clock-Power-Thermal-DVFS/05-cases-debug.md
+      - DVFS 功耗能效与热阻定量模型: 07-Clock-Power-Thermal-DVFS/06-engineering-analysis.md
+  - 08 图形与专用引擎:
+      - 模块概览: 08-Graphics-Video-Engines/README.md
+      - 光栅化与 RT Core 光追: 08-Graphics-Video-Engines/01-rasterizer-rt-core.md
+      - NVENC NVDEC 视频编解码器: 08-Graphics-Video-Engines/02-video-codec-vpu.md
+      - Display Engine 显示引擎: 08-Graphics-Video-Engines/03-display-engine.md
+      - 专用引擎工程问题与规避: 08-Graphics-Video-Engines/04-special-engine-guide.md
+      - 编解码器死锁与显示撕裂排查: 08-Graphics-Video-Engines/05-cases-debug.md
+      - RT Core 求交与编解码吞吐推导: 08-Graphics-Video-Engines/06-engineering-analysis.md
+  - 09 驱动与软件运行时:
+      - 模块概览: 09-Driver-Runtime-Software-Stack/README.md
+      - Linux KMD DRM/KMS 架构: 09-Driver-Runtime-Software-Stack/01-kmd-drm-kms.md
+      - UMD Ring Buffer 与命令提交: 09-Driver-Runtime-Software-Stack/02-umd-command-submission.md
+      - LLVM 后端与 PTX/SASS 编译: 09-Driver-Runtime-Software-Stack/03-compiler-llvm-ptx-sass.md
+      - 驱动与运行时工程问题与规避: 09-Driver-Runtime-Software-Stack/04-driver-engineering-guide.md
+      - Fence 超时与 Kernel Panic 诊断: 09-Driver-Runtime-Software-Stack/05-cases-debug.md
+      - UMD 零系统调用提交延迟计算: 09-Driver-Runtime-Software-Stack/06-engineering-analysis.md
+  - 10 调试性能与故障分析:
+      - 模块概览: 10-Debug-Profiling-Performance/README.md
+      - Roofline 算力与带宽分析: 10-Debug-Profiling-Performance/01-profiling-roofline.md
+      - NSight 性能计数器采样: 10-Debug-Profiling-Performance/02-nsight-metrics-trace.md
+      - GPU Hang 与 XID 故障诊断: 10-Debug-Profiling-Performance/03-crash-hang-debug.md
+      - 性能调优工程问题与规避: 10-Debug-Profiling-Performance/04-performance-engineering-guide.md
+      - GPU 故障诊断 Xid 报错定位实战: 10-Debug-Profiling-Performance/05-cases-debug.md
+      - 采样与 Warp Occupancy 理论建模: 10-Debug-Profiling-Performance/06-engineering-analysis.md
+  - 11 多卡集群与分布式并行:
+      - 模块概览: 11-Distributed-Parallel-Scale/README.md
+      - NCCL 集合通信与拓扑算法: 11-Distributed-Parallel-Scale/01-nccl-collective-comm.md
+      - 3D 并行与大模型训练映射: 11-Distributed-Parallel-Scale/02-3d-parallelism-megatron.md
+      - Scale-Out 集群网络与 RoCE: 11-Distributed-Parallel-Scale/03-scaleout-cluster-network.md
+      - 集群通信工程问题与规避: 11-Distributed-Parallel-Scale/04-distributed-engineering-guide.md
+      - 集群 NCCL Timeout 卡死定位实战: 11-Distributed-Parallel-Scale/05-cases-debug.md
+      - 3D 并行显存占用与通信量推导: 11-Distributed-Parallel-Scale/06-engineering-analysis.md
+  - 跨模块工程案例:
+      - 案例概览: Case-Studies/README.md
+      - FlashAttention 硬件执行路径: Case-Studies/01-flash-attention-hardware-path.md
+      - PCIe P2P 零拷贝事务流: Case-Studies/02-pcie-p2p-direct-transfer.md
+      - 8卡 GPU AllReduce 通信流: Case-Studies/03-multi-gpu-allreduce-flow.md
+  - 横向专题:
+      - 专题概览: Cross-Topics/README.md
+      - GPU 虚拟化与 MIG 切分: Cross-Topics/01-gpu-virtualization-vgpu-mig.md
+      - PTX 弱内存模型与 Barrier: Cross-Topics/02-gpu-memory-consistency.md
+      - 机密计算与显存硬件加密: Cross-Topics/03-gpu-security-confidential-computing.md
+      - 芯片 RAS 与坏块自愈: Cross-Topics/04-gpu-ras-fault-tolerance.md
+  - 实验:
+      - 实验概览: Labs/README.md
+      - CUDA GEMM 算子极致调优: Labs/lab01-cuda-gemm-tuning/README.md
+      - NSight Roofline 实战分析: Labs/lab02-nsight-roofline-profiling/README.md
+      - 开源 GPU 驱动提交跟踪: Labs/lab03-open-gpu-driver-trace/README.md
+  - 术语表: Glossary/README.md
+  - 文档站使用说明: docs-site.md

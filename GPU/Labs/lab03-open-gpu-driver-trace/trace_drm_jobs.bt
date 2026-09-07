@@ -1,0 +1,17 @@
+#!/usr/bin/env bpftrace
+/*
+ * trace_drm_jobs.bt - 跟踪 Linux DRM 调度器下发 GPU Job 过程
+ */
+
+BEGIN {
+    printf("Tracing DRM GPU job execution... Hit Ctrl-C to end.\n");
+}
+
+tracepoint:drm:drm_sched_job_run {
+    printf("TIME: %-8d | DEV: %-16s | ID: %lu | ENTITY: %p\n", 
+           elapsed / 1000000, str(args->dev_name), args->id, args->entity);
+}
+
+tracepoint:drm:drm_sched_process_job {
+    printf("  -> COMPLETED JOB ID: %lu\n", args->id);
+}
