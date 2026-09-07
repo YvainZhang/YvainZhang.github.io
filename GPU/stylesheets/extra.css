@@ -70,3 +70,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC"
 [data-md-color-scheme="slate"] .gpu-home-flow a:hover { background: var(--gpu-green); }
 [data-md-color-scheme="slate"] .gpu-route-card:hover,
 [data-md-color-scheme="slate"] .gpu-practice-grid > a:hover { background: rgba(255,255,255,.06); }
+
+/* Reading progress */
+.gpu-reading-track { position: fixed; z-index: 20; top: 0; left: 0; width: 100%; height: 3px; background: transparent; pointer-events: none; }
+.gpu-reading-bar { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--gpu-green), var(--gpu-neon), var(--gpu-emerald)); box-shadow: 0 0 .6rem rgba(118, 185, 0, .35); transition: width 80ms linear; }
+.gpu-side-tools { position: sticky; z-index: 2; top: 0; margin: .35rem .6rem 1rem; padding: .75rem; border: 1px solid var(--md-default-fg-color--lightest); border-radius: .5rem; background: var(--md-code-bg-color); box-shadow: 0 .35rem .8rem rgba(15, 23, 42, .06); }
+.gpu-side-tools__head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .5rem; color: var(--md-default-fg-color--light); font: 700 .5rem/1.3 "SFMono-Regular", Consolas, monospace; letter-spacing: .06em; text-transform: uppercase; }
+.gpu-side-tools__head output { color: var(--md-accent-fg-color); font-size: .56rem; }
+.gpu-side-progress { height: .22rem; overflow: hidden; border-radius: 999px; background: var(--md-default-fg-color--lightest); }
+.gpu-side-progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--gpu-green), var(--gpu-neon)); transition: width 80ms linear; }
+@media (prefers-reduced-motion: reduce) { .gpu-reading-bar, .gpu-side-progress span { transition: none; } }

@@ -70,3 +70,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC"
 [data-md-color-scheme="slate"] .npu-home-flow a:hover { background: var(--npu-blue); }
 [data-md-color-scheme="slate"] .npu-route-card:hover,
 [data-md-color-scheme="slate"] .npu-practice-grid > a:hover { background: rgba(255,255,255,.06); }
+
+/* Reading progress */
+.npu-reading-track { position: fixed; z-index: 20; top: 0; left: 0; width: 100%; height: 3px; background: transparent; pointer-events: none; }
+.npu-reading-bar { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--npu-blue), var(--npu-violet), var(--npu-pink)); box-shadow: 0 0 .6rem rgba(124, 58, 237, .35); transition: width 80ms linear; }
+.npu-side-tools { position: sticky; z-index: 2; top: 0; margin: .35rem .6rem 1rem; padding: .75rem; border: 1px solid var(--md-default-fg-color--lightest); border-radius: .5rem; background: var(--md-code-bg-color); box-shadow: 0 .35rem .8rem rgba(15, 23, 42, .06); }
+.npu-side-tools__head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .5rem; color: var(--md-default-fg-color--light); font: 700 .5rem/1.3 "SFMono-Regular", Consolas, monospace; letter-spacing: .06em; text-transform: uppercase; }
+.npu-side-tools__head output { color: var(--md-accent-fg-color); font-size: .56rem; }
+.npu-side-progress { height: .22rem; overflow: hidden; border-radius: 999px; background: var(--md-default-fg-color--lightest); }
+.npu-side-progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--npu-blue), var(--npu-violet)); transition: width 80ms linear; }
+@media (prefers-reduced-motion: reduce) { .npu-reading-bar, .npu-side-progress span { transition: none; } }
