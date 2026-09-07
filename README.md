@@ -1,6 +1,6 @@
 # Yvain Zhang Blog
 
-This repository hosts the Jekyll-based GitHub Pages site for `YvainZhang.github.io`, including the SoC and Wi-Fi system knowledge collections.
+This repository hosts the Jekyll-based GitHub Pages site for `YvainZhang.github.io`, including the SoC, Wi-Fi, and GPU system knowledge collections.
 
 ## Local development
 
@@ -19,12 +19,17 @@ Run the site locally:
 bundle exec jekyll serve --livereload
 ```
 
-Build the two system knowledge collections into the combined site:
+Build the blog first, then the three system knowledge collections into the combined site (a later Jekyll build can remove the generated collections):
 
 ```bash
+python3 -m pip install -r SoC/requirements-docs.txt
+bundle exec jekyll build --destination _site
 mkdocs build --strict --config-file _soc_publish/mkdocs.yml --site-dir "$PWD/_site/tech/soc"
 mkdocs build --strict --config-file WiFi/mkdocs.yml --site-dir "$PWD/_site/tech/wifi"
+mkdocs build --strict --config-file GPU/mkdocs.yml --site-dir "$PWD/_site/tech/gpu"
 ```
+
+To preview the combined output without rebuilding it, run `python3 -m http.server 8000 --directory _site` and open `http://localhost:8000/tech/`.
 
 Rebuild frontend assets when editing files in `less/` or `js/`:
 
@@ -39,12 +44,12 @@ npm run watch:assets
 - `_layouts/`, `_includes/`: shared Jekyll templates
 - `less/`: stylesheet sources compiled into `css/`
 - `js/`: unminified scripts; commit minified output when source changes
-- `SoC/`, `WiFi/`: MkDocs-based system knowledge collections
+- `SoC/`, `WiFi/`, `GPU/`: MkDocs-based system knowledge collections
 - `_config.yml`: site metadata and plugin configuration
 
 ## Deployment
 
-The GitHub Actions Pages workflow builds Jekyll together with both MkDocs collections.
+The GitHub Actions Pages workflow builds Jekyll together with all three MkDocs collections.
 
 On GitHub:
 
