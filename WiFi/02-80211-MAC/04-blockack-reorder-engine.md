@@ -49,3 +49,52 @@ BlockAck bitmap 的生成是 SIFS fast path；把连续 MPDU 上送网络栈是 
 ## 参考
 
 - [Linux mac80211：RX aggregation 与 reorder offload 接口](https://www.kernel.org/doc/html/latest/driver-api/80211/mac80211.html)
+
+## 窗口演算：回绕、缺口和推进
+
+采用教学窗口 W=8、head=4094，缓存按 Sequence 标记，收到 4095、0 时暂存；收到 4094 后可连续交付 4094、4095、0，head 变为 1。
+
+| 输入 | 相对 head 的 delta | 动作 |
+|---|---:|---|
+| 初始收到 4095 | 1 | 缓存，等待 4094 |
+| 再收到 0 | 2 | 缓存，跨回绕但仍在窗内 |
+| 再收到 4094 | 0 | 连续交付，head→1 |
+| 再收到 4095 | 4094 | 旧序列方向，不作为新包 |
+| 再收到 12 | 11 | 超出窗口，按协定推进/释放 |
+
+对最后一行，若采用常见窗口推进模型 `new_head=(12-W+1) mod 4096=5`，旧区间 1..4 中已缓存的可释放、缺口记作跳过；具体 BAR、timer 和上送规则以实现及协议为准。不能清空整个缓存而不记录丢失范围。
+
+## 概念算法与槽位陷阱
+
+```text
+validate peer/TID/session
+d = (seq - head) & 4095
+if d >= 2048: reject old-direction frame
+else:
+    if d >= W: advance to seq-W+1, handling buffered range
+    if slot already contains this seq: duplicate
+    else: store buffer + full sequence + arrival time
+    release consecutive valid buffers starting from head
+```
+
+不能假定 `slot=seq%W` 在任意 W 和 4096 回绕下都安全。实现可用相对 head 的循环索引，并保留完整 Sequence tag 识别复用槽；对非 2 次幂窗口单独验证。模空间 half-range 的比较有适用范围，正好相差 2048 不能按普通“未来包”处理。
+
+## BA 反馈、重试与安全交付分开
+
+BA bitmap 告诉发送方哪些 MPDU 被确认，RX reorder 决定交付顺序。加密、MIC、PN 错误仍可能阻止最终交付。MAC 已确认不意味着应用收到，安全失败也不能简单通过修改 BA 位图来解决。
+
+BA 格式与窗口上限有代际差异，64 位 Compressed BA 只是一种常见实例。读取 bitmap 前要验证 BA variant、TID、SSN 和长度，禁止所有格式硬编码 8 byte。
+
+## Timer、DELBA 与 Reset 的互斥
+
+Reorder timeout 的目的是避免某个洞长期阻塞后续包；不是把整个 BA session 自动判为无效。Timer 应绑定 session identity，在释放缓存时与 RX/BAR/DELBA 使用同一同步规则。
+
+测试重点包括：timeout 与最后一个缺包同时到达、DELBA 后 timer 触发、Peer ID 被新连接复用、BAR 跨回绕、窗口满时内存不足。每次 Buffer 必须恰好上送或丢弃一次。
+
+## 复习追问与答案
+
+**BA 中有洞一定是空口丢包吗？** 还可能是未发送、接收过滤、抓包遗漏或 bitmap/session 解析错误，需要逐 MPDU attempt 与接收记录。
+
+**为什么 DHCP 能被 BA 问题拖住？** DHCP 所在 TID 的 reorder 窗口若停在旧洞上，即便该数据完整到达也可能暂存；需证实 head 与释放时间。
+
+**最有价值的计数是什么？** per-session head、occupied slots、old/duplicate/out-of-window、timeout/BAR release、drop reason，加上 generation。

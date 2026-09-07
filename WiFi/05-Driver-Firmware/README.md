@@ -17,6 +17,7 @@ RX Data  ←────────────────── reorder / dec
 - [命令、事件、数据与故障恢复](01-control-data-recovery.md)
 - [Host–Device ABI：Descriptor、Command 与 Event](02-host-device-abi.md)
 - [Firmware RTOS、状态机与实时调度](03-firmware-state-machines.md)
+- [VIF、Peer、Key、BA Context 与 Reset 一致性](04-context-generation-and-reset.md)
 
 ## 本章检查点
 

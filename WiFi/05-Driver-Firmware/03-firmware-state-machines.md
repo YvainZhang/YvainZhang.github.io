@@ -46,3 +46,50 @@ Watchdog 触发后先冻结关键 trace，保存 task/ISR 状态、pending comma
 - 用逻辑时钟测试 timer race，不依赖真实等待；
 - 为 task queue 设置 latency histogram，而不只统计平均值；
 - 用 generation 验证 teardown 后的异步事件不会访问旧对象。
+
+## 给状态机写 Event Table
+
+状态图只画允许路径，Event Table 还定义非法与迟到事件。以下为连接状态的教学片段：
+
+| 当前状态 | 事件 | 动作 | 新状态/拒绝原因 |
+|---|---|---|---|
+| SCANNING | scan done（匹配请求） | 选候选/失败完成 | AUTHENTICATING/READY |
+| AUTHENTICATING | disconnect | 取消 timer，终止连接请求 | READY |
+| READY | 旧 auth response | 计 stale，不创建 Peer | READY |
+| CONNECTED | reset | 停入口，冻结证据 | RECOVERING |
+| RECOVERING | 旧 TX done | 按旧事务回收/拒绝 | 不更新新 Credit |
+
+每行还要写 deadline、可重入性和资源变化。没有状态变化的事件也可能改变 Buffer 所有权，不能简单忽略。
+
+## 实时调度的预算模型
+
+对固定优先级抢占模型，可用响应时间分析检查任务 i：
+
+```text
+R_i = C_i + B_i + Σ ceil(R_i / T_j) × C_j
+                    j 为更高优先级任务
+```
+
+C 是最坏执行时间，B 是阻塞，T 是高优先级任务的最小到达间隔。该模型假设应明确；突发 IRQ、非抢占区、DMA/总线争用不能被平均 CPU 利用率掩盖。
+
+教学例：控制任务执行 100 μs，可能被锁阻塞 40 μs；周期 100 μs、执行 20 μs 的高优先级任务干扰。迭代得到 `140→180→180 μs`。若 deadline=150 μs，即便平均负载看起来不高仍违约。
+
+## 优先级反转与队列耗尽
+
+高优先级 TX refill 等待低优先级日志任务持有的锁，而中优先级任务持续运行，会形成优先级反转。可用缩短临界区、拆分共享数据或平台提供的优先级继承，但不能假定所有 RTOS mutex 自动继承。
+
+Event queue 也要设计满时行为：关键控制事件不应静默丢弃；telemetry 可丢但要计数。不可在 ISR 中无限等待空槽，否则 consumer 无法获得执行时间。
+
+## Watchdog 的进展判据
+
+空闲时 Ring 不移动不表示卡死；应在“有待处理工作”且超过 deadline 时判定 stall。心跳、任务执行、queue consumer、IRQ 和 MAC completion 分开监控，避免一个健康任务替整个系统喂狗。
+
+Dump 要保存触发前历史。1 MiB ring、每条 32 byte、10,000 条/秒仅覆盖约 3.28 秒；日志速率升高会缩短现场窗口，应做采样、触发和关键事件保留。
+
+## 复习追问与答案
+
+**CPU 没满为什么还错过 deadline？** 阻塞、不可抢占区域、优先级反转、共享 SRAM/总线都能增加最坏响应时间。
+
+**非法事件都能直接丢弃吗？** 还需处理其附带资源和 pending waiter，否则状态没坏但内存泄漏。
+
+**怎样复现 timer race？** 使用受控事件顺序或逻辑时钟注入，验证每一种 terminal path 恰好完成一次。

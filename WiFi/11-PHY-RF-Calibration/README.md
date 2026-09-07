@@ -20,6 +20,7 @@ PHY/RF 问题不能只用 RSSI 判断。至少联合观察 EVM、PER、CFO、AGC
 
 - [PHY TX/RX 与 RXVECTOR](01-phy-tx-rx-vector.md)
 - [RF 指标、校准与失效模式](02-rf-calibration-metrics.md)
+- [同步、信道估计、编码与 MIMO 接收链](03-sync-channel-coding-mimo.md)
 
 ## 本章检查点
 

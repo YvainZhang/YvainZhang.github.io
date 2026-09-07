@@ -20,6 +20,7 @@
 
 - [一次数据传输的端到端路径](01-end-to-end-data-path.md)
 - [Wi-Fi 芯片参考架构与责任边界](02-chip-reference-architecture.md)
+- [状态、所有权与生命周期设计](03-state-ownership-and-lifetime.md)
 
 ## 本章检查点
 

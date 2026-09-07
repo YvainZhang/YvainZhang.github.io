@@ -34,6 +34,11 @@ nav_exclude: true
                     <strong>SoC 系统知识库</strong>
                     <i aria-hidden="true">→</i>
                 </a>
+                <a class="series-index-row series-index-collection" href="{{ '/tech/wifi/' | prepend: site.baseurl }}">
+                    <span class="series-index-date">Collection</span>
+                    <strong>Wi-Fi 系统知识库</strong>
+                    <i aria-hidden="true">→</i>
+                </a>
                 {% for post in group_posts %}
                 <a class="series-index-row" href="{{ post.url | prepend: site.baseurl }}">
                     <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%Y.%m.%d" }}</time>

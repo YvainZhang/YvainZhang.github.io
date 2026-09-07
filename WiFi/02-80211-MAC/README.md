@@ -16,6 +16,7 @@
 - [Hardware MAC 实时路径](02-hardware-mac-realtime-path.md)
 - [802.11ax OFDMA 与 Trigger 实时路径](03-he-ofdma-trigger-path.md)
 - [BlockAck、Sequence 与 Reorder Engine](04-blockack-reorder-engine.md)
+- [EDCA、聚合、重传与 Airtime](05-edca-aggregation-retry.md)
 
 ## 本章检查点
 

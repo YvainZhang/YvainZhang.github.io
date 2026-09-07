@@ -17,6 +17,7 @@ Linux 把 Wi-Fi 能力分散在用户态守护进程、nl80211/cfg80211、mac802
 
 - [cfg80211、mac80211 与用户态组件](01-linux-wifi-stack.md)
 - [SKB、Netdev Queue 与 NAPI](02-skb-netdev-napi.md)
+- [QoS、qdisc、多队列与 Driver Flow Control](03-qos-qdisc-driver-flow-control.md)
 
 ## 本章检查点
 

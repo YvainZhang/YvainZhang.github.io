@@ -16,7 +16,7 @@
 
 ## 常见路径
 
-一个典型错误是：Host 恢复了 netdev，却没有重新提交 RX buffer；TX 仍可进入 Device，但 ACK、event 和下行数据无法返回。另一个错误是 Firmware 已丢失连接状态，而 Host 没收到 disconnect event，造成“逻辑已连接、物理已断开”。
+一个典型错误是：Host 恢复了 netdev，却没有重新提交 RX buffer；TX 仍可进入 Device，但 Host 所需的 TX status、event 和下行数据无法返回（空口 ACK 本身可能已由 MAC 正常接收）。另一个错误是 Firmware 已丢失连接状态，而 Host 没收到 disconnect event，造成“逻辑已连接、物理已断开”。
 
 ## 定位步骤
 

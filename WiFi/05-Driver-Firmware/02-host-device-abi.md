@@ -34,7 +34,7 @@ stateDiagram-v2
     Submitted --> TimedOut: deadline
     Submitted --> Cancelled: reset/remove/suspend
     TimedOut --> LateResponse: response arrives later
-    LateResponse --> Dropped: generation mismatch
+    LateResponse --> Dropped: transaction terminal or stale generation
 ```
 
 Transaction ID 解决匹配，generation 解决 reset 后的迟到事件污染新会话。Timeout 只表示 Host 没在 deadline 内收到有效响应，不等于命令未执行；因此可重试命令必须具有幂等语义或查询/回滚路径。
@@ -50,3 +50,48 @@ Transaction ID 解决匹配，generation 解决 reset 后的迟到事件污染�
 ## 不变量
 
 每个成功提交的对象最终必须落入 completion、explicit drop、cancel 或 reset reclaim 之一；任何路径都不能既归还 credit 又重复 completion，也不能丢失 buffer ownership。
+
+## TLV 解析：用剩余长度避免整数溢出
+
+以下为教学逻辑，假设总报文长度已由 transport 验证，所有整数已按线格式读取：
+
+```text
+remaining = total_len - header_len
+while remaining != 0:
+    require remaining >= TLV_HEADER_SIZE
+    length = read_tlv_length()
+    require length <= remaining - TLV_HEADER_SIZE
+    require padding(length) fits remaining as well
+    if unknown mandatory type: reject
+    if known type: validate semantic bounds before use
+    advance by checked header + length + padding
+require no forbidden duplicates or missing required fields
+```
+
+不能先计算 `offset+length` 再比较末尾，因为加法本身可能溢出；也不能在长度校验前解引用 C 结构体。TLV 对齐后的填充也属于边界验证。
+
+## 具体 descriptor 契约
+
+| 字段组 | 线格式应定义 | 失败示例 |
+|---|---|---|
+| 地址/segment | DMA 地址宽度、段数、每段长度 | 64-bit 地址截断 |
+| 长度/offset | 含不含 Ethernet、crypto、FCS | 多读 header 或尾部 |
+| Context | VIF/Peer/TID/key 与 generation | 复用旧 slot |
+| offload | 输入帧视图、checksum、crypto 责任 | 两层重复封装 |
+| 完成策略 | Buffer consumed 与 air status | 过早释放/错误成功率 |
+
+Host 指针不能进入 Device 可解释字段。PCIe 的 DMA address、USB 的 transfer offset、Device SRAM handle 是三种不同地址空间；不要共用一个未经标记的整数语义。
+
+## Boot 协商与兼容测试
+
+启动先确认 BootROM/loader 可用、下载范围及完整性，再等待 Firmware ready，交换 ABI/capabilities/ring limits，加载有效 board/calibration 数据并启动事件通道。普通数据 queue 只能在依赖就绪后开放。
+
+版本兼容应覆盖 old Host/new FW 与 new Host/old FW。新增可选 TLV 能否跳过取决于协议定义；影响语义的 mandatory 功能不应静默降级。主版本不兼容、长度超限、feature bitmap 与实际返回冲突要给出具体失败原因。
+
+## 复习追问与答案
+
+**为什么 packed struct 仍不足？** 只解决部分布局，不解决字节序、字段语义、位域顺序、对齐访问、版本与生命周期。
+
+**重复响应怎么办？** 依据 transaction terminal state 检测；不是所有迟到响应都会 generation mismatch。
+
+**最有价值的测试向量是什么？** 双端一致的序列化字节、最小/最大/截断长度、未知 optional/mandatory TLV、重复字段、Reset 后旧响应。不要只测试两端同编译器的正常路径。

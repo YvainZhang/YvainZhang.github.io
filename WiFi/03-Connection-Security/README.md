@@ -15,6 +15,7 @@ Interface Ready → Scan → Select BSS → Authentication → Association
 
 - [扫描到可用网络的完整生命周期](01-connection-lifecycle.md)
 - [Key、PN 与 Replay Protection](02-key-pn-replay.md)
+- [WPA2/WPA3、漫游与受控端口状态](03-wpa-roam-port-state.md)
 
 ## 本章检查点
 

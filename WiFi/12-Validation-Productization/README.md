@@ -21,6 +21,7 @@ Algorithm/Golden Model
 
 - [从模型到 First Silicon 的验证与 Bring-up](01-validation-bringup.md)
 - [认证、法规与量产测试](02-certification-production.md)
+- [Coverage、需求追溯与回归闭环](03-coverage-traceability-regression.md)
 
 ## 本章检查点
 
