@@ -1,5 +1,49 @@
 # 扫描到可用网络的完整生命周期
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as App / Network Stack
+    participant Supplicant as wpa_supplicant / SME
+    participant Driver as Host Driver (cfg80211)
+    participant HW as Wi-Fi Device / MAC
+    participant AP as Access Point (BSS)
+
+    Note over HW,AP: 1. 扫描阶段 (Scan)
+    Supplicant->>Driver: nl80211 TRIGGER_SCAN
+    Driver->>HW: 执行主动/被动扫描
+    HW->>AP: Probe Request
+    AP-->>HW: Probe Response (或监听 Beacon)
+    HW-->>Driver: BSS Report 事件上报
+    Driver-->>Supplicant: SCAN_RESULTS (匹配 SSID, AKM, RSSI)
+
+    Note over HW,AP: 2. 802.11 认证与关联 (Auth & Assoc)
+    Supplicant->>Driver: nl80211 CONNECT (或 AUTH/ASSOC)
+    Driver->>HW: 发送管理帧
+    HW->>AP: Auth Request (Open System, Seq 1)
+    AP-->>HW: Auth Response (status=0, Seq 2)
+    HW->>AP: Assoc Request (Capabilities, RSN IE)
+    AP-->>HW: Assoc Response (status=0, AID)
+    HW-->>Driver: Assoc Event
+    Driver-->>Supplicant: NL80211_CMD_CONNECT (已关联但受控端口未授权)
+
+    Note over HW,AP: 3. 四次握手 (RSN 4-Way Handshake)
+    Note over Driver,HW: 受控端口阻断普通单播，仅放行 EAPOL
+    AP->>HW: EAPOL-Key M1 (ANonce)
+    HW->>Supplicant: 上报 EAPOL M1 (计算 SNonce, PTK)
+    Supplicant->>AP: EAPOL-Key M2 (SNonce + MIC)
+    AP->>Supplicant: EAPOL-Key M3 (Install PTK flag, GTK, MIC)
+    Supplicant->>Driver: SET_KEY (安装 PTK / GTK 到硬件加密引擎)
+    Supplicant->>AP: EAPOL-Key M4 (确认)
+    Supplicant->>Driver: PORT_AUTHORIZED (打通受控端口)
+
+    Note over App,AP: 4. IP 获取与业务数据 (DHCP & Data)
+    App->>Driver: DHCP Discover (UDP 67/68 广播)
+    Driver->>HW: 加密并空口发送
+    AP-->>App: DHCP Offer -> Request -> ACK (分配本地 IP)
+    App->>AP: TCP/UDP 正常端到端业务通信
+```
+
 ## 1. 扫描与候选网络
 
 被动扫描监听 Beacon；主动扫描发送 Probe Request 并接收 Probe Response。扫描结果不仅包含 SSID/RSSI，还包含信道、能力、加密套件与负载等信息。扫描不到时先检查 regulatory domain、信道、扫描 dwell、并发角色和设备是否处于可扫描状态。

@@ -4,13 +4,29 @@
 
 ## 空口预算
 
+```mermaid
+flowchart LR
+    subgraph Airtime["单次传输空口占用总耗时 (Total Airtime: T_success)"]
+        direction LR
+        C1["AIFS / DIFS<br>(信道初始等待)"] --> C2["Contention Backoff<br>(随机退避槽位)"]
+        C2 --> P1["PHY Preamble / SIG<br>(前导码与信令开销)"]
+        P1 --> P2["A-MPDU Payload<br>(实际传输的数据净荷)"]
+        P2 --> S1["SIFS<br>(短帧间间隔 16μs)"]
+        S1 --> BA["Block ACK<br>(接收端批量确认帧)"]
+    end
+```
+
 单次成功传输的近似 airtime：
 
 ```text
 T_success = AIFS + E[backoff] + T_PPDU + SIFS + T_ACK_or_BA
 ```
 
-考虑失败概率 `p` 和 retry chain 后，分母还要加入失败尝试及更低速重传的 airtime。应用 Goodput 进一步扣除 MAC header、delimiter/padding、加密、LLC/IP/TCP、总线封装与空包等待。
+考虑失败概率 `p` 和 retry chain 后，分母还要加入失败尝试及更低速重传的 airtime。应用 Goodput 进一步扣除 MAC header、delimiter/padding、加密、LLC/IP/TCP、总线封装与空包等待：
+
+```text
+Goodput = (有效应用层字节数 × 8) / (T_success + 碰撞退避 + 重传尝试耗时)
+```
 
 不要用 `PHY rate × 固定系数` 作为跨场景模型：不同 PPDU、聚合深度、包长、竞争者和 retry 会让系数发生根本变化。
 

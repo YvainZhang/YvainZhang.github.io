@@ -24,6 +24,40 @@ C bit-field、编译器 padding、指针宽度和 enum 大小都不适合作为�
 
 TX Descriptor 通常包含 buffer/segment、length、VIF/Peer/TID、Key、offload、cookie 和 completion policy；RX Descriptor 包含 length、offset、VIF/Peer/TID、RXVECTOR 摘要、FCS/decrypt/replay 和聚合边界。每个字段还要说明：由谁写、何时有效、何时可复用。
 
+## Command 与 Event 异步交互及 Credit 令牌流控
+
+Host 与固件之间通常分为**控制通路 (H2D Command / D2H Event)** 与**数据通路 (H2D TX / D2H RX)**。数据通路依赖固件的 Buffer Credit 进行背压流控：
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Netdev as Linux Netdev / qdisc
+    participant Driver as Host Driver (HIF)
+    participant Ring as PCIe / USB DMA Rings
+    participant FW as Firmware RTOS
+    participant MAC as Hardware MAC
+
+    Note over Driver,FW: 1. 控制面交互 (Command / Event)
+    Driver->>Ring: 写入 Command Descriptor (CMD_SET_KEY, TransID=101, Gen=1)
+    Driver->>FW: 触发 H2D Doorbell 中断
+    FW->>FW: 解析命令并配置硬件加密表
+    FW->>Ring: 写入 Event Descriptor (RESP_SUCCESS, TransID=101, Gen=1)
+    FW->>Driver: 触发 D2H 中断通知 Host 完成
+
+    Note over Netdev,MAC: 2. 数据面与 Credit 令牌流控 (TX Data & Flow Control)
+    Netdev->>Driver: ndo_start_xmit(skb)
+    Driver->>Driver: 检查 FW Credits 余额: 当前剩余 12 (可用)
+    Driver->>Driver: 扣减 1 个 Credit (剩余 11)
+    Driver->>Ring: 填充 TX Descriptor + 映射数据 DMA
+    Driver->>FW: 敲响 TX 门铃
+    FW->>MAC: 排入硬件发送队列 -> 空口发射
+    MAC-->>FW: 收到空口 BlockAck 确认
+    FW->>Ring: 写入 TX Status 描述符 (返还 1 个 Credit)
+    FW->>Driver: 触发 TX 完成中断
+    Driver->>Driver: 归还 Credit (恢复为 12) 释放 SKB
+    Note over Driver,Netdev: 若此前因 Credit 耗尽已 stop_queue，此时唤醒 wake_queue
+```
+
 ## Command 生命周期
 
 ```mermaid

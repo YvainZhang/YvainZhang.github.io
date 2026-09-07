@@ -10,6 +10,35 @@ Probe 阶段验证 DMA mask/coherent mask 与硬件地址宽度；错误截断�
 
 ## 本文具体模型：coherent descriptor + streaming payload
 
+```mermaid
+flowchart TB
+    subgraph Host_Memory["Host DDR 内存空间"]
+        subgraph Coherent_Ring["Coherent DMA 环形队列 (描述符环)"]
+            D0["Desc 0: [DMA_Addr | Len | Cookie | Owner=DEV]"]
+            D1["Desc 1: [DMA_Addr | Len | Cookie | Owner=DEV]"]
+            D2["Desc 2: [空闲槽位 | Owner=HOST] <-- Producer"]
+            D3["Desc 3: [已消费槽位 | Owner=HOST] <-- Consumer"]
+        end
+        subgraph Streaming_Buf["Streaming DMA 数据载荷 (SKB Buffers)"]
+            SKB0["SKB Payload 0 (dma_map_single: TO_DEVICE)"]
+            SKB1["SKB Payload 1 (dma_map_single: TO_DEVICE)"]
+        end
+    end
+
+    subgraph PCIe_Device["Wi-Fi 芯片侧 (Device / DMA Engine)"]
+        DB["Doorbell 门铃寄存器 (MMIO)"]
+        DMA_RD["Bus Master DMA 搬运引擎"]
+    end
+
+    Host_CPU["Host CPU / 驱动 TX"] -->|1. dma_map_single| SKB0
+    Host_CPU -->|2. 填充字段| D0
+    Host_CPU -->|3. dma_wmb 屏障 + 置 Owner=DEV| D0
+    Host_CPU -->|4. writel 更新生产者门铃| DB
+    DB -. 触发搬运 .-> DMA_RD
+    DMA_RD -->|DMA 读取描述符| D0
+    DMA_RD -->|DMA 搬运数据包| SKB0
+```
+
 以下示意假设 ring 由 coherent DMA 分配，payload 用 streaming DMA 映射；slot 的 owner 协议、doorbell 访问方式已由硬件规范定义。伪代码不是可直接复制的完整驱动。
 
 ```c
