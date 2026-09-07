@@ -22,6 +22,16 @@
 
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
 .md-header { background: linear-gradient(105deg, var(--npu-deep), var(--npu-ink)); box-shadow: none; }
+.md-banner { color: #dce8e4; background: #060d19; }
+.npu-announce { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1rem; width: min(100%,76rem); margin: 0 auto; font-size: .58rem; }
+.npu-announce nav, .npu-announce a { display: inline-flex; align-items: center; gap: .42rem; }
+.npu-announce a { color: #fff; }
+.npu-announce a:hover { text-decoration: underline; }
+.npu-announce a:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.npu-announce-divider, .npu-announce em { color: #b9c9c4; font-style: normal; }
+.npu-announce em { font-family: monospace; letter-spacing: .08em; text-transform: uppercase; }
+.npu-announce-mark { display: inline-grid; place-items: center; width: 1.45rem; height: 1.45rem; border: 1px solid #718a80; color: #dce8e4; font: 800 .48rem/1 monospace; }
+@media (max-width: 480px) { .npu-announce em { display: none; } }
 .md-tabs { background: var(--npu-ink); }
 .md-typeset h1, .md-typeset h2, .md-typeset h3 { letter-spacing: -.025em; }
 .md-typeset h1 { color: var(--npu-ink); font-weight: 800; }
