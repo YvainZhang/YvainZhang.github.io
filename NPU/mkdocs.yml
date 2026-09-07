@@ -10,7 +10,6 @@ theme:
   name: material
   language: zh
   features:
-    - navigation.sections
     - navigation.top
     - navigation.indexes
     - search.highlight
