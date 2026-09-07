@@ -1,0 +1,72 @@
+:root {
+  --npu-ink: #0d1a30;
+  --npu-deep: #060d19;
+  --npu-blue: #2563eb;
+  --npu-violet: #7c3aed;
+  --npu-pink: #ec4899;
+  --md-primary-fg-color: #0f2347;
+  --md-primary-fg-color--light: #1d3e78;
+  --md-primary-fg-color--dark: #071226;
+  --md-accent-fg-color: #7c3aed;
+  --md-default-bg-color: #f7f9fc;
+  --md-code-bg-color: #ebf0f7;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #0a0f1d;
+  --md-default-fg-color: rgba(238, 242, 255, .9);
+  --md-default-fg-color--light: rgba(238, 242, 255, .62);
+  --md-code-bg-color: #111a2e;
+  --md-typeset-a-color: #60a5fa;
+}
+
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
+.md-header { background: linear-gradient(105deg, var(--npu-deep), var(--npu-ink)); box-shadow: none; }
+.md-tabs { background: var(--npu-ink); }
+.md-typeset h1, .md-typeset h2, .md-typeset h3 { letter-spacing: -.025em; }
+.md-typeset h1 { color: var(--npu-ink); font-weight: 800; }
+[data-md-color-scheme="slate"] .md-typeset h1 { color: #f0f4ff; }
+.md-typeset h2 { padding-bottom: .45rem; border-bottom: 1px solid rgba(37, 99, 235, .15); font-weight: 750; }
+
+.npu-home-hero { position: relative; isolation: isolate; overflow: hidden; margin: 0 0 4rem; padding: clamp(2rem, 6vw, 4.5rem); color: #f4efe6; background: radial-gradient(circle at 83% 18%, rgba(124, 58, 237, .28), transparent 25%), linear-gradient(135deg, #0f2347, #060d19); box-shadow: 1rem 1rem 0 rgba(37, 99, 235, .12); }
+.npu-home-hero::after { content: ""; position: absolute; z-index: -1; inset: 0; opacity: .14; background-image: linear-gradient(rgba(255,255,255,.28) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.28) 1px, transparent 1px); background-size: 2rem 2rem; mask-image: linear-gradient(90deg, transparent, #000 58%); }
+.npu-home-kicker { display: flex; align-items: center; gap: .6rem; margin: 0 0 1.35rem; color: #a78bfa; font: 800 .56rem/1.4 monospace; letter-spacing: .16em; text-transform: uppercase; }
+.npu-home-kicker span { width: 1.4rem; height: 1px; background: var(--npu-pink); }
+.md-typeset .npu-home-hero h1 { max-width: 36rem; margin: 0; color: #fff; font-size: clamp(2.4rem, 7vw, 4.8rem); line-height: .98; letter-spacing: -.06em; }
+.npu-home-lead { max-width: 42rem; margin: 1.35rem 0 0; color: rgba(244, 239, 230, .75); font-size: .82rem; line-height: 1.85; }
+.npu-home-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; max-width: 38rem; margin-top: 2rem; }
+.npu-home-stats span { color: rgba(244, 239, 230, .5); font: 700 .5rem/1.45 monospace; letter-spacing: .06em; text-transform: uppercase; }
+.npu-home-stats strong { display: block; margin-bottom: .2rem; color: #a78bfa; font-size: 1rem; }
+
+.npu-home-section { margin: 4.2rem 0; }
+.npu-home-section-head { display: grid; grid-template-columns: 7.2rem minmax(0, 1fr); gap: 1.2rem; align-items: start; margin-bottom: 1.8rem; }
+.npu-home-section-head p { margin: .15rem 0 0; color: var(--npu-blue); font: 800 .52rem/1.4 monospace; letter-spacing: .13em; text-transform: uppercase; }
+.md-typeset .npu-home-section-head h2 { max-width: 34rem; margin: 0; padding: 0; border: 0; font-size: clamp(1.55rem, 4vw, 2.25rem); line-height: 1.18; }
+.npu-home-flow { display: flex; align-items: center; gap: .45rem; padding: 1.4rem; border: 1px solid rgba(37, 99, 235, .15); overflow-x: auto; background: rgba(255,255,255,.4); }
+.npu-home-flow a { flex: 1 0 4.3rem; display: grid; place-items: center; min-height: 3rem; border: 1px solid rgba(37, 99, 235, .25); color: var(--npu-ink); background: rgba(255,255,255,.75); font: 800 .58rem/1 monospace; letter-spacing: .05em; }
+.npu-home-flow a:hover { color: #fff; background: var(--npu-ink); }
+.npu-home-flow i { color: var(--npu-violet); font-style: normal; }
+.npu-home-flow-note { margin: .85rem 0 0; color: var(--md-default-fg-color--light); font-size: .68rem; line-height: 1.7; }
+.npu-route-grid, .npu-practice-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
+.npu-route-card, .npu-practice-grid > a { display: block; min-height: 9.4rem; padding: 1.2rem; border: 1px solid rgba(37, 99, 235, .15); color: var(--md-default-fg-color); background: rgba(255,255,255,.45); transition: transform 160ms ease, background 160ms ease; }
+.npu-route-card:hover, .npu-practice-grid > a:hover { color: var(--md-default-fg-color); background: rgba(255,255,255,.8); transform: translateY(-.18rem); }
+.npu-route-card > span, .npu-practice-grid > a > span { color: var(--npu-blue); font: 800 .48rem/1 monospace; letter-spacing: .1em; text-transform: uppercase; }
+.md-typeset .npu-route-card h3 { margin: 1rem 0 .6rem; font-size: .9rem; }
+.npu-route-card p, .npu-practice-grid p { margin: 0; color: var(--md-default-fg-color--light); font-size: .63rem; line-height: 1.7; }
+.npu-module-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid rgba(37, 99, 235, .15); }
+.npu-module-grid a { display: grid; grid-template-columns: 2rem minmax(0, 1fr) auto; gap: .8rem; align-items: center; min-height: 4.1rem; padding: .75rem .7rem .75rem 0; border-bottom: 1px solid rgba(37, 99, 235, .12); color: var(--md-default-fg-color); }
+.npu-module-grid a:nth-child(odd) { margin-right: 1.1rem; }
+.npu-module-grid a:nth-child(even) { margin-left: 1.1rem; }
+.npu-module-grid a:hover { color: var(--npu-blue); padding-left: .35rem; }
+.npu-module-grid span { color: var(--npu-blue); font: 800 .54rem/1 monospace; }
+.npu-module-grid strong { font-size: .72rem; }
+.npu-module-grid em { color: var(--md-default-fg-color--light); font: 600 .48rem/1 monospace; font-style: normal; }
+.npu-practice-grid > a strong { display: block; margin: .9rem 0 .5rem; font-size: .82rem; }
+
+[data-md-color-scheme="slate"] .npu-home-flow,
+[data-md-color-scheme="slate"] .npu-route-card,
+[data-md-color-scheme="slate"] .npu-practice-grid > a { background: rgba(255,255,255,.025); }
+[data-md-color-scheme="slate"] .npu-home-flow a { color: #eef2ff; background: rgba(255,255,255,.04); }
+[data-md-color-scheme="slate"] .npu-home-flow a:hover { background: var(--npu-blue); }
+[data-md-color-scheme="slate"] .npu-route-card:hover,
+[data-md-color-scheme="slate"] .npu-practice-grid > a:hover { background: rgba(255,255,255,.06); }
