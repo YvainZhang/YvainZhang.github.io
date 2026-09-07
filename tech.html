@@ -16,7 +16,7 @@ body_class: tech-page
             <p>零散问题写成工程笔记，反复遇到的知识整理成系统专题。这里既保留现场经验，也试着把硬件、驱动和系统之间的关系连起来。</p>
             <div class="tech-hero-stats" aria-label="技术内容统计">
                 <span><strong>{{ technical_posts | size }}</strong> Articles</span>
-                <span><strong>03</strong> System collections</span>
+                <span><strong>04</strong> System collections</span>
                 <span><strong>04</strong> Domains</span>
             </div>
         </div>
@@ -34,7 +34,7 @@ body_class: tech-page
 
 <section class="tech-section tech-collection" aria-labelledby="collection-heading">
     <div class="tech-section-heading">
-        <p>System Collections / 01—03</p>
+        <p>System Collections / 01—04</p>
         <div>
             <h2 id="collection-heading">先从一张完整的系统地图开始。</h2>
             <span>专题不是文章合集，而是一条可以顺着走完、遇到问题还能回来查的路径。</span>
@@ -116,6 +116,31 @@ body_class: tech-page
                 <span>WARP</span><i></i><span>CACHE</span><i></i><span>MEMORY</span>
             </div>
             <div class="soc-map-control"><span>SYNC</span><span>GRAPHICS</span><span>COMPUTE</span><span>DEBUG</span></div>
+        </div>
+    </a>
+    <a class="soc-feature" href="{{ '/tech/npu/' | prepend: site.baseurl }}" aria-label="进入 NPU 系统知识库">
+        <div class="soc-feature-copy">
+            <div class="soc-feature-meta"><span>NPU System Atlas</span><span>AI Accelerator</span></div>
+            <h3>NPU 系统知识库</h3>
+            <p>从脉动阵列、片上 Scratchpad 与量化数据通路，走到 AI 编译器切分、任务调度与万卡集群互联。</p>
+            <div class="soc-feature-stats">
+                <span><strong>11</strong> Modules</span>
+                <span><strong>97</strong> Notes</span>
+                <span><strong>56</strong> Diagrams</span>
+                <span><strong>3</strong> Labs</span>
+            </div>
+            <span class="soc-feature-enter">进入知识库 <i aria-hidden="true">→</i></span>
+        </div>
+        <div class="soc-feature-map" aria-hidden="true">
+            <div class="soc-map-label">TENSOR DATA PATH</div>
+            <div class="soc-map-row soc-map-row-top">
+                <span>HOST</span><i></i><span>TENSOR DMA</span><i></i><span>SYSTOLIC ARRAY</span>
+            </div>
+            <div class="soc-map-bus"><b>COMPUTE + MEMORY</b></div>
+            <div class="soc-map-row soc-map-row-bottom">
+                <span>SRAM</span><i></i><span>QUANT</span><i></i><span>DDR / HBM</span>
+            </div>
+            <div class="soc-map-control"><span>QUANT</span><span>COMPILER</span><span>CLUSTER</span><span>DEBUG</span></div>
         </div>
     </a>
     </div>

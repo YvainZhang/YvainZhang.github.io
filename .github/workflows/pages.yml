@@ -52,6 +52,9 @@ jobs:
       - name: Build GPU knowledge base
         run: mkdocs build --strict --config-file GPU/mkdocs.yml --site-dir "$GITHUB_WORKSPACE/_site/tech/gpu"
 
+      - name: Build NPU knowledge base
+        run: mkdocs build --strict --config-file NPU/mkdocs.yml --site-dir "$GITHUB_WORKSPACE/_site/tech/npu"
+
       - name: Verify combined site
         run: |
           test -f _site/index.html
@@ -59,6 +62,7 @@ jobs:
           test -f _site/tech/soc/index.html
           test -f _site/tech/wifi/index.html
           test -f _site/tech/gpu/index.html
+          test -f _site/tech/npu/index.html
           test -f _site/CNAME
 
       - name: Upload Pages artifact

@@ -44,6 +44,11 @@ nav_exclude: true
                     <strong>GPU 系统知识库</strong>
                     <i aria-hidden="true">→</i>
                 </a>
+                <a class="series-index-row series-index-collection" href="{{ '/tech/npu/' | prepend: site.baseurl }}">
+                    <span class="series-index-date">Collection</span>
+                    <strong>NPU 系统知识库</strong>
+                    <i aria-hidden="true">→</i>
+                </a>
                 {% for post in group_posts %}
                 <a class="series-index-row" href="{{ post.url | prepend: site.baseurl }}">
                     <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%Y.%m.%d" }}</time>
