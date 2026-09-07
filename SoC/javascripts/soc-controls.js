@@ -28,11 +28,17 @@
 
     function updateProgress() {
       scheduled = false;
+      var scrollTop = Math.max(0, window.scrollY);
+      var viewport = window.innerHeight;
       var articleTop = article.getBoundingClientRect().top + window.scrollY;
       var articleEnd = articleTop + article.offsetHeight;
-      var readable = Math.max(1, articleEnd - articleTop - window.innerHeight * 0.55);
-      var percent = Math.round((window.scrollY - articleTop + window.innerHeight * 0.18) / readable * 100);
-      percent = Math.max(0, Math.min(100, percent));
+      var root = document.scrollingElement || document.documentElement;
+      var maxScroll = Math.max(0, root.scrollHeight - viewport);
+      var start = Math.max(0, articleTop - viewport * 0.18);
+      // Complete when the article bottom is visible, or the page cannot scroll further.
+      var end = Math.max(0, Math.min(articleEnd - viewport, maxScroll));
+      var percent = scrollTop >= end - 1 ? 100 :
+        Math.max(0, Math.min(99, Math.floor((scrollTop - start) / Math.max(1, end - start) * 100)));
       output.textContent = percent + "%";
       sideBar.style.width = percent + "%";
       pageBar.style.width = percent + "%";
@@ -48,6 +54,13 @@
 
     window.addEventListener("scroll", scheduleProgress, { passive: true });
     window.addEventListener("resize", scheduleProgress);
+    window.addEventListener("load", scheduleProgress);
+    // Images, Mermaid and math can resize the article after initial rendering.
+    if (typeof ResizeObserver !== "undefined") {
+      var observer = new ResizeObserver(scheduleProgress);
+      observer.observe(article);
+      observer.observe(document.body);
+    }
     updateProgress();
   }
 
