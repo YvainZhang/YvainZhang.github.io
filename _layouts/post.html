@@ -2,6 +2,10 @@
 layout: default
 ---
 
+{% assign series_group = site.data.series | where: "title", page.series | first %}
+{% assign series_slug = page.series | slugify %}
+{% assign series_slug = series_group.slug | default: series_slug %}
+
 <!-- Render TeX formulas used by technical posts. -->
 <style>
     .post-container mjx-container[display="true"] {
@@ -65,7 +69,7 @@ layout: default
                     {% comment %} endif {% endcomment %}
                     <span class="meta">Posted by {% if page.author %}{{ page.author }}{% else %}{{ site.title }}{% endif %} on {{ page.date | date: "%B %-d, %Y" }}</span>
                     {% if page.series %}
-                    <span class="meta post-series-meta">主题：<a href="{{ '/series/#' | prepend: site.baseurl }}{{ page.series | slugify }}">{{ page.series }}</a></span>
+                    <span class="meta post-series-meta">主题：<a href="{{ '/series/#' | prepend: site.baseurl }}{{ series_slug }}">{{ page.series }}</a></span>
                     {% endif %}
                 </div>
             </div>
@@ -92,7 +96,7 @@ layout: default
                 <section class="related-series">
                     <div class="related-series-head">
                         <h3>同主题文章</h3>
-                        <a href="{{ '/series/#' | prepend: site.baseurl }}{{ page.series | slugify }}">查看全部</a>
+                        <a href="{{ '/series/#' | prepend: site.baseurl }}{{ series_slug }}">查看全部</a>
                     </div>
                     <div class="related-series-grid">
                         {% for post in site.posts %}
@@ -209,7 +213,7 @@ layout: default
                     <hr class="hidden-sm hidden-xs">
                     <h5><a href="{{ '/series/' | prepend: site.baseurl }}">THEMES</a></h5>
                     <div class="tags">
-                        <a href="{{ '/series/#' | prepend: site.baseurl }}{{ page.series | slugify }}">{{ page.series }}</a>
+                        <a href="{{ '/series/#' | prepend: site.baseurl }}{{ series_slug }}">{{ page.series }}</a>
                     </div>
                 </section>
                 {% endif %}
