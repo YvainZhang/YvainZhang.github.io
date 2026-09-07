@@ -10,7 +10,7 @@ hide:
   <p class="gpu-home-lead">从芯片原厂视角出发，系统梳理 GPU 从 SIMT 微架构、Warp 调度与 Tensor Core，到 HBM3e/GDDR7 显存系统、PCIe/NVLink 高速互联、Linux KMD/UMD 驱动、PTX/SASS 编译器后端，再到 NCCL 多卡集群与算子极致性能调优的全栈工程地图。</p>
   <div class="gpu-home-stats">
     <span><strong>11</strong>核心模块</span>
-    <span><strong>98</strong>篇笔记</span>
+    <span><strong>100</strong>篇文档</span>
     <span><strong>52</strong>张架构图</span>
     <span><strong>3</strong>个实验</span>
   </div>
@@ -22,14 +22,14 @@ hide:
     <h2>看一个 Kernel 指令与张量数据如何流过整颗 GPU。</h2>
   </div>
   <div class="gpu-home-flow" aria-label="GPU 系统全硬件路径">
-    <a href="01-GPU-Architecture/">Host GigaThread</a><i>→</i>
+    <a href="01-GPU-Architecture/">Host / Queue</a><i>→</i>
     <a href="02-Compute-Core-SIMT/">Warp Issue</a><i>→</i>
     <a href="02-Compute-Core-SIMT/">Tensor Core</a><i>→</i>
     <a href="03-Memory-Hierarchy-VRAM/">Shared/L1</a><i>→</i>
     <a href="03-Memory-Hierarchy-VRAM/">L2 Cache</a><i>→</i>
     <a href="03-Memory-Hierarchy-VRAM/">HBM3e PHY</a>
   </div>
-  <p class="gpu-home-flow-note">Copy Engine 实现三向并发数据搬运，GPU MMU/UVM 提供全局虚拟地址转换，NVLink/NVSwitch 编织跨卡超节点互联，PMU 固件全天候调控 DVFS 功耗与温控防护。</p>
+  <p class="gpu-home-flow-note">这是以 NVIDIA 术语为例的阅读路径，不是全部数据必经的串行通路。Copy Engine 的并发能力、MMU/UVM 的地址与驻留管理、跨卡互联及功耗控制，需要按目标设备分别确认。</p>
 </section>
 
 <section class="gpu-home-section">
@@ -90,7 +90,9 @@ hide:
 
 ## 文档约定与原厂工程“七问”
 
-知识库中的每个技术模块与子章节均严格遵循芯片原厂软硬件协同工程规范，解答以下 7 个核心问题：
+先从 [知识体系与面试复习](00-Overview/01-review-and-evidence-map.md) 检查掌握标准，再用 [GEMM 完整证据链](Case-Studies/04-gemm-evidence-path.md) 串联章节。文档计数包含首页、模块索引与实验说明，不代表全部都是独立深度文章。
+
+本知识库以以下 7 个问题作为持续完善标准，不代表每篇现有笔记都已经完成全部工程验证：
 
 1. **硬件解决什么问题**：该模块在算力吞吐、访存带宽、功耗控制或互联扩展中的根本职责。
 2. **硬件微架构与组成**：数字电路模块如何划分，与 NoC/Crossbar/总线如何连接。

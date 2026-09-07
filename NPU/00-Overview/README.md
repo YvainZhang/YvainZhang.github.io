@@ -1,5 +1,7 @@
 # 00 总览与设计哲学（原厂视角）
 
+先阅读 [掌握标准与面试复习图谱](01-review-and-evidence-map.md)，再用 [量化 GEMM 映射案例](../Case-Studies/04-quantized-gemm-contract.md) 串起数值、编译与硬件约束。脉动阵列、静态调度与 VLIW 均是架构选择，不是所有 NPU 必备属性。
+
 ## 原厂研发分工与 DSA 设计哲学
 
 领域专用架构（Domain-Specific Architecture, DSA）的核心设计原则是**“牺牲通用标量灵活性，换取极限能效比与算力密度”**。在 NPU 芯片原厂中，芯片与软件的协同度远超通用 CPU/GPU：

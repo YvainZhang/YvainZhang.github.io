@@ -55,6 +55,7 @@ extra_javascript:
 nav:
   - 首页: README.md
   - 总览与路线: 00-Overview/README.md
+  - 知识体系与面试复习: 00-Overview/01-review-and-evidence-map.md
   - 01 NPU 总体架构:
       - 模块概览: 01-NPU-Architecture/README.md
       - DSA 专用架构设计哲学: 01-NPU-Architecture/01-dsa-fundamentals.md
@@ -151,6 +152,7 @@ nav:
       - Transformer 在 NPU 上的映射流: Case-Studies/01-transformer-layer-npu-mapping.md
       - LLM Prefill 与 Decode 硬件流: Case-Studies/02-llm-prefill-decode-npu-flow.md
       - 端侧相机 ISP-NPU 零拷贝流水: Case-Studies/03-edge-camera-pipeline.md
+      - 量化 GEMM 数值与映射契约: Case-Studies/04-quantized-gemm-contract.md
   - 横向专题:
       - 专题概览: Cross-Topics/README.md
       - 结构化稀疏 2:4 硬件加速: Cross-Topics/01-sparsity-acceleration.md
@@ -160,7 +162,7 @@ nav:
   - 实验:
       - 实验概览: Labs/README.md
       - 2D 脉动阵列周期级模拟器: Labs/lab01-systolic-array-sim/README.md
-      - TVM 自定义 NPU Tiling 调度: Labs/lab02-tvm-custom-npu-tiling/README.md
-      - 端侧 NPU 量化与部署实战: Labs/lab03-edge-npu-quantization-deploy/README.md
+      - CPU 上的 NPU Tiling 预算模型: Labs/lab02-tvm-custom-npu-tiling/README.md
+      - INT8 量化与教学格式导出: Labs/lab03-edge-npu-quantization-deploy/README.md
   - 术语表: Glossary/README.md
   - 文档站使用说明: docs-site.md

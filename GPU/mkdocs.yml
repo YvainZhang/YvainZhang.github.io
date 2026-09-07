@@ -55,6 +55,7 @@ extra_javascript:
 nav:
   - 首页: README.md
   - 总览与路线: 00-Overview/README.md
+  - 知识体系与面试复习: 00-Overview/01-review-and-evidence-map.md
   - 01 GPU 总体架构:
       - 模块概览: 01-GPU-Architecture/README.md
       - GPU 芯片定义与 PPA: 01-GPU-Architecture/01-gpu-fundamentals.md
@@ -152,6 +153,7 @@ nav:
       - FlashAttention 硬件执行路径: Case-Studies/01-flash-attention-hardware-path.md
       - PCIe P2P 零拷贝事务流: Case-Studies/02-pcie-p2p-direct-transfer.md
       - 8卡 GPU AllReduce 通信流: Case-Studies/03-multi-gpu-allreduce-flow.md
+      - GEMM 从提交到性能证据: Case-Studies/04-gemm-evidence-path.md
   - 横向专题:
       - 专题概览: Cross-Topics/README.md
       - GPU 虚拟化与 MIG 切分: Cross-Topics/01-gpu-virtualization-vgpu-mig.md

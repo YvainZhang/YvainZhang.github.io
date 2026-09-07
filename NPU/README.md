@@ -10,7 +10,7 @@ hide:
   <p class="npu-home-lead">从 AI 芯片原厂视角出发，系统梳理 NPU 从专用领域架构（DSA）定义、2D 脉动阵列微架构与片上 Scratchpad SRAM，到多维 Tensor DMA、AI 编译器离线 Tiling 切分与双缓冲、底层驱动、端云分化，再到万卡集群互联与极致算力利用率（MFU）调优的全栈知识地图。</p>
   <div class="npu-home-stats">
     <span><strong>11</strong>核心模块</span>
-    <span><strong>97</strong>篇笔记</span>
+    <span><strong>99</strong>篇文档</span>
     <span><strong>56</strong>张架构图</span>
     <span><strong>3</strong>个实验</span>
   </div>
@@ -29,7 +29,7 @@ hide:
     <a href="02-Tensor-Matrix-Compute-Core/">VPU Engine</a><i>→</i>
     <a href="05-NPU-DMA-Dataflow-Engine/">External DDR/HBM</a>
   </div>
-  <p class="npu-home-flow-note">AI 编译器离线生成确定性 VLIW 指令与静态内存排布，多维 Tensor DMA 边搬运边转置，硬件 Barrier 与 Event 状态机确保计算与传输 100% 异步重叠。</p>
+  <p class="npu-home-flow-note">这是显式 SRAM 与脉动阵列方案的阅读示例，不代表所有 NPU。编译器、固件或硬件调度器安排数据与依赖；能否重叠搬运和计算取决于容量、带宽、端口及同步条件，不保证 100% 重叠。</p>
 </section>
 
 <section class="npu-home-section">
@@ -90,7 +90,9 @@ hide:
 
 ## 文档约定与原厂工程“七问”
 
-知识库中的每个技术模块与子章节均严格遵循芯片原厂软硬件协同工程规范，解答以下 7 个核心问题：
+先从 [知识体系与面试复习](00-Overview/01-review-and-evidence-map.md) 检查掌握标准，再用 [量化 GEMM 映射案例](Case-Studies/04-quantized-gemm-contract.md) 串联章节。文档计数包含首页、模块索引与实验说明，不代表全部都是独立深度文章。
+
+本知识库以以下 7 个问题作为持续完善标准，不代表每篇现有笔记都已经完成全部工程验证：
 
 1. **硬件解决什么问题**：该模块在张量算力吞吐、SRAM 带宽、专用量化或编译调度中的根本职责。
 2. **硬件微架构与组成**：数字电路模块如何划分，与片上 NoC/AXI/SRAM 总线如何连接。
