@@ -42,6 +42,16 @@ node_modules
 SoC-site/
 GPU-site/
 NPU-site/
+Audio-site/
+Audio/**/__pycache__/
+Audio/Labs/**/*.vcd
+**/.venv-docs/
+**/.venv/
+Audio/Labs/**/lms_test
+Audio/Labs/**/lms_unit_test
+Audio/Labs/**/i2s_sim
+Audio/Labs/**/erle_data.csv
+Audio/Labs/**/test_tone_48k.wav
 
 # Local AI assistant instructions and generated plans
 /AGENTS.md

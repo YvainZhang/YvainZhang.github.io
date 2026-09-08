@@ -1,0 +1,204 @@
+site_name: Audio 音频芯片与系统全栈知识体系
+site_description: 从物理声波、AFE/Codec、I2S/PDM/SoundWire、Audio DSP 到 Linux ALSA/ASoC 驱动与声学算法的全栈知识库
+site_url: https://xidianedu.cc/tech/audio/
+site_author: Yvain Zhang
+docs_dir: .
+site_dir: ../Audio-site
+exclude_docs: |
+  mkdocs.yml
+  requirements-docs.txt
+  overrides/
+  **/__pycache__/
+  .venv-docs/**
+  .venv/**
+theme:
+  name: material
+  language: zh
+  custom_dir: overrides
+  features:
+    - navigation.top
+    - navigation.indexes
+    - search.highlight
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: 切换至深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: 切换至浅色模式
+extra_css:
+  - stylesheets/extra.css
+plugins:
+  - search:
+      lang: zh
+  - mermaid2
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+extra_javascript:
+  - javascripts/audio-controls.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+nav:
+  - 首页: README.md
+  - 总览与路线: 00-Overview/README.md
+  - 知识体系与面试复习: 00-Overview/01-review-and-evidence-map.md
+  - 01 音频子系统总体架构:
+      - 模块概览: 01-Audio-Architecture/README.md
+      - 音频子系统定义与演进: 01-Audio-Architecture/01-audio-subsystem-fundamentals.md
+      - 硬件架构框图与信号链路: 01-Audio-Architecture/02-block-diagram-signal-chain.md
+      - 寄存器空间与总线互联: 01-Audio-Architecture/03-audio-interfaces-memory-map.md
+      - 混合信号时钟与电源域隔离: 01-Audio-Architecture/04-clock-power-domain-partition.md
+      - 软硬件分工与分层边界: 01-Audio-Architecture/05-hardware-software-boundary.md
+      - 音频芯片 Bring-up 全流程: 01-Audio-Architecture/06-audio-soc-bringup-flow.md
+      - 架构审阅与自测清单: 01-Audio-Architecture/07-review-debug-self-test.md
+      - 启动挂死与时钟失锁案例: 01-Audio-Architecture/08-cases-debug.md
+      - 全链路时延与总线开销推演: 01-Audio-Architecture/09-engineering-analysis.md
+  - 02 硬件接口与时序协议:
+      - 模块概览: 02-Hardware-Interfaces-I2S-TDM-PDM/README.md
+      - I2S 协议时序与传输格式: 02-Hardware-Interfaces-I2S-TDM-PDM/01-i2s-protocol-timing.md
+      - TDM 多声道时分复用协议: 02-Hardware-Interfaces-I2S-TDM-PDM/02-tdm-multichannel-slot.md
+      - PDM 数字麦克风与抽取滤波: 02-Hardware-Interfaces-I2S-TDM-PDM/03-pdm-dmic-cic-decimation.md
+      - MIPI SoundWire 总线协议架构: 02-Hardware-Interfaces-I2S-TDM-PDM/04-soundwire-protocol-architecture.md
+      - S/PDIF 与 HDMI eARC 接口: 02-Hardware-Interfaces-I2S-TDM-PDM/05-spdif-hdmi-earc.md
+      - 物理接口设计与信号完整性规范: 02-Hardware-Interfaces-I2S-TDM-PDM/06-interface-engineering-guide.md
+      - I2S 相位错位与 PDM 噪声排查: 02-Hardware-Interfaces-I2S-TDM-PDM/07-cases-debug.md
+      - TDM 时钟抖动与带宽极限推演: 02-Hardware-Interfaces-I2S-TDM-PDM/08-engineering-analysis.md
+  - 03 模拟前端与 Codec 架构:
+      - 模块概览: 03-Analog-Front-End-Codec/README.md
+      - Sigma-Delta ADC 与 DAC 架构: 03-Analog-Front-End-Codec/01-adc-dac-sigma-delta.md
+      - 模拟前端 AFE 与麦克风前置放大: 03-Analog-Front-End-Codec/02-analog-frontend-pga-lna.md
+      - 音频功率放大器 Class-D/AB/H: 03-Analog-Front-End-Codec/03-audio-amplifier-class-d-ab.md
+      - 耳机插孔检测与 MICBIAS 电路: 03-Analog-Front-End-Codec/04-jack-detect-micbias-impedance.md
+      - Codec 混合信号工程设计规范: 03-Analog-Front-End-Codec/05-codec-engineering-guide.md
+      - 耳机底噪与地回路杂音排查: 03-Analog-Front-End-Codec/06-cases-debug.md
+      - THD+N 与动态范围理论推导: 03-Analog-Front-End-Codec/07-engineering-analysis.md
+  - 04 音频 DSP 微架构:
+      - 模块概览: 04-Audio-DSP-Microarchitecture/README.md
+      - 音频 DSP 指令集与流水线: 04-Audio-DSP-Microarchitecture/01-audio-dsp-isa-pipeline.md
+      - 紧耦合内存 TCM 与无抖动存储: 04-Audio-DSP-Microarchitecture/02-dsp-memory-scratchpad-tcm.md
+      - 专用音频加速指令与循环寻址: 04-Audio-DSP-Microarchitecture/03-specialized-audio-instructions.md
+      - 硬件 VAD 语音活动检测引擎: 04-Audio-DSP-Microarchitecture/04-hardware-vad-accelerator.md
+      - 音频 DSP 软硬件协同设计指南: 04-Audio-DSP-Microarchitecture/05-dsp-hardware-engineering-guide.md
+      - DSP 中断嵌套超时丢帧案例: 04-Audio-DSP-Microarchitecture/06-cases-debug.md
+      - 定点音频精度与量化误差推演: 04-Audio-DSP-Microarchitecture/07-engineering-analysis.md
+  - 05 音频 DMA 与缓冲管理:
+      - 模块概览: 05-Audio-DMA-FIFO-Buffer/README.md
+      - 音频专用 DMA 与环形缓冲: 05-Audio-DMA-FIFO-Buffer/01-audio-dma-scatter-gather.md
+      - 硬件 FIFO 水印与欠载保护: 05-Audio-DMA-FIFO-Buffer/02-fifo-watermark-underrun.md
+      - 片上互联 QoS 与突发延迟抑制: 05-Audio-DMA-FIFO-Buffer/03-interconnect-qos-latency.md
+      - 缓冲深度与实时时延设计准则: 05-Audio-DMA-FIFO-Buffer/04-dma-buffer-engineering-guide.md
+      - DDR 拥塞引起欠载爆音案例: 05-Audio-DMA-FIFO-Buffer/05-cases-debug.md
+      - Period 尺寸与中断开销推演: 05-Audio-DMA-FIFO-Buffer/06-engineering-analysis.md
+  - 06 时钟系统、PLL 与 ASRC:
+      - 模块概览: 06-Clock-PLL-Jitter-ASRC/README.md
+      - 双音频时钟基准与分数 PLL: 06-Clock-PLL-Jitter-ASRC/01-audio-pll-dual-frequency.md
+      - 时钟抖动 Jitter 与相位噪声分析: 06-Clock-PLL-Jitter-ASRC/02-clock-jitter-phase-noise.md
+      - 异步采样率转换 ASRC 硬件架构: 06-Clock-PLL-Jitter-ASRC/03-asrc-hardware-architecture.md
+      - 跨时钟域 CDC 与异步隔离: 06-Clock-PLL-Jitter-ASRC/04-clock-synchronization-cdc.md
+      - 音频时钟树布线与屏蔽规范: 06-Clock-PLL-Jitter-ASRC/05-clock-engineering-guide.md
+      - ASRC 采样率失锁破音案例: 06-Clock-PLL-Jitter-ASRC/06-cases-debug.md
+      - 孔径抖动对高保真 DAC 极限推导: 06-Clock-PLL-Jitter-ASRC/07-engineering-analysis.md
+  - 07 低功耗与防爆音技术:
+      - 模块概览: 07-Low-Power-Audio-Pop-Click/README.md
+      - 电源域划分与 DVFS 状态机: 07-Low-Power-Audio-Pop-Click/01-audio-power-domains-dvfs.md
+      - 防爆音 POP/Click 硬件机理: 07-Low-Power-Audio-Pop-Click/02-pop-click-suppression.md
+      - 超低功耗常开唤醒 AON/KWS: 07-Low-Power-Audio-Pop-Click/03-always-on-voice-wakeup.md
+      - 智能功放与扬声器 IV-Sense 保护: 07-Low-Power-Audio-Pop-Click/04-class-d-speaker-protection.md
+      - 音频低功耗设计规范: 07-Low-Power-Audio-Pop-Click/05-power-management-engineering-guide.md
+      - PA 直流偏移跳变爆音案例: 07-Low-Power-Audio-Pop-Click/06-cases-debug.md
+      - 常开 AON 域功耗与电池寿命推演: 07-Low-Power-Audio-Pop-Click/07-engineering-analysis.md
+  - 08 声学前处理与核心算法:
+      - 模块概览: 08-Acoustics-DSP-Algorithms/README.md
+      - 回声消除 AEC 理论与工程实现: 08-Acoustics-DSP-Algorithms/01-aec-echo-cancellation.md
+      - 麦克风阵列与波束成形 Beamforming: 08-Acoustics-DSP-Algorithms/02-microphone-array-beamforming.md
+      - 噪声抑制与端侧 AI 降噪: 08-Acoustics-DSP-Algorithms/03-noise-suppression-ans-ai.md
+      - 空间音频与双耳 HRTF 渲染: 08-Acoustics-DSP-Algorithms/04-spatial-audio-binaural.md
+      - 主动降噪 ANC 系统架构: 08-Acoustics-DSP-Algorithms/05-anc-active-noise-cancellation.md
+      - 声学算法定点化优化指南: 08-Acoustics-DSP-Algorithms/06-algorithms-engineering-guide.md
+      - AEC 参考信号对齐丢失案例: 08-Acoustics-DSP-Algorithms/07-cases-debug.md
+      - ANC 环路延迟与稳定裕度推演: 08-Acoustics-DSP-Algorithms/08-engineering-analysis.md
+  - 09 Linux ALSA/ASoC 驱动栈:
+      - 模块概览: 09-Linux-ALSA-ASoC-Software-Stack/README.md
+      - ALSA 核心框架与 PCM 体系: 09-Linux-ALSA-ASoC-Software-Stack/01-alsa-framework-core.md
+      - ASoC 架构三件套深度解析: 09-Linux-ALSA-ASoC-Software-Stack/02-asoc-three-components.md
+      - DAPM 动态音频电源管理与路由: 09-Linux-ALSA-ASoC-Software-Stack/03-dapm-dynamic-audio-power.md
+      - DPCM 与 SoundWire 驱动子系统: 09-Linux-ALSA-ASoC-Software-Stack/04-dpcm-soundwire-subsystem.md
+      - 用户态音频服务栈演进: 09-Linux-ALSA-ASoC-Software-Stack/05-userspace-tinyalsa-pipewire.md
+      - Linux 音频驱动开发规范: 09-Linux-ALSA-ASoC-Software-Stack/06-driver-engineering-guide.md
+      - DAPM 路由断链与 XRUN 欠载案例: 09-Linux-ALSA-ASoC-Software-Stack/07-cases-debug.md
+      - ALSA 环形缓冲与时延模型推演: 09-Linux-ALSA-ASoC-Software-Stack/08-engineering-analysis.md
+  - 10 调试测量与调音声学:
+      - 模块概览: 10-Debug-Profiling-Acoustic-Tuning/README.md
+      - 物理层信号排查与示波器抓波: 10-Debug-Profiling-Acoustic-Tuning/01-audio-oscilloscope-analyzer.md
+      - Audio Precision 专业仪器测试: 10-Debug-Profiling-Acoustic-Tuning/02-ap-audio-precision-testing.md
+      - Linux 内核音频调试利器与 Trace: 10-Debug-Profiling-Acoustic-Tuning/03-linux-audio-debug-tools.md
+      - 音频全链路故障排查字典: 10-Debug-Profiling-Acoustic-Tuning/04-audio-fault-triage-checklist.md
+      - 声学系统调音与量产产测规范: 10-Debug-Profiling-Acoustic-Tuning/05-debug-engineering-guide.md
+      - 时钟与电源串扰 1kHz 谐波案例: 10-Debug-Profiling-Acoustic-Tuning/06-cases-debug.md
+      - FFT 频谱分析与谐波失真推导: 10-Debug-Profiling-Acoustic-Tuning/07-engineering-analysis.md
+  - 11 端侧、车载与可穿戴系统:
+      - 模块概览: 11-Edge-Automotive-Wearable-Systems/README.md
+      - 智能座舱 A2B 汽车音频总线: 11-Edge-Automotive-Wearable-Systems/01-automotive-audio-a2b-bus.md
+      - TWS 蓝牙耳机系统架构与 BLE Audio: 11-Edge-Automotive-Wearable-Systems/02-tws-bluetooth-audio-le.md
+      - 智能音箱远场拾音与端侧大模型: 11-Edge-Automotive-Wearable-Systems/03-smart-speaker-farfield-kws.md
+      - 嵌入式音频系统选型设计准则: 11-Edge-Automotive-Wearable-Systems/04-embedded-audio-systems-guide.md
+      - 车载 A2B 掉线与 TWS 丢包案例: 11-Edge-Automotive-Wearable-Systems/05-cases-debug.md
+      - 麦克风至扬声器全链路延迟预算推演: 11-Edge-Automotive-Wearable-Systems/06-engineering-analysis.md
+  - 12 RTOS 嵌入式音频软件栈与框架:
+      - 模块概览: 12-RTOS-Audio-Software-Stack/README.md
+      - minialsa 架构与轻量级 PCM 抽象: 12-RTOS-Audio-Software-Stack/01-minialsa-architecture.md
+      - 嵌入式多媒体播放器 Pipeline 架构: 12-RTOS-Audio-Software-Stack/02-multimedia-player-pipeline.md
+      - 极限内存受限优化与 SRAM/PSRAM 异构调度: 12-RTOS-Audio-Software-Stack/03-embedded-memory-optimization-sram-psram.md
+      - RISC-V 专用音频指令加速与汇编调优: 12-RTOS-Audio-Software-Stack/04-riscv-audio-dsp-acceleration.md
+      - 现场排错与调试案例: 12-RTOS-Audio-Software-Stack/05-cases-debug.md
+      - 工程推演与量化模型: 12-RTOS-Audio-Software-Stack/06-engineering-analysis.md
+  - 13 软件编解码、流媒体与端侧大模型语音:
+      - 模块概览: 13-Audio-Codecs-Streaming-VoiceAI/README.md
+      - 软件编解码器全家族深度剖析: 13-Audio-Codecs-Streaming-VoiceAI/01-audio-codecs-mp3-aac-opus.md
+      - 音频容器解封装与流媒体协议实战: 13-Audio-Codecs-Streaming-VoiceAI/02-container-demuxing-m4a-hls.md
+      - 端侧大模型流式语音交互系统: 13-Audio-Codecs-Streaming-VoiceAI/03-chatgpt-websocket-voice-agent.md
+      - 亚马逊 Alexa (AVS) 协议栈集成: 13-Audio-Codecs-Streaming-VoiceAI/04-amazon-avs-voice-service.md
+      - 现场排错与调试案例: 13-Audio-Codecs-Streaming-VoiceAI/05-cases-debug.md
+      - 工程推演与量化模型: 13-Audio-Codecs-Streaming-VoiceAI/06-engineering-analysis.md
+  - 跨模块工程案例:
+      - 模块概览: Case-Studies/README.md
+      - TWS 降噪耳机端到端链路推演: Case-Studies/01-tws-noise-cancelling-earphone.md
+      - 智能座舱多音区 A2B 架构推演: Case-Studies/02-automotive-multi-zone-cockpit.md
+      - 智能音箱远场拾音与 AEC 推演: Case-Studies/03-smart-speaker-far-field-aec.md
+      - RISC-V 极受限内存播放器落地实战: Case-Studies/04-riscv-low-ram-audio-player.md
+      - Wi-Fi 投屏 Miracast 音画同步与抗抖动: Case-Studies/05-miracast-av-sync-jitter-buffer.md
+      - PCM 到扬声器的时钟、缓冲与证据链: Case-Studies/06-pcm-clock-buffer-evidence.md
+  - 芯片级横向专题:
+      - 模块概览: Cross-Topics/README.md
+      - 模拟混合信号隔离与 PCB 布局法则: Cross-Topics/01-analog-mixed-signal-isolation.md
+      - 全链路极低音频延迟预算优化: Cross-Topics/02-end-to-end-latency-budget.md
+      - 声学算法浮点转定点量化分析: Cross-Topics/03-floating-to-fixed-point-quantization.md
+      - 微型扬声器热保护与冲程保护: Cross-Topics/04-speaker-thermal-excursion-protection.md
+      - 音频重采样高频衰减缺陷与多相滤波校正: Cross-Topics/05-resample-hf-rolloff-correction.md
+  - 可复现代码实验:
+      - 模块概览: Labs/README.md
+      - Lab 01 I2S 时序波形仿真: Labs/lab01-i2s-timing-software-playback/README.md
+      - Lab 02 ALSA 虚拟驱动跟踪: Labs/lab02-alsa-tinyplay-driver-trace/README.md
+      - Lab 03 定点 DSP LMS 回声消除算子: Labs/lab03-fixed-point-dsp-aec-filter/README.md
+  - 专业术语表: Glossary/README.md
+  - 文档站使用说明: docs-site.md

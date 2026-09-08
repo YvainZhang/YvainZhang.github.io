@@ -15,6 +15,8 @@ tags:
   - 信号处理
 ---
 
+> 进阶阅读：[Audio System Atlas]({{ '/tech/audio/' | relative_url }}) 将本文基础延伸到芯片接口、时钟、DMA、音频栈与流式语音，阅读[专题导读]({% post_url 2026-09-08-audio-system-atlas %})选择路线。
+
 在接触音视频开发时，很多人容易把采样率、位深、PCM、WAV、AAC、MP3 混在同一层去理解。
 
 实际上，它们分别属于不同层级：

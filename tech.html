@@ -146,6 +146,30 @@ body_class: tech-page
     </div>
 </section>
 
+<section class="tech-section" aria-labelledby="audio-heading">
+    <a class="soc-feature" href="{{ '/tech/audio/' | prepend: site.baseurl }}" aria-label="进入 Audio 系统知识库">
+        <div class="soc-feature-copy">
+            <div class="soc-feature-meta"><span>Audio System Atlas</span><span>Signal to System</span></div>
+            <h3 id="audio-heading">Audio 系统知识库</h3>
+            <p>从 AFE、I2S/PDM、DSP 和时钟，走到 DMA 缓冲、ALSA/ASoC、RTOS 播放器与音频测量证据。</p>
+            <div class="soc-feature-stats">
+                <span><strong>13</strong> Modules</span>
+                <span><strong>127</strong> Documents</span>
+                <span><strong>125</strong> Diagrams</span>
+                <span><strong>3</strong> Labs</span>
+            </div>
+            <span class="soc-feature-enter">进入知识库 <i aria-hidden="true">→</i></span>
+        </div>
+        <div class="soc-feature-map" aria-hidden="true">
+            <div class="soc-map-label">PCM TO SOUND</div>
+            <div class="soc-map-row soc-map-row-top"><span>PCM</span><i></i><span>DMA</span><i></i><span>I2S / TDM</span></div>
+            <div class="soc-map-bus"><b>CLOCK + BUFFER + ROUTE</b></div>
+            <div class="soc-map-row soc-map-row-bottom"><span>DSP</span><i></i><span>CODEC</span><i></i><span>SPEAKER</span></div>
+            <div class="soc-map-control"><span>ALSA</span><span>RTOS</span><span>AEC</span><span>DEBUG</span></div>
+        </div>
+    </a>
+</section>
+
 <section class="tech-section tech-notes" aria-labelledby="notes-heading">
     <div class="tech-section-heading tech-section-heading-row">
         <div>

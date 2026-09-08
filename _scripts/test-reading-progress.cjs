@@ -11,6 +11,7 @@ const scripts = [
   'WiFi/javascripts/wifi-controls.js',
   'SoC/javascripts/soc-controls.js',
   '_soc_publish/overlay/javascripts/soc-controls.js',
+  'Audio/javascripts/audio-controls.js',
 ];
 
 function mount(file, { top = 200, height = 2000, viewport = 800, total = 2300, scroll = 0 } = {}) {

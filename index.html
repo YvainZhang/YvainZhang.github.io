@@ -17,6 +17,7 @@ description: "嵌入式、系统软件、AI 与生活的长期笔记。"
             <div class="studio-actions">
                 {% if lead_post %}<a class="studio-button studio-button-primary" href="{{ lead_post.url | prepend: site.baseurl }}">阅读最新文章 <span aria-hidden="true">→</span></a>{% endif %}
                 <a class="studio-button studio-button-quiet" href="{{ '/series/' | prepend: site.baseurl }}">浏览全部主题</a>
+                <a class="studio-button studio-button-quiet" href="{{ '/tech/audio/' | prepend: site.baseurl }}">Audio 系统专题 →</a>
             </div>
         </div>
         <aside class="studio-console" aria-label="当前关注方向">
@@ -55,7 +56,7 @@ description: "嵌入式、系统软件、AI 与生活的长期笔记。"
         {% elsif group.title == "技术" %}
             {% assign entry_href = '/tech/' | prepend: site.baseurl %}
             {% assign entry_count = group_posts | size %}
-            {% assign entry_unit = '篇文章 · 1 个专题' %}
+            {% assign entry_unit = '篇文章 · 5 个专题' %}
         {% else %}
             {% assign entry_href = '/series/#' | prepend: site.baseurl | append: group.slug %}
             {% assign entry_count = group_posts | size %}
