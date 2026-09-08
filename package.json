@@ -22,6 +22,7 @@
     "build:assets": "grunt",
     "watch:assets": "grunt watch",
     "serve": "bundle exec jekyll serve --livereload",
-    "build:site": "bundle exec jekyll build"
+    "build:site": "bundle exec jekyll build",
+    "build:docs": "bash ./_scripts/build-docs-local.sh"
   }
 }

@@ -146,13 +146,13 @@ $$\text{文件大小 (Bytes)} = \frac{\text{PCM 码率} \times \text{时长 (s)}
 
 ```mermaid
 graph LR
-    PCM[PCM 音频输入] --> Filter[时频变换 / MDCT 滤波器组]
-    PCM --> Psycho[心理声学模型分析]
-    Psycho --> Threshold[计算动态掩蔽门限]
-    Filter --> Quant[感知量化与动态比特分配]
+    PCM["PCM 音频输入"] --> Filter["时频变换 / MDCT 滤波器组"]
+    PCM --> Psycho["心理声学模型分析"]
+    Psycho --> Threshold["计算动态掩蔽门限 (SMR)"]
+    Filter --> Quant["感知量化与动态比特分配"]
     Threshold --> Quant
-    Quant --> Huffman[无损熵编码 / 哈夫曼编码]
-    Huffman --> Bitstream[输出压缩比特流]
+    Quant --> Huffman["无损熵编码 / 哈夫曼编码"]
+    Huffman --> Bitstream["输出压缩比特流"]
 ```
 
 1. **时频变换**：利用 MDCT（改进离散余弦变换）等子带分析滤波器将时域样点转换为频域系数；

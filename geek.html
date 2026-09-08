@@ -1,71 +1,680 @@
 ---
-layout: page
-title: "Geek"
-description: "前沿技术雷达：AI、具身智能与新一代开发工具链。"
-header-img: "img/post-bg-universe.jpg"
+layout: default
+title: "Geek Lab"
+description: "前沿技术雷达：上下文工程、自治 Agent 运行时、终端 Harness、具身闭环与开发工具链。"
+permalink: /geek/
 ---
 
-<div class="geek-page">
-    <section class="geek-intro-card">
-        <span class="geek-eyebrow">Frontier Radar</span>
-        <h2>{{ site.data.geek.intro.description }}</h2>
-        <p>{{ site.data.geek.intro.statement }}</p>
-    </section>
+<main class="geek-hub">
+    <div class="geek-container">
+        <!-- Hero Header -->
+        <header class="geek-hero">
+            <div class="geek-hero-inner">
+                <div class="geek-hero-copy">
+                    <p class="geek-eyebrow"><span></span> {{ site.data.geek.hero.eyebrow }}</p>
+                    <h1>{{ site.data.geek.hero.title }}</h1>
+                    <p>{{ site.data.geek.hero.statement }}</p>
+                    <div class="geek-hero-stats">
+                        {% for stat in site.data.geek.hero.stats %}
+                        <span>
+                            <strong>{{ stat.value }}</strong>
+                            {{ stat.label }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <aside class="geek-console" aria-label="实验室控制台与导航">
+                    <div class="geek-console-head">
+                        <span>AGENT LAB / 2026 ACTIVE</span>
+                        <i aria-hidden="true"></i>
+                    </div>
+                    <ol>
+                        {% for item in site.data.geek.hero.console %}
+                        <li>
+                            <a href="#{{ item.id }}">
+                                <span>{{ item.num }}</span>
+                                <strong>{{ item.tag }}</strong>
+                                <em>{{ item.desc }}</em>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </aside>
+            </div>
+        </header>
 
-    <section class="geek-feature-card">
-        <div class="geek-feature-head">
-            <span class="geek-track-kicker">{{ site.data.geek.feature.kicker }}</span>
-            <h2>{{ site.data.geek.feature.title }}</h2>
-            <p>{{ site.data.geek.feature.summary }}</p>
-        </div>
-        <div class="geek-feature-model">{{ site.data.geek.feature.model }}</div>
-        <div class="geek-feature-grid">
-            <div class="geek-feature-block">
-                <h3>关键理解</h3>
-                <ul class="geek-bullet-list">
-                    {% for item in site.data.geek.feature.highlights %}
-                    <li>{{ item }}</li>
+        <!-- Chapter Nav -->
+        <nav class="geek-chapter-nav" aria-label="实验室章节导览">
+            <div class="geek-chapter-inner">
+                <span style="font: 800 11px/1 monospace; letter-spacing: .12em; color: #abdadd;">▰ 实验室章节</span>
+                <div class="geek-nav-links">
+                    {% for nav in site.data.geek.nav_links %}
+                    <a href="#{{ nav.id }}"><span>{{ nav.num }}</span>{{ nav.label }}</a>
                     {% endfor %}
-                </ul>
+                </div>
+                <a href="#radar" style="font: 700 11px/1 monospace; color: #f0a04b; text-decoration: none;">查看技术雷达 ↗</a>
             </div>
-            <div class="geek-feature-block">
-                <h3>最小案例</h3>
-                <strong>{{ site.data.geek.feature.example.title }}</strong>
-                <p>{{ site.data.geek.feature.example.description }}</p>
-            </div>
-        </div>
-    </section>
+        </nav>
 
-    <section class="geek-module-grid">
-        {% for module in site.data.geek.feature.modules %}
-        <article class="geek-module-card" id="{{ module.slug }}">
-            <h3>{{ module.title }}</h3>
-            <p>{{ module.description }}</p>
-            <ul class="geek-bullet-list">
-                {% for item in module.items %}
-                <li>{{ item }}</li>
-                {% endfor %}
-            </ul>
-        </article>
-        {% endfor %}
-    </section>
-
-    <section class="geek-track-grid">
-        {% for track in site.data.geek.tracks %}
-        <article class="geek-track-card" id="{{ track.slug }}">
-            <span class="geek-track-kicker">{{ track.kicker }}</span>
-            <h3>{{ track.title }}</h3>
-            <p>{{ track.description }}</p>
-            <ul class="geek-topic-list">
-                {% for topic in track.topics %}
-                <li>{{ topic }}</li>
-                {% endfor %}
-            </ul>
-            <div class="geek-track-meta">
-                <span>{{ track.cadence }}</span>
-                <strong>{{ track.status }}</strong>
+        <!-- 00 Flagship Deep-Dive Handbooks -->
+        <section class="geek-section geek-handbook-section" id="handbooks" aria-labelledby="handbooks-heading">
+            <div class="geek-section-heading">
+                <p>00 / FLAGSHIP HANDBOOKS</p>
+                <div>
+                    <h2 id="handbooks-heading">系统深度研习专篇 · 从内核到实践</h2>
+                    <p>摒弃空洞概念，针对自治系统工程的关键命题，提供系统级原理推导、主流技术架构解构与精简参考代码实现。点击卡片进入专篇研习。</p>
+                </div>
             </div>
-        </article>
-        {% endfor %}
-    </section>
-</div>
+
+            <div class="geek-handbook-grid">
+                {% for book in site.data.geek.handbooks %}
+                <a class="geek-handbook-card" href="{{ book.url | prepend: site.baseurl }}">
+                    <div>
+                        <div class="geek-handbook-meta">
+                            <span>{{ book.badge }}</span>
+                            <span>{{ book.time }}</span>
+                        </div>
+                        <h3>{{ book.title }}</h3>
+                        <p>{{ book.summary }}</p>
+                        <div class="geek-handbook-tags">
+                            {% for tag in book.tags %}
+                            <span>{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="geek-handbook-btn">
+                        进入专篇深入学习 <i>→</i>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- 01 Runtime Architecture -->
+        <section class="geek-section" id="loop" aria-labelledby="loop-heading">
+            <div class="geek-section-heading">
+                <p>{{ site.data.geek.loop_section.kicker }}</p>
+                <div>
+                    <h2 id="loop-heading">{{ site.data.geek.loop_section.title }}</h2>
+                    <p>{{ site.data.geek.loop_section.lead }}</p>
+                    {% if site.data.geek.loop_section.study_url %}
+                    <a class="geek-study-link" href="{{ site.data.geek.loop_section.study_url | prepend: site.baseurl }}">{{ site.data.geek.loop_section.study_text }}</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="geek-loop-diagram">
+                {% for stage in site.data.geek.loop_section.stages %}
+                <article class="geek-loop-step">
+                    <header>
+                        <span>STAGE {{ stage.num }}</span>
+                        <i>→</i>
+                    </header>
+                    <h4>{{ stage.name }}</h4>
+                    <span>{{ stage.sub }}</span>
+                    <p>{{ stage.detail }}</p>
+                    {% if stage.expand_points %}
+                    <details class="geek-expand-box">
+                        <summary>展开技术要点与对策</summary>
+                        <div class="geek-expand-content">
+                            <ul>
+                                {% for ep in stage.expand_points %}
+                                <li>{{ ep }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </details>
+                    {% endif %}
+                </article>
+                {% endfor %}
+            </div>
+
+            <div class="geek-axiom-grid">
+                {% for axiom in site.data.geek.loop_section.axioms %}
+                <div class="geek-axiom-card">
+                    <span>{{ axiom.tag }}</span>
+                    <h3>{{ axiom.title }}</h3>
+                    <p>{{ axiom.desc }}</p>
+                    {% if axiom.expand_points %}
+                    <details class="geek-expand-box">
+                        <summary>{{ axiom.expand_title | default: "展开设计守则" }}</summary>
+                        <div class="geek-expand-content">
+                            <ul>
+                                {% for ep in axiom.expand_points %}
+                                <li>{{ ep }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </details>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- 02 Context Engineering -->
+        <section class="geek-section" id="context" aria-labelledby="context-heading">
+            <div class="geek-section-heading">
+                <p>{{ site.data.geek.context_section.kicker }}</p>
+                <div>
+                    <h2 id="context-heading">{{ site.data.geek.context_section.title }}</h2>
+                    <p>{{ site.data.geek.context_section.lead }}</p>
+                    {% if site.data.geek.context_section.study_url %}
+                    <a class="geek-study-link" href="{{ site.data.geek.context_section.study_url | prepend: site.baseurl }}">{{ site.data.geek.context_section.study_text }}</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="geek-pillar-grid">
+                {% for pillar in site.data.geek.context_section.pillars %}
+                <article class="geek-pillar-card">
+                    <div>
+                        <div class="geek-pillar-head">
+                            <span>{{ pillar.tag }}</span>
+                            <span>{{ pillar.badge }}</span>
+                        </div>
+                        <h3>{{ pillar.title }}</h3>
+                        <div class="geek-pillar-quote">{{ pillar.highlight }}</div>
+                        <ul class="geek-pillar-points">
+                            {% for pt in pillar.points %}
+                            <li>{{ pt }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% if pillar.expand_points %}
+                        <details class="geek-expand-box">
+                            <summary>展开实操细节与工程考量</summary>
+                            <div class="geek-expand-content">
+                                <ul>
+                                    {% for ep in pillar.expand_points %}
+                                    <li>{{ ep }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </details>
+                        {% endif %}
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- 03 Terminal Coding Agents -->
+        <section class="geek-section" id="terminal" aria-labelledby="terminal-heading">
+            <div class="geek-section-heading">
+                <p>{{ site.data.geek.terminal_section.kicker }}</p>
+                <div>
+                    <h2 id="terminal-heading">{{ site.data.geek.terminal_section.title }}</h2>
+                    <p>{{ site.data.geek.terminal_section.lead }}</p>
+                    {% if site.data.geek.terminal_section.study_url %}
+                    <a class="geek-study-link" href="{{ site.data.geek.terminal_section.study_url | prepend: site.baseurl }}">{{ site.data.geek.terminal_section.study_text }}</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="geek-agent-grid">
+                {% for agent in site.data.geek.terminal_section.agents %}
+                <article class="geek-agent-card">
+                    <div>
+                        <div class="geek-agent-head">
+                            <span>{{ agent.tag }}</span>
+                            <span>{{ agent.vendor }}</span>
+                        </div>
+                        <h3>{{ agent.name }}</h3>
+                        <ul class="geek-agent-features">
+                            {% for feat in agent.features %}
+                            <li>{{ feat }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% if agent.expand_points %}
+                        <details class="geek-expand-box">
+                            <summary>展开核心机制与评测实操</summary>
+                            <div class="geek-expand-content">
+                                <ul>
+                                    {% for ep in agent.expand_points %}
+                                    <li>{{ ep }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </details>
+                        {% endif %}
+                    </div>
+                    <div class="geek-agent-verdict">{{ agent.verdict }}</div>
+                </article>
+                {% endfor %}
+            </div>
+
+            <div class="geek-challenges-grid">
+                {% for chal in site.data.geek.terminal_section.challenges %}
+                <div class="geek-challenge-box">
+                    <span>{{ chal.tag }}</span>
+                    <h4>{{ chal.title }}</h4>
+                    <p>{{ chal.desc }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- 04 Embodied Dual-Rate Architecture -->
+        <section class="geek-section" id="embodied" aria-labelledby="embodied-heading">
+            <div class="geek-section-heading">
+                <p>{{ site.data.geek.embodied_section.kicker }}</p>
+                <div>
+                    <h2 id="embodied-heading">{{ site.data.geek.embodied_section.title }}</h2>
+                    <p>{{ site.data.geek.embodied_section.lead }}</p>
+                    {% if site.data.geek.embodied_section.study_url %}
+                    <a class="geek-study-link" href="{{ site.data.geek.embodied_section.study_url | prepend: site.baseurl }}">{{ site.data.geek.embodied_section.study_text }}</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="geek-dual-loop">
+                {% for loop in site.data.geek.embodied_section.loops %}
+                <article class="geek-loop-card">
+                    <div class="geek-loop-card-head">
+                        <span>{{ loop.tag }}</span>
+                        <strong>{{ loop.rate }}</strong>
+                    </div>
+                    <h3>{{ loop.name }}</h3>
+                    <div class="geek-loop-env">宿主平台：{{ loop.hardware }}</div>
+                    <ul class="geek-loop-duties">
+                        {% for duty in loop.duties %}
+                        <li>{{ duty }}</li>
+                        {% endfor %}
+                    </ul>
+                    <div class="geek-loop-constraint"><strong>硬实时约束：</strong>{{ loop.constraint }}</div>
+                    {% if loop.expand_points %}
+                    <details class="geek-expand-box">
+                        <summary>展开控制模型与保护机制</summary>
+                        <div class="geek-expand-content">
+                            <ul>
+                                {% for ep in loop.expand_points %}
+                                <li>{{ ep }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </details>
+                    {% endif %}
+                </article>
+                {% endfor %}
+            </div>
+
+            <div class="geek-infra-grid">
+                {% for infra in site.data.geek.embodied_section.infra %}
+                <div class="geek-infra-card">
+                    <span>{{ infra.tag }}</span>
+                    <h4>{{ infra.title }}</h4>
+                    <p>{{ infra.desc }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- 05 Minimal Autonomous Code -->
+        <section class="geek-section" id="code" aria-labelledby="code-heading">
+            <div class="geek-section-heading">
+                <p>{{ site.data.geek.code_section.kicker }}</p>
+                <div>
+                    <h2 id="code-heading">{{ site.data.geek.code_section.title }}</h2>
+                    <p>{{ site.data.geek.code_section.lead }}</p>
+                    {% if site.data.geek.code_section.study_url %}
+                    <a class="geek-study-link" href="{{ site.data.geek.code_section.study_url | prepend: site.baseurl }}">{{ site.data.geek.code_section.study_text }}</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="geek-code-window">
+                <div class="geek-code-header">
+                    <div class="geek-code-dots">
+                        <i></i><i></i><i></i>
+                    </div>
+                    <span class="geek-code-title">{{ site.data.geek.code_section.filename }}</span>
+                    <span class="geek-code-lang">PYTHON 3.10+ / REFERENCE</span>
+                </div>
+                <pre><code class="language-python">"""
+Minimal Autonomous Agent Runtime Skeleton (可终止进程执行与契约校验参考实现)
+Author: Yvain Zhang (Base Nanjing)
+Architecture: ReAct FSM + Context Budget + Schema Validation + Process Watchdog + External Verifier
+Note: 用于系统架构验证与教学演示。在真实生产多租户环境中，需套接容器/微虚拟机沙箱。
+"""
+import os
+import sys
+import json
+import re
+import time
+import signal
+import multiprocessing as mp
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Callable, Dict, Any, List, Optional
+
+class ToolStatus(Enum):
+    SUCCESS = "SUCCESS"
+    FAILURE = "FAILURE"
+    TIMEOUT = "TIMEOUT"
+    VALIDATION_ERROR = "VALIDATION_ERROR"
+    SECURITY_BLOCK = "SECURITY_BLOCK"
+
+@dataclass
+class ToolResult:
+    status: ToolStatus
+    output: str
+    exit_code: int = 0
+    error: Optional[str] = None
+
+@dataclass
+class ToolSpec:
+    name: str
+    description: str
+    schema: Dict[str, Any]  # JSON Schema 参数契约
+    handler: Callable[..., Any]
+    is_destructive: bool = False
+
+def sanitize_timeout(timeout_val: Any, default_sec: float = 30.0, min_sec: float = 0.001, max_sec: float = 300.0) -> float:
+    """校验并归一化超时参数，防止 null、非法字符串或负值导致看门狗崩溃"""
+    if timeout_val is None:
+        return default_sec
+    try:
+        t = float(timeout_val)
+        if t <= 0:
+            return default_sec
+        return min(max(t, min_sec), max_sec)
+    except (ValueError, TypeError):
+        return default_sec
+
+def validate_schema(schema: Dict[str, Any], args: Any) -> Optional[str]:
+    """轻量级参数契约校验器：先验证 args 为字典对象，再检查必填项与字段类型，拦截非法入参"""
+    if args is None:
+        return "参数对象为空 (null)，预期为包含工具入参的 JSON 字典对象"
+    if not isinstance(args, dict):
+        return f"参数格式非法: 预期为字典 (JSON Object)，实际传入 {type(args).__name__}"
+
+    for field in schema.get("required", []):
+        if field not in args:
+            return f"缺少必填参数 '{field}'"
+    properties = schema.get("properties", {})
+    type_map = {"string": str, "integer": int, "number": (int, float), "boolean": bool, "array": list, "object": dict}
+    for key, val in args.items():
+        if key in properties:
+            expected_type_name = properties[key].get("type")
+            expected_type = type_map.get(expected_type_name)
+            if expected_type_name == "integer" and isinstance(val, bool):
+                return f"参数 '{key}' 应为 integer，不能传入 bool"
+            if expected_type and not isinstance(val, expected_type):
+                return f"参数 '{key}' 类型错误: 预期 {expected_type_name}，实际为 {type(val).__name__}"
+    return None
+
+class ContextBudgetManager:
+    """负责上下文窗口预算管理、前缀缓存对齐与长历史有损压缩"""
+    def __init__(self, max_tokens: int = 128000, keep_recent_turns: int = 4):
+        self.max_tokens = max_tokens
+        self.keep_recent_turns = keep_recent_turns
+
+    def prune(self, messages: List[Dict[str, str]]) -> List[Dict[str, str]]:
+        if len(messages) <= (self.keep_recent_turns * 2 + 2):
+            return messages
+        prefix = messages[:2]  # 保持 System Prompt + 根目标不可变，最大化 Prefix Cache 命中
+        recent = messages[-(self.keep_recent_turns * 2):]
+        compact_summary = {
+            "role": "system",
+            "content": "[SYSTEM COMPACT: 前序探索步骤已折叠。请专注于当前激活的任务分支与测试断言。]"
+        }
+        return prefix + [compact_summary] + recent
+
+def _kill_process_tree(proc: mp.Process):
+    """强制清理子进程及其衍生的整棵进程树，防止任何忽略 SIGTERM 的后代进程逃逸"""
+    pid = proc.pid
+    if not pid:
+        return
+
+    parent_pgid = os.getpgrp()
+
+    # 1. 尝试向 worker 建立的独立进程组发送 SIGTERM（优雅终止）
+    # worker 启动时已执行 os.setsid()，其 PGID 等于 pid
+    if pid != parent_pgid:
+        try:
+            os.killpg(pid, signal.SIGTERM)
+        except (ProcessLookupError, PermissionError):
+            pass
+
+    # 兜底直接向 worker 进程发送 SIGTERM
+    try:
+        proc.terminate()
+    except Exception:
+        pass
+
+    # 给予短暂优雅退出窗口
+    proc.join(timeout=0.05)
+
+    # 2. 关键修复：无论 worker 是否存活，必须无条件向该进程组强制下发 SIGKILL！
+    # 彻底剿灭任何忽略 SIGTERM（如 trap '' TERM 或自定义信号处理器）的后代进程
+    if pid != parent_pgid:
+        try:
+            os.killpg(pid, signal.SIGKILL)
+        except (ProcessLookupError, PermissionError):
+            pass
+
+    # 兜底对 worker 发送 SIGKILL
+    try:
+        if proc.is_alive():
+            proc.kill()
+    except Exception:
+        pass
+
+    try:
+        proc.join(timeout=0.05)
+    except Exception:
+        pass
+
+class ToolDispatcher:
+    """强类型参数校验、独立进程组隔离、超时排空防死锁与受控沙箱分发器"""
+    def __init__(self):
+        self.registry: Dict[str, ToolSpec] = {}
+        self.dangerous_patterns = [
+            re.compile(r"\brm\s+-rf\s+/", re.IGNORECASE),
+            re.compile(r"\bmkfs(\.\w+)?\b", re.IGNORECASE),
+            re.compile(r"\bdd\s+if=", re.IGNORECASE),
+            re.compile(r":\(\)\{.*\}")
+        ]
+
+    def register(self, spec: ToolSpec):
+        self.registry[spec.name] = spec
+
+    def dispatch(self, name: str, args: Any, timeout_sec: Any = 30.0, allow_destructive: bool = False) -> ToolResult:
+        if name not in self.registry:
+            return ToolResult(status=ToolStatus.FAILURE, output="", exit_code=1, error=f"未注册的工具: {name}")
+
+        spec = self.registry[name]
+
+        # 1. 契约校验：在调用前拦截 null、非对象或缺失必填项的参数
+        schema_err = validate_schema(spec.schema, args)
+        if schema_err:
+            return ToolResult(status=ToolStatus.VALIDATION_ERROR, output="", exit_code=2, error=f"参数契约校验失败: {schema_err}")
+
+        # 2. 超时参数归一化与破坏性操作安全检查
+        clean_timeout = sanitize_timeout(timeout_sec)
+
+        if spec.is_destructive and not allow_destructive:
+            return ToolResult(status=ToolStatus.SECURITY_BLOCK, output="", exit_code=126, error=f"安全阻断: 工具 '{name}' 涉及破坏性操作，未获显式授权。")
+
+        for val in args.values():
+            if isinstance(val, str):
+                for pat in self.dangerous_patterns:
+                    if pat.search(val):
+                        return ToolResult(status=ToolStatus.SECURITY_BLOCK, output="", exit_code=126, error=f"安全阻断: 检测到高危指令模式 '{pat.pattern}'")
+
+        # 3. 真实可终止的进程执行方案：独立进程组隔离、超时排空防死锁与整组物理清理
+        ctx = mp.get_context("fork" if hasattr(os, "fork") else None)
+        parent_conn, child_conn = ctx.Pipe()
+
+        def _worker(conn, fn, kwargs):
+            # 脱离父会话成为独立 Process Group Leader，使后续派生的 shell/子命令归入同组
+            try:
+                os.setsid()
+            except Exception:
+                pass
+            try:
+                r = fn(**kwargs)
+                conn.send((True, r))
+            except Exception as e:
+                conn.send((False, str(e)))
+            finally:
+                try:
+                    conn.close()
+                except Exception:
+                    pass
+
+        proc = ctx.Process(target=_worker, args=(child_conn, spec.handler, args))
+        proc.start()
+        child_conn.close()
+
+        # 关键机制：在超时预算内先通过 poll 轮询管道数据，排空缓冲区，杜绝管道写满死锁导致的误判超时
+        if not parent_conn.poll(clean_timeout):
+            # 真正超时：物理终止并回收整棵进程树（包括 worker 及其衍生所有子进程）
+            _kill_process_tree(proc)
+            parent_conn.close()
+            return ToolResult(status=ToolStatus.TIMEOUT, output="", exit_code=124, error=f"工具执行超时 (超过 {clean_timeout} 秒)，整棵进程树已被强制终止并清理。")
+
+        # 管道就绪后立即读取排空数据，解除 worker 端 send 阻塞，随后回收进程
+        try:
+            ok, val = parent_conn.recv()
+            parent_conn.close()
+            proc.join(timeout=0.5)
+            if proc.is_alive():
+                _kill_process_tree(proc)
+
+            if ok:
+                return val if isinstance(val, ToolResult) else ToolResult(status=ToolStatus.SUCCESS, output=str(val))
+            return ToolResult(status=ToolStatus.FAILURE, output="", exit_code=1, error=str(val))
+        except EOFError:
+            parent_conn.close()
+            _kill_process_tree(proc)
+            return ToolResult(status=ToolStatus.FAILURE, output="", exit_code=proc.exitcode or 1, error=f"工具进程异常退出 (exit code: {proc.exitcode})，未接收到返回数据。")
+        except Exception as e:
+            parent_conn.close()
+            _kill_process_tree(proc)
+            return ToolResult(status=ToolStatus.FAILURE, output="", exit_code=1, error=str(e))
+
+class AutonomousRunner:
+    """Agent 主控制循环：感知 -> 推理 -> 执行 -> 观察 -> 外部独立验收"""
+    def __init__(self, llm_client, dispatcher: ToolDispatcher, verifier: Optional[Callable[[], ToolResult]] = None, max_steps: int = 25):
+        self.llm = llm_client
+        self.dispatcher = dispatcher
+        self.verifier = verifier  # 外部独立验收断言器（关键安全护栏：绝不盲目信任模型自报）
+        self.budget = ContextBudgetManager()
+        self.max_steps = max_steps
+        self.history: List[Dict[str, str]] = []
+
+    def execute_goal(self, goal: str, system_prompt: str) -> Dict[str, Any]:
+        self.history = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": f"目标任务: {goal}\n规则: 请逐步执行。只有当客观验收断言真正通过后，任务方可结束。"}
+        ]
+
+        for step in range(1, self.max_steps + 1):
+            # 1. 缓存对齐与上下文裁剪装配
+            active_context = self.budget.prune(self.history)
+
+            # 2. 大模型决策推理
+            decision = self.llm.generate_decision(messages=active_context)
+
+            # 3. 终结判断：必须经受外部独立断言器验收，拒绝模型虚假自报
+            if decision.get("is_complete"):
+                if self.verifier is None:
+                    return {"status": "SUCCESS_UNVERIFIED", "steps": step, "output": decision.get("final_summary"), "warning": "未配置独立验证器，结果未经验收断言"}
+
+                verify_res = self.verifier()
+                if verify_res.status == ToolStatus.SUCCESS:
+                    return {"status": "SUCCESS", "steps": step, "output": decision.get("final_summary")}
+                else:
+                    obs_entry = f"[第 {step} 步独立验收失败] 退出码: {verify_res.exit_code}\n断言报错: {verify_res.error or verify_res.output}\n系统判定: 任务尚未完成，模型不可提前声明成功。请继续修复。"
+                    self.history.append({"role": "assistant", "content": json.dumps(decision)})
+                    self.history.append({"role": "user", "content": obs_entry})
+                    continue
+
+            # 4. 工具分发执行
+            tool_name = decision.get("tool_name", "")
+            tool_args = decision.get("tool_args")  # 保留原始值，交由 dispatcher 严格校验
+            timeout_sec = decision.get("timeout_sec", 30.0)
+            tool_result = self.dispatcher.dispatch(tool_name, tool_args, timeout_sec=timeout_sec)
+
+            # 5. 观察清洗与结构化记忆追加
+            obs_preview = tool_result.output[:800] if tool_result.output else "[无标准输出]"
+            obs_entry = f"[第 {step} 步观察] 状态: {tool_result.status.value}, 返回码: {tool_result.exit_code}\n输出截取: {obs_preview}"
+            if tool_result.error:
+                obs_entry += f"\n错误跟踪: {tool_result.error}"
+
+            self.history.append({"role": "assistant", "content": json.dumps(decision)})
+            self.history.append({"role": "user", "content": obs_entry})
+
+        return {"status": "BUDGET_EXHAUSTED", "steps": self.max_steps, "error": "超出最大步数预算，系统未能在限制步数内收敛。"}</code></pre>
+            </div>
+        </section>
+
+        <!-- 06 Tech Radar Matrix -->
+        <section class="geek-section" id="radar" aria-labelledby="radar-heading">
+            <div class="geek-section-heading">
+                <p>{{ site.data.geek.radar_section.kicker }}</p>
+                <div>
+                    <h2 id="radar-heading">{{ site.data.geek.radar_section.title }}</h2>
+                    <p>{{ site.data.geek.radar_section.lead }}</p>
+                </div>
+            </div>
+
+            <div class="geek-radar-grid">
+                {% for cat in site.data.geek.radar_section.categories %}
+                <article class="geek-radar-card radar-{{ cat.color }}">
+                    <div class="geek-radar-head">
+                        <h3>{{ cat.name }}</h3>
+                        <span class="radar-badge">{{ cat.badge }}</span>
+                    </div>
+                    <p class="geek-radar-desc">{{ cat.desc }}</p>
+                    <ul class="geek-radar-items">
+                        {% for item in cat.items %}
+                        <li>
+                            <strong>{{ item.name }}</strong>
+                            <p>{{ item.desc }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if cat.expand_points %}
+                    <details class="geek-expand-box">
+                        <summary>{{ cat.expand_title | default: "展开评估依据" }}</summary>
+                        <div class="geek-expand-content">
+                            <ul>
+                                {% for ep in cat.expand_points %}
+                                <li>{{ ep }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </details>
+                    {% endif %}
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- 07 Related Handbooks & Projects -->
+        <section class="geek-section" id="related" aria-labelledby="related-heading">
+            <div class="geek-section-heading">
+                <p>{{ site.data.geek.related_section.kicker }}</p>
+                <div>
+                    <h2 id="related-heading">{{ site.data.geek.related_section.title }}</h2>
+                    <p>{{ site.data.geek.related_section.lead }}</p>
+                </div>
+            </div>
+
+            <div class="geek-related-grid">
+                {% for rel in site.data.geek.related_section.items %}
+                <a class="geek-related-card" href="{{ rel.url | prepend: site.baseurl }}">
+                    <div>
+                        <span>{{ rel.tag }}</span>
+                        <h3>{{ rel.title }}</h3>
+                        <p>{{ rel.desc }}</p>
+                    </div>
+                    <div class="related-enter">进入查阅 <i>→</i></div>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</main>

@@ -1,6 +1,6 @@
 ---
 layout: home
-description: "嵌入式、系统软件、AI 与生活的长期笔记。"
+description: "把复杂系统，写成可以复用的理解。半导体嵌入式、系统架构、AI 工具与生活的长期笔记。"
 ---
 
 {% assign latest_posts = site.posts | slice: 0, 5 %}
@@ -11,73 +11,200 @@ description: "嵌入式、系统软件、AI 与生活的长期笔记。"
 <header class="studio-hero">
     <div class="studio-hero-grid">
         <div class="studio-hero-copy">
-            <p class="studio-eyebrow"><span></span> Embedded systems · AI · Life</p>
-            <h1>把复杂系统，<br>写成可以复用的理解。</h1>
-            <p class="studio-intro">你好，我是 Yvain。一名在半导体嵌入式行业写了十多年代码的工程师。这里记录驱动、系统、无线网络，也记录 AI、摄影和那些值得慢慢想清楚的事。</p>
+            <div class="studio-identity">
+                <img src="{{ site.sidebar-avatar }}" alt="Yvain Zhang" width="34" height="34">
+                <div>
+                    <span>Yvain Zhang</span>
+                    <span>半导体系统工程师 · base 南京</span>
+                </div>
+            </div>
+            <p class="studio-eyebrow"><span></span> Embedded systems · System Atlas · AI · Life</p>
+            <h1>把复杂系统，<br><span class="hero-accent">写成可以复用的理解。</span></h1>
+            <p class="studio-intro">你好，我是 Yvain。在半导体嵌入式行业写了十多年代码的工程师。这里收录 SoC、Wi-Fi、音频等核心系统知识图谱，也记录 AI 自动化工具、摄影与那些值得慢慢想清楚的事。</p>
             <div class="studio-actions">
-                {% if lead_post %}<a class="studio-button studio-button-primary" href="{{ lead_post.url | prepend: site.baseurl }}">阅读最新文章 <span aria-hidden="true">→</span></a>{% endif %}
-                <a class="studio-button studio-button-quiet" href="{{ '/series/' | prepend: site.baseurl }}">浏览全部主题</a>
-                <a class="studio-button studio-button-quiet" href="{{ '/tech/audio/' | prepend: site.baseurl }}">Audio 系统专题 →</a>
+                <a class="studio-button studio-button-primary" href="#atlas">探索系统图谱 <span aria-hidden="true">↓</span></a>
+                <a class="studio-button studio-button-quiet" href="#projects">开源分析工具 ↗</a>
+                {% if lead_post %}<a class="studio-button studio-button-quiet" href="#writing">最新手记 ↗</a>{% endif %}
             </div>
         </div>
-        <aside class="studio-console" aria-label="当前关注方向">
+        <aside class="studio-console" aria-label="当前关注方向与系统状态">
             <div class="studio-console-head">
-                <span>FIELD NOTES / 2026</span>
+                <span>SYSTEM LAB / 2026 ACTIVE</span>
                 <i aria-hidden="true"></i>
             </div>
             <ol>
-                <li><span>01</span><strong>DRIVER</strong><em>data path &amp; performance</em></li>
-                <li><span>02</span><strong>SYSTEM</strong><em>memory &amp; scheduling</em></li>
-                <li><span>03</span><strong>FRONTIER</strong><em>AI-native workflows</em></li>
-                <li><span>04</span><strong>OFFLINE</strong><em>running &amp; photography</em></li>
+                <li><a href="#atlas"><span>01</span><strong>ATLAS</strong><em>系统图谱与工程手记 →</em></a></li>
+                <li><a href="#projects"><span>02</span><strong>OPEN TOOLS</strong><em>AI 抓包排障与分析工具 →</em></a></li>
+                <li><a href="{{ '/geek/' | prepend: site.baseurl }}"><span>03</span><strong>GEEK LAB</strong><em>上下文工程与自治 Agent →</em></a></li>
+                <li><a href="#offline"><span>04</span><strong>OFFLINE</strong><em>跑步解构与摄影留存 →</em></a></li>
             </ol>
-            <p><span class="studio-pulse" aria-hidden="true"></span> 持续整理中</p>
+            <p><span class="studio-pulse" aria-hidden="true"></span> 知识持续整理中 · 知行合一</p>
         </aside>
     </div>
     <div class="studio-hero-foot">
-        <span>XI'AN → WUXI</span>
-        <span>ENGINEER / WRITER / OBSERVER</span>
-        <a href="#latest">向下阅读 ↓</a>
+        <span>BASE NANJING</span>
+        <span>ENGINEER / MAKER / OBSERVER</span>
+        <a href="#atlas">向下浏览章节 ↓</a>
     </div>
 </header>
 
-<section class="studio-section studio-topics" aria-labelledby="topics-heading">
-    <div class="studio-section-heading">
-        <p>Explore / 01</p>
-        <h2 id="topics-heading">沿着兴趣，建立自己的知识地图。</h2>
+<nav class="studio-chapter-nav" aria-label="页面章节导览">
+    <div class="studio-chapter-inner">
+        <span class="chapter-caption">▰ 章节导览</span>
+        <div class="chapter-links">
+            <a href="#atlas"><span>01</span>系统图谱</a>
+            <a href="#projects"><span>02</span>开源工具</a>
+            <a href="#writing"><span>03</span>深度写作</a>
+            <a href="#offline"><span>04</span>屏幕之外</a>
+            <a href="#contact"><span>05</span>交流连接</a>
+        </div>
+        <a class="chapter-hub-link" href="{{ '/tech/' | prepend: site.baseurl }}">查看技术全景 ↗</a>
     </div>
-    <div class="studio-topic-list">
-        {% for group in site.data.series %}
-        {% assign group_posts = site.posts | where: "series", group.title %}
-        {% if group.title == "摄影" %}
-            {% assign entry_href = '/photos/' | prepend: site.baseurl %}
-            {% assign entry_count = album_count %}
-            {% assign entry_unit = '个相册' %}
-        {% elsif group.title == "技术" %}
-            {% assign entry_href = '/tech/' | prepend: site.baseurl %}
-            {% assign entry_count = group_posts | size %}
-            {% assign entry_unit = '篇文章 · 5 个专题' %}
-        {% else %}
-            {% assign entry_href = '/series/#' | prepend: site.baseurl | append: group.slug %}
-            {% assign entry_count = group_posts | size %}
-            {% assign entry_unit = '篇文章' %}
-        {% endif %}
-        <a class="studio-topic" href="{{ entry_href }}">
-            <span class="studio-topic-index">0{{ forloop.index }}</span>
-            <div><h3>{{ group.title }}</h3><p>{{ group.description }}</p></div>
-            <span class="studio-topic-count">{{ entry_count }} {{ entry_unit }}</span>
-            <span class="studio-topic-arrow" aria-hidden="true">↗</span>
+</nav>
+
+<section class="studio-section studio-atlas" id="atlas" aria-labelledby="atlas-heading">
+    <div class="studio-section-heading">
+        <p>System Atlas / 01</p>
+        <div>
+            <h2 id="atlas-heading">从物理信号到系统软件，核心工程知识图谱。</h2>
+            <p style="color: rgba(21,34,37,0.68); margin-top: 12px; font-size: 15px; line-height: 1.75;">不是零散的文章标题，而是按时序、总线拓扑与数据通路组织，遇到现场问题能顺藤摸瓜回溯推导的系统知识体系。</p>
+        </div>
+    </div>
+
+    <div class="studio-atlas-grid">
+        <!-- Card 1: SoC 系统知识库 (PINNED TOP) -->
+        <a class="studio-atlas-card studio-atlas-pinned" href="{{ '/tech/soc/' | prepend: site.baseurl }}">
+            <div>
+                <div class="studio-atlas-head">
+                    <span class="studio-atlas-tag highlight">PINNED · 核心图谱</span>
+                    <span class="studio-atlas-badge">SYSTEM ARCHITECTURE</span>
+                </div>
+                <h3>SoC 系统知识库</h3>
+                <p>从 CPU 启动、Cache 一致性、MMU 页表与片上 NoC，走到 DMA 引擎、外设控制器、Boot、BSP、Linux 内核与系统底层调试。</p>
+                <div class="studio-atlas-flow">
+                    <span>CPU / MMU</span><i>→</i><span>CACHE</span><i>→</i><span>AXI / NoC</span><i>→</i><span>DDR / DMA</span><i>→</i><span>BSP / LINUX</span>
+                </div>
+            </div>
+            <div class="studio-atlas-foot">
+                <div class="studio-atlas-stats">
+                    <span><strong>11</strong> Modules</span>
+                    <span><strong>122</strong> Notes</span>
+                    <span><strong>167</strong> Diagrams</span>
+                    <span><strong>5</strong> Labs</span>
+                </div>
+                <span class="studio-atlas-enter">进入知识库 <i aria-hidden="true">→</i></span>
+            </div>
         </a>
-        {% endfor %}
+
+        <!-- Card 2: Wi-Fi 系统知识库 (PINNED TOP) -->
+        <a class="studio-atlas-card studio-atlas-pinned" href="{{ '/tech/wifi/' | prepend: site.baseurl }}">
+            <div>
+                <div class="studio-atlas-head">
+                    <span class="studio-atlas-tag highlight">PINNED · 核心图谱</span>
+                    <span class="studio-atlas-badge">PACKET PATH</span>
+                </div>
+                <h3>Wi-Fi 系统知识库</h3>
+                <p>从应用层与 Linux 网络栈出发，穿过 USB / SDIO / PCIe 总线、Firmware 握手、MAC 与 PHY，一直追到空口 802.11 帧分析。</p>
+                <div class="studio-atlas-flow">
+                    <span>TCP / IP</span><i>→</i><span>HOST DRIVER</span><i>→</i><span>BUS</span><i>→</i><span>FW</span><i>→</i><span>MAC / PHY</span><i>→</i><span>AIR</span>
+                </div>
+            </div>
+            <div class="studio-atlas-foot">
+                <div class="studio-atlas-stats">
+                    <span><strong>12</strong> Modules</span>
+                    <span><strong>35</strong> Articles</span>
+                    <span><strong>4</strong> Cases</span>
+                    <span><strong>4</strong> Labs</span>
+                </div>
+                <span class="studio-atlas-enter">进入知识库 <i aria-hidden="true">→</i></span>
+            </div>
+        </a>
+
+        <!-- Card 3: Audio 系统知识库 -->
+        <a class="studio-atlas-card" href="{{ '/tech/audio/' | prepend: site.baseurl }}">
+            <div>
+                <div class="studio-atlas-head">
+                    <span class="studio-atlas-tag">SIGNAL TO SYSTEM</span>
+                    <span class="studio-atlas-badge">NEW RELEASE / 2026</span>
+                </div>
+                <h3>Audio 系统知识库</h3>
+                <p>从芯片物理层、模拟 Codec、时钟时序与 DSP，一路走到 DMA 缓冲、Linux ALSA/ASoC、低功耗管理与实时流式语音。把音频知识组织成可推导、可调试的工程证据链。</p>
+                <div class="studio-atlas-flow">
+                    <span>MIC / AFE</span><i>→</i><span>I2S / PDM</span><i>→</i><span>DSP</span><i>→</i><span>DMA FIFO</span><i>→</i><span>ALSA / ASoC</span><i>→</i><span>AUDIO APP</span>
+                </div>
+            </div>
+            <div class="studio-atlas-foot">
+                <div class="studio-atlas-stats">
+                    <span><strong>13</strong> Modules</span>
+                    <span><strong>127</strong> Documents</span>
+                    <span><strong>125</strong> Diagrams</span>
+                    <span><strong>3</strong> Labs</span>
+                </div>
+                <span class="studio-atlas-enter">进入知识库 <i aria-hidden="true">→</i></span>
+            </div>
+        </a>
+
+        <!-- Card 4: GPU 系统知识库 -->
+        <a class="studio-atlas-card" href="{{ '/tech/gpu/' | prepend: site.baseurl }}">
+            <div>
+                <div class="studio-atlas-head">
+                    <span class="studio-atlas-tag">GRAPHICS &amp; COMPUTE</span>
+                    <span class="studio-atlas-badge">EXECUTION PATH</span>
+                </div>
+                <h3>GPU 系统知识库</h3>
+                <p>从用户空间命令提交、硬件调度队列和 SM/CU 执行架构，走到 Warp 同步、纹理与显存层次、图形流水线与通用计算。</p>
+                <div class="studio-atlas-flow">
+                    <span>HOST</span><i>→</i><span>CMD QUEUE</span><i>→</i><span>SM / CU</span><i>→</i><span>WARP</span><i>→</i><span>CACHE / VRAM</span>
+                </div>
+            </div>
+            <div class="studio-atlas-foot">
+                <div class="studio-atlas-stats">
+                    <span><strong>11</strong> Modules</span>
+                    <span><strong>100</strong> Documents</span>
+                    <span><strong>52</strong> Diagrams</span>
+                </div>
+                <span class="studio-atlas-enter">进入知识库 <i aria-hidden="true">→</i></span>
+            </div>
+        </a>
+
+        <!-- Card 5: NPU 系统知识库 -->
+        <a class="studio-atlas-card" href="{{ '/tech/npu/' | prepend: site.baseurl }}">
+            <div>
+                <div class="studio-atlas-head">
+                    <span class="studio-atlas-tag">AI ACCELERATOR</span>
+                    <span class="studio-atlas-badge">TENSOR PATH</span>
+                </div>
+                <h3>NPU 系统知识库</h3>
+                <p>从脉动阵列、片上 Scratchpad 与低比特量化通路，走到 AI 编译器算子融合、硬件调度器与分布式大模型互联集群。</p>
+                <div class="studio-atlas-flow">
+                    <span>COMPILER</span><i>→</i><span>TENSOR DMA</span><i>→</i><span>SYSTOLIC ARRAY</span><i>→</i><span>SRAM / HBM</span>
+                </div>
+            </div>
+            <div class="studio-atlas-foot">
+                <div class="studio-atlas-stats">
+                    <span><strong>11</strong> Modules</span>
+                    <span><strong>99</strong> Documents</span>
+                    <span><strong>56</strong> Diagrams</span>
+                </div>
+                <span class="studio-atlas-enter">进入知识库 <i aria-hidden="true">→</i></span>
+            </div>
+        </a>
+    </div>
+
+    <div style="text-align: right;">
+        <a href="{{ '/tech/' | prepend: site.baseurl }}" style="font-size: 13px; font-weight: 700; color: #087f8c; text-decoration: none; padding-bottom: 4px; border-bottom: 1px solid rgba(8,127,140,.3);">查看技术总览与全部文章索引 <span aria-hidden="true">→</span></a>
     </div>
 </section>
 
 {% assign featured_project = site.data.projects | where: "featured", true | first %}
 {% if featured_project %}
-<section class="studio-section studio-projects" aria-labelledby="projects-heading">
+<section class="studio-section studio-projects" id="projects" aria-labelledby="projects-heading">
     <div class="studio-section-heading studio-section-heading-row">
-        <div><p>Open Source / 02</p><h2 id="projects-heading">把工作里反复用的方法，做成开放工具。</h2></div>
-        <a href="{{ '/projects/' | prepend: site.baseurl }}">查看项目说明 <span aria-hidden="true">→</span></a>
+        <div>
+            <p>Open Source / 02</p>
+            <h2 id="projects-heading">把工作里反复推演的逻辑，做成开放工具。</h2>
+        </div>
+        <a href="{{ '/projects/' | prepend: site.baseurl }}">查看全部开源项目 <span aria-hidden="true">→</span></a>
     </div>
     <article class="studio-project-card">
         <div class="studio-project-copy">
@@ -85,6 +212,7 @@ description: "嵌入式、系统软件、AI 与生活的长期笔记。"
                 <span>{{ featured_project.eyebrow }}</span>
                 <span>{{ featured_project.status }}</span>
                 <span>{{ featured_project.license }}</span>
+                <span>{{ featured_project.language }}</span>
             </div>
             <h3>{{ featured_project.name }}</h3>
             <p>{{ featured_project.summary }}</p>
@@ -107,10 +235,13 @@ description: "嵌入式、系统软件、AI 与生活的长期笔记。"
 {% endif %}
 
 {% if lead_post %}
-<section class="studio-section studio-latest" id="latest" aria-labelledby="latest-heading">
+<section class="studio-section studio-latest" id="writing" aria-labelledby="writing-heading">
     <div class="studio-section-heading studio-section-heading-row">
-        <div><p>Writing / 03</p><h2 id="latest-heading">最近写下的内容</h2></div>
-        <a href="{{ '/tags/' | prepend: site.baseurl }}">查看文章索引 <span aria-hidden="true">→</span></a>
+        <div>
+            <p>Writing / 03</p>
+            <h2 id="writing-heading">最近写下的深度思考与工程手记</h2>
+        </div>
+        <a href="{{ '/tags/' | prepend: site.baseurl }}">查看文章标签索引 <span aria-hidden="true">→</span></a>
     </div>
     <div class="studio-writing-grid">
         <article class="studio-lead-story">
@@ -141,10 +272,160 @@ description: "嵌入式、系统软件、AI 与生活的长期笔记。"
 </section>
 {% endif %}
 
-<section class="studio-photo-note">
-    <div>
-        <p>Beyond the terminal</p>
-        <h2>偶尔离开屏幕，去看真实世界里的光。</h2>
+<section class="studio-section studio-offline" id="offline" aria-labelledby="offline-heading">
+    <div class="studio-section-heading">
+        <p>Off The Screen / 04</p>
+        <div>
+            <h2 id="offline-heading">偶尔合上终端，去看真实世界里的光。</h2>
+            <p style="color: rgba(21,34,37,0.68); margin-top: 12px; font-size: 15px; line-height: 1.75;">代码与系统占据了白天，跑步与摄影则是给生活换个频率。离开屏幕，找回专注与身体的节奏。</p>
+        </div>
     </div>
-    <a href="{{ '/photos/' | prepend: site.baseurl }}">打开摄影集 <span aria-hidden="true">↗</span></a>
+
+    <div class="studio-offline-grid">
+        <article class="studio-offline-card">
+            <div>
+                <div class="studio-offline-thumb" style="background-image: url('{{ '/img/photos/无锡太湖周边 1.jpg' | prepend: site.baseurl }}');">
+                    <span>LIGHT &amp; SHADOW</span>
+                </div>
+                <div class="studio-offline-copy">
+                    <p class="studio-eyebrow" style="color: #087f8c; margin-bottom: 8px;"><span></span> PHOTOGRAPHY / 摄影</p>
+                    <h3>水岸薄雾与城市夜景</h3>
+                    <p>拿着相机记录沿途的光影与水岸的薄雾。普通的一天，也值得被认真留存。</p>
+                    <div class="studio-offline-quote">
+                        “把走过的日常多看一眼，留住偶尔遇到的好光线。”
+                    </div>
+                </div>
+            </div>
+            <a class="studio-offline-link" href="{{ '/photos/' | prepend: site.baseurl }}">浏览摄影相册集 <span aria-hidden="true">↗</span></a>
+        </article>
+
+        <article class="studio-offline-card">
+            <div>
+                <div class="studio-offline-thumb" style="background: linear-gradient(135deg, #0c2327 0%, #15383d 100%);">
+                    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; z-index: 1;">
+                        <span style="position: static; background: none; font: 800 24px/1.2 monospace; letter-spacing: .12em; color: #f0a04b; margin-bottom: 6px;">RUNNING &amp; RHYTHM</span>
+                        <span style="position: static; background: none; font: 600 11px/1 monospace; letter-spacing: .16em; color: #abdadd;">10KM PACING · MIND RESET</span>
+                    </div>
+                    <span>RUNNING &amp; RHYTHM</span>
+                </div>
+                <div class="studio-offline-copy">
+                    <p class="studio-eyebrow" style="color: #087f8c; margin-bottom: 8px;"><span></span> OFFLINE / 跑步与节奏</p>
+                    <h3>有氧慢跑与节奏重置</h3>
+                    <p>在江畔与操场间保持长跑习惯。配速不必激进，长距离匀速跑能彻底清空大脑。很多卡壳的驱动死锁与架构难题，往往在脚步沉稳时自然清晰。</p>
+                    <div class="studio-offline-quote">
+                        “Slow is smooth, smooth is fast. 专注呼吸与步频，把耐力留给长路。”
+                    </div>
+                </div>
+            </div>
+            <a class="studio-offline-link" href="{{ '/about/' | prepend: site.baseurl }}">关于我的更多经历 <span aria-hidden="true">↗</span></a>
+        </article>
+    </div>
 </section>
+
+<section class="studio-section studio-contact" id="contact" aria-labelledby="contact-heading">
+    <div class="studio-contact-card">
+        <div class="studio-contact-lead">
+            <p class="studio-eyebrow"><span></span> Say Hello / 05</p>
+            <h2 id="contact-heading">聊聊系统、技术，或打个招呼。</h2>
+            <p>关于底层架构、芯片驱动、AI 工具链，或者打个招呼。如果你从知识库或博客而来，随时欢迎交流探讨。</p>
+        </div>
+        <div class="studio-contact-actions">
+            <a class="studio-contact-btn studio-contact-btn-primary" href="mailto:yvain.zhang@gmail.com">
+                发邮件聊聊 <span aria-hidden="true">↗</span>
+            </a>
+            <button type="button" class="studio-contact-btn" id="openWechatModal">
+                微信交流 <span aria-hidden="true">▧</span>
+            </button>
+            <a class="studio-contact-btn" href="https://github.com/YvainZhang" target="_blank" rel="noopener noreferrer">
+                GitHub <span aria-hidden="true">↗</span>
+            </a>
+        </div>
+        <div class="studio-contact-signature">
+            <span>BASE NANJING · BUILT SLOWLY, KEPT USEFUL.</span>
+            <strong>Slow is smooth, smooth is fast. — Yvain Zhang</strong>
+        </div>
+    </div>
+</section>
+
+<!-- Native HTML5 Dialog for WeChat Modal -->
+<dialog id="wechatDialog" class="contact-dialog" aria-label="微信交流">
+    <header>
+        <h3>微信交流</h3>
+        <button type="button" id="closeWechatModal" aria-label="关闭">×</button>
+    </header>
+    <div class="contact-dialog-body">
+        <div class="wechat-id-box">
+            <code id="wechatIdText">YvainZhang</code>
+            <button type="button" id="copyWechatBtn">复制微信号</button>
+        </div>
+        <div id="copyNotice" class="copy-notice">✓ 已复制微信号到剪贴板！</div>
+        <p>欢迎添加交流芯片驱动、系统架构与技术思考。<br>添加时请简单备注来意与技术方向。</p>
+    </div>
+</dialog>
+
+<script>
+(function(){
+    var dialog = document.getElementById('wechatDialog');
+    var openBtn = document.getElementById('openWechatModal');
+    var closeBtn = document.getElementById('closeWechatModal');
+    var copyBtn = document.getElementById('copyWechatBtn');
+    var copyNotice = document.getElementById('copyNotice');
+    var wechatIdText = document.getElementById('wechatIdText');
+
+    if (dialog && openBtn) {
+        openBtn.addEventListener('click', function() {
+            if (typeof dialog.showModal === 'function') {
+                dialog.showModal();
+            } else {
+                alert('微信号：' + wechatIdText.innerText);
+            }
+        });
+    }
+
+    if (dialog && closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            dialog.close();
+            if (copyNotice) copyNotice.style.display = 'none';
+        });
+
+        dialog.addEventListener('click', function(e) {
+            var rect = dialog.getBoundingClientRect();
+            var isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+                              rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+            if (!isInDialog) {
+                dialog.close();
+                if (copyNotice) copyNotice.style.display = 'none';
+            }
+        });
+    }
+
+    if (copyBtn && wechatIdText) {
+        copyBtn.addEventListener('click', function() {
+            var text = wechatIdText.innerText || wechatIdText.textContent;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() {
+                    if (copyNotice) {
+                        copyNotice.style.display = 'block';
+                        setTimeout(function() {
+                            copyNotice.style.display = 'none';
+                        }, 3000);
+                    }
+                });
+            } else {
+                var input = document.createElement('input');
+                input.value = text;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                if (copyNotice) {
+                    copyNotice.style.display = 'block';
+                    setTimeout(function() {
+                        copyNotice.style.display = 'none';
+                    }, 3000);
+                }
+            }
+        });
+    }
+})();
+</script>
