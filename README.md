@@ -1,6 +1,6 @@
 # Yvain Zhang Blog
 
-This repository hosts the Jekyll-based GitHub Pages site for `YvainZhang.github.io`, including the SoC, Wi-Fi, GPU, NPU, and Audio system knowledge collections.
+This repository hosts the Jekyll-based GitHub Pages site for `YvainZhang.github.io`, including the SoC, Wi-Fi, GPU, NPU, Audio, and RTOS system knowledge collections.
 
 ## Local development
 
@@ -29,6 +29,7 @@ mkdocs build --strict --config-file WiFi/mkdocs.yml --site-dir "$PWD/_site/tech/
 mkdocs build --strict --config-file GPU/mkdocs.yml --site-dir "$PWD/_site/tech/gpu"
 mkdocs build --strict --config-file NPU/mkdocs.yml --site-dir "$PWD/_site/tech/npu"
 mkdocs build --strict --config-file Audio/mkdocs.yml --site-dir "$PWD/_site/tech/audio"
+mkdocs build --strict --config-file RTOS/mkdocs.yml --site-dir "$PWD/_site/tech/rtos"
 ```
 
 To preview the combined output without rebuilding it, run `python3 -m http.server 8000 --directory _site` and open `http://localhost:8000/tech/`. NPU teaching models can be checked with `python3 NPU/Labs/lab01-systolic-array-sim/test_matmul.py` and `python3 NPU/Labs/lab02-tvm-custom-npu-tiling/verify_schedule.py`; these are pure-CPU checks.
@@ -46,7 +47,7 @@ npm run watch:assets
 - `_layouts/`, `_includes/`: shared Jekyll templates
 - `less/`: stylesheet sources compiled into `css/`
 - `js/`: unminified scripts; commit minified output when source changes
-- `SoC/`, `WiFi/`, `GPU/`, `NPU/`, `Audio/`: MkDocs-based system knowledge collections
+- `SoC/`, `WiFi/`, `GPU/`, `NPU/`, `Audio/`, `RTOS/`: MkDocs-based system knowledge collections
 - `_config.yml`: site metadata and plugin configuration
 
 ## Deployment

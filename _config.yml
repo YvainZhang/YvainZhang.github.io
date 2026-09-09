@@ -32,8 +32,8 @@ twitter_username:
 # from 2016, 'pygments' is unsupported on GitHub Pages. Use 'rouge' for highlighting instead.
 permalink: pretty
 paginate: 10
-exclude: ["less","node_modules","vendor","记录","SoC","WiFi","GPU","NPU","Audio","wifi-chip-company-knowledge-map.md","wifi6-host-device-trx.md","Gruntfile.js","package.json","README.md","AGENTS.md"]
-keep_files: ["tech/soc", "tech/wifi", "tech/gpu", "tech/npu", "tech/audio"]
+exclude: ["less","node_modules","vendor","记录","SoC","WiFi","GPU","NPU","Audio","RTOS","wifi-chip-company-knowledge-map.md","wifi6-host-device-trx.md","Gruntfile.js","package.json","README.md","AGENTS.md"]
+keep_files: ["tech/soc", "tech/wifi", "tech/gpu", "tech/npu", "tech/audio", "tech/rtos"]
 anchorjs: true                          # if you want to customize anchor. check out line:181 of `post.html`
 
 

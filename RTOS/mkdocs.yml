@@ -1,0 +1,114 @@
+site_name: RTOS 系统知识库
+site_url: https://xidianedu.cc/tech/rtos/
+site_author: Yvain Zhang
+site_description: 从硬实时调度微内核到现代 IoT 生态全栈系统，深入剖析 FreeRTOS 与 Zephyr 架构
+docs_dir: .
+site_dir: ../RTOS-site
+exclude_docs: |
+  mkdocs.yml
+  requirements-docs.txt
+  overrides/
+  **/__pycache__/
+  .venv-docs/**
+  .venv/**
+extra:
+  homepage: /tech/
+theme:
+  name: material
+  language: zh
+  custom_dir: overrides
+  features:
+    - navigation.top
+    - navigation.indexes
+    - search.highlight
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: 切换至深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: 切换至浅色模式
+extra_css:
+  - stylesheets/extra.css
+plugins:
+  - search:
+      lang: zh
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+extra_javascript:
+  - javascripts/vendor/mermaid-10.4.0.min.js
+  - javascripts/rtos-diagrams.js
+  - javascripts/rtos-controls.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+nav:
+  - 首页: README.md
+  - 项目实践:
+      - RVKernel Lab · 千行 OS 扩展: Projects/rvkernel.md
+  - 总览与路线: 00-Overview/README.md
+  - 01 RTOS 通用核心机制:
+      - 模块概览: 01-RTOS-Fundamentals/README.md
+      - 实时性与调度理论: 01-RTOS-Fundamentals/01-realtime-principles-scheduling.md
+      - 任务生命周期与上下文切换: 01-RTOS-Fundamentals/02-task-lifecycle-tcb-context-switch.md
+      - 中断体系与临界区保护: 01-RTOS-Fundamentals/03-interrupt-systick-critical-section.md
+      - IPC 通信与同步机制: 01-RTOS-Fundamentals/04-ipc-synchronization-primitives.md
+      - 内存模型与保护机制: 01-RTOS-Fundamentals/05-memory-management-safety.md
+  - 02 FreeRTOS 内核实现:
+      - 模块概览: 02-FreeRTOS-Deep-Dive/README.md
+      - 架构哲学与源码拓扑: 02-FreeRTOS-Deep-Dive/01-freertos-architecture-source-topology.md
+      - 就绪列表与位图调度器: 02-FreeRTOS-Deep-Dive/02-ready-lists-bitmap-scheduler.md
+      - PendSV 汇编现场切换: 02-FreeRTOS-Deep-Dive/03-context-switch-pendsv-assembly.md
+      - Queue 队列与互斥量继承: 02-FreeRTOS-Deep-Dive/04-queue-internals-semaphore-mutex.md
+      - 内存模型 heap_1 到 heap_5: 02-FreeRTOS-Deep-Dive/05-heap-memory-models-comparison.md
+      - 中断安全规范与工程踩坑: 02-FreeRTOS-Deep-Dive/06-freertos-isr-safety-pitfalls.md
+  - 03 Zephyr 架构与驱动:
+      - 模块概览: 03-Zephyr-Deep-Dive/README.md
+      - 现代化演进与微内核谱系: 03-Zephyr-Deep-Dive/01-zephyr-architecture-evolution.md
+      - Kconfig 与 DeviceTree 体系: 03-Zephyr-Deep-Dive/02-build-system-kconfig-devicetree.md
+      - 线程模型与多算法调度器: 03-Zephyr-Deep-Dive/03-kernel-threads-scheduler-algorithms.md
+      - 统一设备驱动模型: 03-Zephyr-Deep-Dive/04-unified-driver-model.md
+      - 内核对象 IPC 与 Workqueue: 03-Zephyr-Deep-Dive/05-kernel-objects-ipc-workqueue.md
+      - MPU 用户空间隔离与系统调用: 03-Zephyr-Deep-Dive/06-memory-protection-userspace-syscall.md
+      - 子系统生态与多核 AMP: 03-Zephyr-Deep-Dive/07-subsystems-amp-power-management.md
+  - 04 系统对比与选型:
+      - 模块概览: 04-Comparative-Study/README.md
+      - 设计哲学与架构范式: 04-Comparative-Study/01-philosophy-architectural-paradigm.md
+      - 调度机制与实时确定性: 04-Comparative-Study/02-scheduler-determinism-benchmark.md
+      - 硬件抽象与驱动可移植性: 04-Comparative-Study/03-hardware-abstraction-portability.md
+      - 内存保护与安全合规: 04-Comparative-Study/04-security-memory-isolation.md
+      - 资源 Footprint 极值对比: 04-Comparative-Study/05-footprint-resource-tradeoffs.md
+      - 场景选型决策树与选型矩阵: 04-Comparative-Study/06-selection-decision-tree.md
+  - 05 实战案例与现场排查:
+      - 模块概览: Case-Studies/README.md
+      - 优先级反转与死锁排查: Case-Studies/01-priority-inversion-mars-pathfinder-case.md
+      - 任务栈溢出与内存破坏分析: Case-Studies/02-stack-overflow-isr-corruption-debug.md
+      - 异构多核 AMP RPMsg 协同: Case-Studies/03-amp-rpmsg-heterogeneous-multicore.md
+  - Labs 动手实验 (RVKernel):
+      - 实验概览与环境: Labs/README.md
+      - Lab 01 启动、Trap 与 Sv32 页表: Labs/lab01-rv32-boot-trap-paging.md
+      - Lab 02 硬件定时器与用户态抢占: Labs/lab02-rv32-timer-preemption-scheduler.md
+      - Lab 03 环形缓冲与具名管道 IPC: Labs/lab03-rv32-bounded-pipe-ipc.md
+      - Lab 04 多核 SMP、自旋锁与 IPI: Labs/lab04-rv32-smp-multicore-ipi.md
+  - 术语与缩写速查: Glossary/README.md
+
+  - 文档站使用说明: docs-site.md

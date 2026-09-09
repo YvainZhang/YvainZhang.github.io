@@ -16,7 +16,7 @@ body_class: tech-page
             <p>零散问题写成工程笔记，反复遇到的知识整理成系统专题。这里既保留现场经验，也试着把硬件、驱动和系统之间的关系连起来。</p>
             <div class="tech-hero-stats" aria-label="技术内容统计">
                 <span><strong>{{ technical_posts | size }}</strong> Articles</span>
-                <span><strong>04</strong> System collections</span>
+                <span><strong>06</strong> System collections</span>
                 <span><strong>04</strong> Domains</span>
             </div>
         </div>
@@ -34,7 +34,7 @@ body_class: tech-page
 
 <section class="tech-section tech-collection" aria-labelledby="collection-heading">
     <div class="tech-section-heading">
-        <p>System Collections / 01—04</p>
+        <p>System Collections / 01—06</p>
         <div>
             <h2 id="collection-heading">先从一张完整的系统地图开始。</h2>
             <span>专题不是文章合集，而是一条可以顺着走完、遇到问题还能回来查的路径。</span>
@@ -166,6 +166,29 @@ body_class: tech-page
             <div class="soc-map-bus"><b>CLOCK + BUFFER + ROUTE</b></div>
             <div class="soc-map-row soc-map-row-bottom"><span>DSP</span><i></i><span>CODEC</span><i></i><span>SPEAKER</span></div>
             <div class="soc-map-control"><span>ALSA</span><span>RTOS</span><span>AEC</span><span>DEBUG</span></div>
+        </div>
+    </a>
+</section>
+
+<section class="tech-section" aria-labelledby="rtos-heading">
+    <a class="soc-feature" href="{{ '/tech/rtos/' | prepend: site.baseurl }}" aria-label="进入 RTOS 系统知识库">
+        <div class="soc-feature-copy">
+            <div class="soc-feature-meta"><span>RTOS System Atlas</span><span>Kernel to Practice</span></div>
+            <h3 id="rtos-heading">RTOS 系统知识库</h3>
+            <p>从任务调度、中断与同步，走到 FreeRTOS、Zephyr 和系统选型；用 RVKernel Lab 追踪 RISC-V 内核的抢占、IPC 与多核协同。</p>
+            <div class="soc-feature-stats">
+                <span><strong>4</strong> Core Modules</span>
+                <span><strong>4</strong> Labs</span>
+                <span><strong>1</strong> Project</span>
+            </div>
+            <span class="soc-feature-enter">进入知识库 <i aria-hidden="true">→</i></span>
+        </div>
+        <div class="soc-feature-map" aria-hidden="true">
+            <div class="soc-map-label">INTERRUPT TO TASK</div>
+            <div class="soc-map-row soc-map-row-top"><span>IRQ</span><i></i><span>CONTEXT</span><i></i><span>SCHEDULER</span></div>
+            <div class="soc-map-bus"><b>TIMING + SYNCHRONIZATION</b></div>
+            <div class="soc-map-row soc-map-row-bottom"><span>TASK</span><i></i><span>IPC</span><i></i><span>MEMORY</span></div>
+            <div class="soc-map-control"><span>FREERTOS</span><span>ZEPHYR</span><span>RISC-V</span><span>SMP</span></div>
         </div>
     </a>
 </section>
