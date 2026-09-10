@@ -3,7 +3,7 @@
   async function renderDiagrams() {
     if (!window.mermaid) return;
     mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: "neutral" });
-    var nodes = document.querySelectorAll(".mermaid");
+    var nodes = document.querySelectorAll(".rtos-mermaid");
     for (var i = 0; i < nodes.length; i++) {
       var node = nodes[i];
       // Read the original code text directly: do not round-trip through innerHTML.
@@ -12,6 +12,7 @@
         await mermaid.parse(source);
         var result = await mermaid.render("rtos-diagram-" + i, source);
         node.innerHTML = result.svg;
+        node.classList.add("mermaid");
         node.setAttribute("data-processed", "true");
         if (result.bindFunctions) result.bindFunctions(node);
       } catch (error) {

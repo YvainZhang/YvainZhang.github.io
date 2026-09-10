@@ -14,7 +14,7 @@
 flowchart TD
     QEMU["QEMU virt 启动 (0x1000)"] --> OpenSBI["OpenSBI 固件运行 (M-Mode)"]
     OpenSBI --> KernelEntry["跳转至内核入口 boot (0x80200000, S-Mode)"]
-    
+
     subgraph KernelInit["内核初始化序列"]
         BSS["1. 清零 .bss 段"]
         Paging["2. 初始化空闲内存页分配器 (alloc_pages)"]
@@ -39,7 +39,7 @@ flowchart TD
 
 ---
 
-## 3. Trap 现场保护与 `sscratch` 换栈
+## 3. Trap 现场保护与 `sscratch` 换栈黑魔法
 
 当 CPU 运行在非特权用户态（U-Mode）时，其栈指针 `sp` 指向不可信的用户栈。如果此时发生硬件中断或 `ecall` 系统调用，处理器必须**在执行第一条 C 语言指令之前，安全切换到可信的内核栈**。
 
@@ -93,9 +93,9 @@ flowchart LR
     VA --> VPN0["VPN[0] (10位)"]
     VA --> Offset["Offset (12位, 4KB对齐)"]
 
-    VPN1 -->|索引一级根页表| P1["一级页目录项 (PDE)"]
-    P1 -->|指向二级页表基址| P2_Table["二级页表"]
-    VPN0 -->|索引二级页表| P2["二级页表项 (PTE)"]
+    VPN1 -->|"索引一级根页表"| P1["一级页目录项 (PDE)"]
+    P1 -->|"指向二级页表基址"| P2_Table["二级页表"]
+    VPN0 -->|"索引二级页表"| P2["二级页表项 (PTE)"]
     P2 -->|"物理基址 (PPN)"| PA["最终 32 位物理地址 (PA)"]
     Offset --> PA
 ```
@@ -103,7 +103,7 @@ flowchart LR
 ### 关键权限标志位（PTE Flags）
 * `PAGE_V (1 << 0)`：页面有效标志位。
 * `PAGE_R / PAGE_W / PAGE_X`：可读、可写、可执行保护属性。
-* `PAGE_U (1 << 4)`：**用户权限位**。若未置位，则处于 U-Mode 的用户态进程触碰该页面时，硬件 MMU 会立刻抛出 **Load/Store Page Fault**，阻止用户态访问该页面。
+* `PAGE_U (1 << 4)`：**用户权限位**。若未置位，则处于 U-Mode 的用户态进程触碰该页面时，硬件 MMU 会立刻抛出 **Load/Store Page Fault**，从硅片底层坚决阻断用户程序篡改内核数据。
 
 ---
 

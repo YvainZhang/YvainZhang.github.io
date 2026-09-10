@@ -21,8 +21,8 @@ flowchart LR
         Tail --> FreeSpace["剩余可用空闲空间 (256 - len)"]
     end
 
-    Writer["生产者进程 (pipe_write)"] -->|写入| Tail
-    Head -->|读取| Reader["消费者进程 (pipe_read)"]
+    Writer["生产者进程 (pipe_write)"] -->|"写入"| Tail
+    Head -->|"读取"| Reader["消费者进程 (pipe_read)"]
 ```
 
 ```c
@@ -56,7 +56,7 @@ sequenceDiagram
     Reader->>PipeLock: acquire(&pipe->lock)
     Note over Reader: 检查 len == 0 (管道空)
     Reader->>Reader: 调用 sleep(&pipe->read_pos, &pipe->lock)
-    
+
     rect rgb(240, 248, 255)
     Note over Reader: 【原子锁交接顺序】
     Reader->>ProcLock: 1. acquire(&proc->lock)
@@ -73,9 +73,10 @@ sequenceDiagram
     Note over Reader: 重新进入循环检查 len > 0 (防御虚假唤醒 Spurious Wakeup)
 ```
 
-> [!IMPORTANT]
-> **锁交接（Lock Handover）原则**：  
-> 必须先持有目标进程本身的 `proc->lock`，然后才能释放外层的 `pipe->lock`。这一步保证了写进程在 `wakeup` 时如果看到了 `pipe->lock` 已释放，读进程必然已经完成了等待通道（wait_channel）的注册，避免唤醒事件发生在等待状态登记之前。
+!!! note
+    **锁交接（Lock Handover）原则**：
+    必须先持有目标进程本身的 `proc->lock`，然后才能释放外层的 `pipe->lock`。这一步保证了写进程在 `wakeup` 时如果看到了 `pipe->lock` 已释放，读进程必然已经完成了等待通道（wait_channel）的注册，避免唤醒事件发生在等待状态登记之前。
+
 
 ---
 

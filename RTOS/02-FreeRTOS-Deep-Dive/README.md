@@ -56,3 +56,9 @@ graph TD
    - `xxxFromISR()` 语义设计初衷与 `pxHigherPriorityTaskWoken`
    - `configMAX_SYSCALL_INTERRUPT_PRIORITY` 的硬件中断优先级配置铁律
    - 常见现场死机原因：优先级反向配置、中断临界区内死等、栈溢出排查
+
+7. [任务通知、事件组与软件定时器](07-task-notifications-event-groups-timers.md)
+   - 任务通知：直写 TCB 的零对象开销 IPC、五种动作与索引变体
+   - 事件组：位图等待语义与 `xEventGroupSync` 多方集合点
+   - 软件定时器：守护任务 + 命令队列架构与回调铁律
+   - Tickless Idle：停摆节拍、深睡决策链与唤醒后补偿

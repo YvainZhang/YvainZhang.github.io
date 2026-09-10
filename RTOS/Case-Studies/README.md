@@ -13,7 +13,7 @@ graph TD
 ## 案例目录
 
 1. [火星探路者优先级反转与死锁实战](01-priority-inversion-mars-pathfinder-case.md)
-   - 1997 年火星探路者（Mars Pathfinder）复位故障分析
+   - 1997 年 NASA 火星探路者（Mars Pathfinder）死机故障真实技术复现
    - 互斥锁缺少优先级继承引发系统级看门狗超时的链路推演
    - 优先级继承（PIP）与天花板协议（PCP）的应用
 

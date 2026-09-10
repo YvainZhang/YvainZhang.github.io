@@ -41,11 +41,11 @@ sequenceDiagram
 在操作系统内核中，定时器的重填存在两种截然不同的设计策略。RVKernel 采用了标准操作系统的绝对截止时间推进设计（源码见 [`kernel.c`](rvkernel/kernel.c) 中的 `timer_handle_irq()`）：
 
 ```c
-// kernel.c: 时钟中断处理
+// kernel.c 真实源码: 时钟中断处理
 static void timer_handle_irq(void) {
     struct cpu *cpu = mycpu();
     uint64_t now = timer_now();
-    
+
     // 【核心设计】从上一次目标截止时间递增，并跳过已过期的节拍
     do {
         cpu->next_timer += TIMER_INTERVAL;
@@ -70,10 +70,10 @@ static void timer_handle_irq(void) {
 
 ## 4. 用户态抢占判定（Preemption Gate）
 
-在 本地 [`kernel.c`](rvkernel/kernel.c) 的 `handle_trap()` 中，内核通过硬件状态寄存器 `sstatus` 判定抢占时机：
+在 本地 [`kernel.c`](rvkernel/kernel.c) 的 `handle_trap()` 中，内核通过硬件状态寄存器 `sstatus` 严密判定抢占时机：
 
 ```c
-// kernel.c: handle_trap() 中断派发
+// kernel.c 真实源码: handle_trap() 中断派发
 if (f->scause & SCAUSE_INTERRUPT) {
     if (cause == IRQ_S_TIMER) {
         timer_handle_irq();
@@ -136,7 +136,7 @@ switch_context:
     lw s11, 48(sp)
     addi sp, sp, 64
 
-    # 5. 返回指令: 此时 ra 已被替换为新任务的历史执行点，恢复执行
+    # 5. 返回指令: 此时 ra 已被替换为新任务的历史执行点，实现丝滑跳转!
     ret
 ```
 

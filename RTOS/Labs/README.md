@@ -16,14 +16,14 @@ flowchart TD
 
 ---
 
-[查看 RVKernel 项目介绍、完整教程与实现边界](../Projects/rvkernel.md)。该项目用于内核机制实验，尚无硬实时保证。
+[查看 RVKernel 项目介绍与实现限制](../Projects/rvkernel.md)。实验用于理解内核机制，尚无硬实时保证。
 
 ## 实验代码来源与环境准备
 
-RVKernel 基于 [Operating System in 1,000 Lines](https://operating-system-in-1000-lines.vercel.app/en/)（由 Seiya Nuta 编写）的代码，增加了四项功能：**PLIC 设备中断、SBI TIME 用户态抢占、具名管道 IPC、以及 1~4 核 SMP 与 IPI 协同**。
+RVKernel 基于开源教学项目 [Operating System in 1,000 Lines](https://operating-system-in-1000-lines.vercel.app/en/)（由 Seiya Nuta 编写）的代码，增加了四项功能：**PLIC 设备中断、SBI TIME 用户态抢占、具名管道 IPC、以及 1~4 核 SMP 与 IPI 协同**。
 
 * **公开源码仓库**：[GitHub - YvainZhang/1000-lines-os-practice](https://github.com/YvainZhang/1000-lines-os-practice)
-* **实验源码目录**：`RTOS/Labs/rvkernel/`（内含完整可编译运行源码，无需外部克隆）
+* **本知识库自包含目录**：`RTOS/Labs/rvkernel/`（内含完整可编译运行源码，无需外部克隆）
 
 ### 环境依赖（macOS / Linux）
 
@@ -37,7 +37,7 @@ brew install llvm qemu
 
 ### 两种执行与验证方式
 
-#### 方式 A：运行本地实验源码
+#### 方式 A：直接运行本知识库内置的自包含工程（推荐）
 ```bash
 # 进入知识库内置的实验目录
 cd RTOS/Labs/rvkernel

@@ -18,6 +18,7 @@ theme:
   language: zh
   custom_dir: overrides
   features:
+    - navigation.sections
     - navigation.top
     - navigation.indexes
     - search.highlight
@@ -35,6 +36,8 @@ theme:
         name: 切换至浅色模式
 extra_css:
   - stylesheets/extra.css
+hooks:
+  - overrides/mermaid_source.py
 plugins:
   - search:
       lang: zh
@@ -54,7 +57,7 @@ markdown_extensions:
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
-          class: mermaid
+          class: rtos-mermaid
           format: !!python/name:mermaid2.fence_mermaid_custom
 extra_javascript:
   - javascripts/vendor/mermaid-10.4.0.min.js
@@ -64,7 +67,7 @@ extra_javascript:
 nav:
   - 首页: README.md
   - 项目实践:
-      - RVKernel Lab · 千行 OS 扩展: Projects/rvkernel.md
+      - RVKernel Lab: Projects/rvkernel.md
   - 总览与路线: 00-Overview/README.md
   - 01 RTOS 通用核心机制:
       - 模块概览: 01-RTOS-Fundamentals/README.md
@@ -81,6 +84,7 @@ nav:
       - Queue 队列与互斥量继承: 02-FreeRTOS-Deep-Dive/04-queue-internals-semaphore-mutex.md
       - 内存模型 heap_1 到 heap_5: 02-FreeRTOS-Deep-Dive/05-heap-memory-models-comparison.md
       - 中断安全规范与工程踩坑: 02-FreeRTOS-Deep-Dive/06-freertos-isr-safety-pitfalls.md
+      - 任务通知、事件组与软件定时器: 02-FreeRTOS-Deep-Dive/07-task-notifications-event-groups-timers.md
   - 03 Zephyr 架构与驱动:
       - 模块概览: 03-Zephyr-Deep-Dive/README.md
       - 现代化演进与微内核谱系: 03-Zephyr-Deep-Dive/01-zephyr-architecture-evolution.md
@@ -96,7 +100,7 @@ nav:
       - 调度机制与实时确定性: 04-Comparative-Study/02-scheduler-determinism-benchmark.md
       - 硬件抽象与驱动可移植性: 04-Comparative-Study/03-hardware-abstraction-portability.md
       - 内存保护与安全合规: 04-Comparative-Study/04-security-memory-isolation.md
-      - 资源 Footprint 极值对比: 04-Comparative-Study/05-footprint-resource-tradeoffs.md
+      - 资源占用与测量: 04-Comparative-Study/05-footprint-resource-tradeoffs.md
       - 场景选型决策树与选型矩阵: 04-Comparative-Study/06-selection-decision-tree.md
   - 05 实战案例与现场排查:
       - 模块概览: Case-Studies/README.md
@@ -110,5 +114,4 @@ nav:
       - Lab 03 环形缓冲与具名管道 IPC: Labs/lab03-rv32-bounded-pipe-ipc.md
       - Lab 04 多核 SMP、自旋锁与 IPI: Labs/lab04-rv32-smp-multicore-ipi.md
   - 术语与缩写速查: Glossary/README.md
-
   - 文档站使用说明: docs-site.md

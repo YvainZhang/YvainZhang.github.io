@@ -37,7 +37,7 @@ sequenceDiagram
 
 在 SMP 架构中，单纯“关本地中断”无法阻挡另一个 CPU 核心并发修改同一片共享内存；单纯“自旋锁”如果被本地中断打断并尝试重入同一把锁，会导致单核自锁死机。
 
-因此，**获取自旋锁必须同时关闭当前核心的本地中断，并维护嵌套深度计数（`noff`）**：
+因此，**获取自旋锁必须同时关闭当前核心的本地中断，并严密维护嵌套深度计数（`noff`）**：
 
 ```c
 struct spinlock {
@@ -46,7 +46,7 @@ struct spinlock {
 
 void acquire(struct spinlock *lk) {
     push_off(); // 关本地中断，并使当前 CPU 的 noff 计数递增
-    
+
     // 基于硬件原子指令 __sync_lock_test_and_set (RISC-V amoswap) 忙等待
     while (__sync_lock_test_and_set(&lk->locked, 1) != 0) {
         __asm__ __volatile__("pause"); // 降低 CPU 流水线功耗
@@ -71,7 +71,7 @@ void release(struct spinlock *lk) {
 flowchart LR
     C0["Core 0: 唤醒处于阻塞态的进程"] --> Update["将其置为 PROC_RUNNABLE"]
     Update --> Check{"目标核心处于运行空闲态?"}
-    Check -->|是| SendIPI["调用 sbi_send_ipi(1 << target_hart)"]
+    Check -->|"是"| SendIPI["调用 sbi_send_ipi(1 << target_hart)"]
     SendIPI --> HW_IPI["硬件触发 Core 1 的 IRQ_S_SOFTWARE 中断!"]
     HW_IPI --> C1["Core 1: 立即跳出休眠，切入调度器执行新就绪进程!"]
 ```
@@ -99,4 +99,4 @@ flowchart LR
    ```bash
    python3 scripts/smoke.py --cpus 4
    ```
-   脚本将验证 4 核并发下的自测、管道吞吐与核间调度。
+   脚本将全自动验证 4 核并发下的自测、管道吞吐与核间调度。

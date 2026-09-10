@@ -64,7 +64,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC"
 .rtos-module-grid strong { font-size: .78rem; }
 .rtos-module-grid em { color: var(--md-default-fg-color--light); font: 600 .5rem/1 monospace; font-style: normal; }
 
-.rtos-route-grid, .rtos-practice-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
+.rtos-route-grid, .rtos-practice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
 .rtos-route-card, .rtos-practice-grid > a { display: block; min-height: 9.6rem; padding: 1.2rem; border: 1px solid rgba(14, 30, 45, .12); color: var(--md-default-fg-color); background: rgba(255,255,255,.45); transition: transform 160ms ease, background 160ms ease; }
 .rtos-route-card:hover, .rtos-practice-grid > a:hover { color: var(--md-default-fg-color); background: rgba(255,255,255,.8); transform: translateY(-.18rem); }
 .rtos-route-card > span, .rtos-practice-grid > a > span { color: var(--rtos-teal); font: 800 .48rem/1 monospace; letter-spacing: .1em; text-transform: uppercase; }

@@ -23,7 +23,7 @@ graph LR
    - 代码组织、构建系统（Make/CMake vs West）与学习曲线权衡
 
 2. [调度机制与实时确定性](02-scheduler-determinism-benchmark.md)
-   - 调度算法复杂度对比（双向链表/位图 CLZ vs 多队列/红黑树）
+   - 调度算法复杂度深度对比（双向链表/位图 CLZ vs 多队列/红黑树）
    - 中断延迟、上下文切换延迟与抖动（Jitter）实测指标量化
 
 3. [硬件抽象与驱动可移植性](03-hardware-abstraction-portability.md)
@@ -34,7 +34,7 @@ graph LR
    - 任务级内存隔离方案（FreeRTOS-MPU vs Zephyr Userspace/Memory Domains）
    - 车规与工控安全认证（SafeRTOS / IEC 61508 / ISO 26262 / PSA Certified）
 
-5. [资源 Footprint 极值对比](05-footprint-resource-tradeoffs.md)
+5. [资源占用与测量](05-footprint-resource-tradeoffs.md)
    - 最小化配置（Minimal Configuration）Flash 与 RAM 极值占用
    - 中等功能（带网络、文件系统、外设驱动）下的真实资源膨胀曲线
 

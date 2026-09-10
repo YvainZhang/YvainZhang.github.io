@@ -20,6 +20,7 @@ graph TD
             FR4["Queue / 互斥量底层"]
             FR5["heap_1 ~ heap_5 内存模型"]
             FR6["ISR 安全与工程陷阱"]
+            FR7["任务通知 / 事件组 / 软件定时器 / Tickless"]
         end
         subgraph Zephyr["03 Zephyr (全栈生态 OS)"]
             Z1["微内核演进与类 Linux 哲学"]
@@ -81,4 +82,3 @@ graph TD
 > 3. [SBI 定时器中断与用户态抢占](../Labs/lab02-rv32-timer-preemption-scheduler.md) →
 > 4. [环形缓冲与具名管道 IPC](../Labs/lab03-rv32-bounded-pipe-ipc.md) →
 > 5. [1~4 核 SMP 多核启动与 IPI](../Labs/lab04-rv32-smp-multicore-ipi.md)
-
