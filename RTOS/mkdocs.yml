@@ -18,7 +18,6 @@ theme:
   language: zh
   custom_dir: overrides
   features:
-    - navigation.sections
     - navigation.top
     - navigation.indexes
     - search.highlight
