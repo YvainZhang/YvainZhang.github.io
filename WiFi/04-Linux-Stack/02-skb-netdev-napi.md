@@ -67,7 +67,7 @@ Checksum/GSO/GRO 表示的状态也必须与驱动宣称的 offload 能力一致
 
 教学算例：posted=64，每个 poll 消费 32 个但只成功补回 24 个，持续 8 轮即可累计少 64 个 Buffer。CPU 看起来工作正常，Device 却因可用 RX Buffer 归零停收。需要 refill low watermark、失败退避和再次补充机制。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **NETDEV_TX_OK 是成功发射吗？** 不是，它主要表示驱动已处理/接管该 SKB，必须在有限时间内结束其生命周期。
 

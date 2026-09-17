@@ -56,6 +56,6 @@ B_min 假设 A/B 各从目标存储层读取一次、C 写一次。实际分块�
 
 每次改变一个主要变量：Tile、stage、layout、融合或并发。保存种子、配置、误差、原始报告和采集命令。运行时错误、未完成同步、正确性失败的样本记为失败，不参与吞吐平均。
 
-面试追问：算法强度高为何仍 memory-bound？Tensor Core 利用率和端到端收益为何不同？减少 launch 次数为何可能比加速单 kernel 更有效？融合减少写回，为何可能因寄存器压力反而变慢？
+关键追问：算法强度高为何仍 memory-bound？Tensor Core 利用率和端到端收益为何不同？减少 launch 次数为何可能比加速单 kernel 更有效？融合减少写回，为何可能因寄存器压力反而变慢？
 
 回答时分别指向业务关键路径、选定存储层的实际流量和资源约束。测量实践参见 [CUDA Best Practices Guide](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/)。[现有 GEMM 实验](../Labs/lab01-cuda-gemm-tuning/README.md) 是实卡练习入口，本页数值不代表该实验已取得的成绩。

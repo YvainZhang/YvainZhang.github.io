@@ -55,7 +55,7 @@ hide:
   <div class="wifi-practice-grid">
     <a href="Case-Studies/"><span>Case Studies</span><strong>四个跨模块案例</strong><p>建链、USB 吞吐、ADDBA 与休眠恢复问题的端到端推演。</p></a>
     <a href="Labs/"><span>Labs</span><strong>四个低门槛实验</strong><p>虚拟无线建链、管理帧抓取、吞吐基线与电源事件观测。</p></a>
-    <a href="00-Overview/02-interview-review-map/"><span>Review</span><strong>面试复习与正文索引</strong><p>从典型追问跳到实现、算例、异常与证据。</p></a>
+    <a href="00-Overview/02-interview-review-map/"><span>Review</span><strong>工程能力与正文索引</strong><p>从典型追问跳到实现、算例、异常与证据。</p></a>
     <a href="Glossary/"><span>Glossary</span><strong>术语与边界</strong><p>把协议缩写落回所属层次、状态和可观测证据。</p></a>
   </div>
 </section>

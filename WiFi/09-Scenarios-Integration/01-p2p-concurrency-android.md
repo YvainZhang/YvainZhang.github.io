@@ -59,7 +59,7 @@ HAL描述接口组合，Framework依据可用模式选择STA/AP/P2P等；Kernel 
 
 AOSP资料会随版本变化，适配时记录Android分支及HAL版本，不复制其他版本的属性名。参考 [AOSP STA/AP concurrency](https://source.android.com/docs/core/connect/wifi-sta-ap-concurrency) 与 [Wi-Fi HAL](https://source.android.com/docs/core/connect/wifi-hal)。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **Group formed为什么还不能传数据？** 安全、IP、路由、防火墙、并发信道和队列都可能尚未就绪。
 

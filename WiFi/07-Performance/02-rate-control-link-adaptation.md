@@ -69,7 +69,7 @@ Expected_goodput = L × P_delivered / E_time
 
 RSSI突降可作为快速退化信号，但高retry也可能来自碰撞；一味降MCS增加占空时间，反而让拥塞更严重。可结合CCA、碰撞保护试验、EVM和peer结果交叉判断。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **最优MCS由RSSI唯一决定吗？** 不，干扰、channel matrix、payload/聚合和接收机差异都影响PER。
 

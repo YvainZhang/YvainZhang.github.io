@@ -78,7 +78,7 @@ Beamforming 依赖 sounding、channel measurement、feedback/compression 和 ste
 | 仅高 MCS 失败 | EVM/phase noise、LLR/FEC margin |
 | 仅 MU/TB 失败 | RU/user parsing、多用户同步/功率 |
 
-## 面试追问
+## 工程追问
 
 - 为什么 RSSI 很高仍可能 PER 很差？
 - CFO、SFO、phase noise 分别怎样影响 OFDM？

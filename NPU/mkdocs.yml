@@ -57,7 +57,7 @@ extra_javascript:
 nav:
   - 首页: README.md
   - 总览与路线: 00-Overview/README.md
-  - 知识体系与面试复习: 00-Overview/01-review-and-evidence-map.md
+  - 知识体系与掌握标准: 00-Overview/01-review-and-evidence-map.md
   - 01 NPU 总体架构:
       - 模块概览: 01-NPU-Architecture/README.md
       - DSA 专用架构设计哲学: 01-NPU-Architecture/01-dsa-fundamentals.md

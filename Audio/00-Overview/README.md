@@ -1,6 +1,6 @@
 # 00 总览与学习路线（原厂视角）
 
-从 [知识体系、掌握标准与面试追问](01-review-and-evidence-map.md) 开始；优先用 [PCM 端到端案例](../Case-Studies/06-pcm-clock-buffer-evidence.md) 练习算时钟、缓冲和供数裕量，再进入专业模块。
+从 [知识体系、掌握标准与工程追问](01-review-and-evidence-map.md) 开始；优先用 [PCM 端到端案例](../Case-Studies/06-pcm-clock-buffer-evidence.md) 练习算时钟、缓冲和供数裕量，再进入专业模块。
 
 ## 原厂研发分工与全局视角
 

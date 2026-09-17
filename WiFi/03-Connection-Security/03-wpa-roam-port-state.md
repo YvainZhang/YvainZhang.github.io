@@ -88,7 +88,7 @@ Port 未授权时通常只允许必要认证流量，例如 EAPOL。Driver/Firmw
 
 保存 BSS capability、Auth/Assoc status、EAPOL message/replay counter（不含密钥）、Key metadata、Port state、Peer generation、TX/RX reason、roam commit 时间和空口抓包。所有来源使用统一时间轴。
 
-## 面试追问
+## 工程追问
 
 - Association success、4-way complete、Port authorized 有什么区别？
 - M3 重传为什么可能成为安全问题？

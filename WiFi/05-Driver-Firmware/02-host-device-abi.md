@@ -122,7 +122,7 @@ Host 指针不能进入 Device 可解释字段。PCIe 的 DMA address、USB 的 
 
 版本兼容应覆盖 old Host/new FW 与 new Host/old FW。新增可选 TLV 能否跳过取决于协议定义；影响语义的 mandatory 功能不应静默降级。主版本不兼容、长度超限、feature bitmap 与实际返回冲突要给出具体失败原因。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **为什么 packed struct 仍不足？** 只解决部分布局，不解决字节序、字段语义、位域顺序、对齐访问、版本与生命周期。
 

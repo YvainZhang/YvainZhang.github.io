@@ -73,7 +73,7 @@ mac80211 有自己的 TX queue 调度和 driver TXQ 交互。硬件资源不足�
 
 支持 STA 和 AP 不等于同时支持 STA+AP；支持两个接口也不代表两个信道。能力包含 interface combinations、最大 channel context、带宽/NSS、cipher、scan/roam/offload 限制。让用户态依据真实能力选择路径比操作失败后补救更可靠。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **cfg80211 会搬运每个数据包吗？** 它主要提供无线配置/管理框架；数据包通过对应 netdev/mac80211 数据路径。
 

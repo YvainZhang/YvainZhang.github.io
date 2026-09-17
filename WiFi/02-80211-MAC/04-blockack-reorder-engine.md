@@ -91,7 +91,7 @@ Reorder timeout 的目的是避免某个洞长期阻塞后续包；不是把整�
 
 测试重点包括：timeout 与最后一个缺包同时到达、DELBA 后 timer 触发、Peer ID 被新连接复用、BAR 跨回绕、窗口满时内存不足。每次 Buffer 必须恰好上送或丢弃一次。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **BA 中有洞一定是空口丢包吗？** 还可能是未发送、接收过滤、抓包遗漏或 bitmap/session 解析错误，需要逐 MPDU attempt 与接收记录。
 

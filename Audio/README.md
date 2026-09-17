@@ -95,7 +95,7 @@ hide:
 
 ## 文档约定与原厂工程“七问”
 
-先阅读 [知识体系与面试复习](00-Overview/01-review-and-evidence-map.md)，再用 [PCM、时钟与缓冲证据链](Case-Studies/06-pcm-clock-buffer-evidence.md) 串起正文。文档计数包含索引和实验说明，不表示每篇都已完成深度审计；上方为阅读路线，Linux 与 RTOS 是不同实现路径，不必串行经过。
+先阅读 [知识体系与掌握标准](00-Overview/01-review-and-evidence-map.md)，再用 [PCM、时钟与缓冲证据链](Case-Studies/06-pcm-clock-buffer-evidence.md) 串起正文。文档计数包含索引和实验说明，不表示每篇都已完成深度审计；上方为阅读路线，Linux 与 RTOS 是不同实现路径，不必串行经过。
 
 以下 7 个问题是持续完善标准，不是所有现有笔记都已经完成的验证承诺：
 

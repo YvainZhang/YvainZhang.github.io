@@ -72,7 +72,7 @@ Code coverage表示结构执行；functional coverage表示目标场景命中；
 
 随机种子、build ID、硬件revision和配置应可回放。一次失败重跑成功仍要记录flaky原因；不能只保留最后一次通过结果。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **为什么优先数字loopback？** 隔离模拟和对端因素，验证已有数字路径后再扩大测试范围。
 

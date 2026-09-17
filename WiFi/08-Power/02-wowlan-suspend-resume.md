@@ -71,7 +71,7 @@ Pattern的offset究竟以802.11、Ethernet还是IP开头，匹配在解密前还
 
 ARP/NS offload还要随IP变更更新；GTK rekey需要安全地同步新状态。不同Firmware的能力不同，不应假定所有offload都必然支持或同时可用。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **第一条命令能通、数据不通看哪里？** 查数据RX posting、queue/Credit、Key/BA与AP的PS缓存状态，控制通道可用不能证明它们正常。
 

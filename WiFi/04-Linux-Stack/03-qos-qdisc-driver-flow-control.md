@@ -84,7 +84,7 @@ completed = napi_pending + delivered + dropped
 
 配合 tracepoint/perf 观察 `net_dev_queue`、`net_dev_xmit`、softirq、IRQ affinity 和热点函数。先建立分层计数差分，再开启单包 Trace。
 
-## 面试追问
+## 工程追问
 
 - `NETDEV_TX_BUSY` 为什么不适合做正常流控？
 - stop/wake 怎样发生 lost wakeup？

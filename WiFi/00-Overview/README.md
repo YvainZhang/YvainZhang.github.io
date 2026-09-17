@@ -79,7 +79,7 @@ flowchart LR
 继续阅读：
 
 - [Wi-Fi 芯片知识体系与掌握标准](01-knowledge-system.md)
-- [面试复习图谱：从问题追到芯片实现](02-interview-review-map.md)
+- [工程能力图谱：从问题追到芯片实现](02-interview-review-map.md)
 - [资料整合、正文索引与参考边界](03-source-and-topic-map.md)
 
 ## 边界

@@ -124,7 +124,7 @@ Ring slot 可能在 Device 取走 descriptor 时归还；Firmware buffer credit 
 
 验收要同时证明无越界、无重复回收、映射/引用最终释放、可解释的终止状态以及恢复后继续发收。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **coherent 为什么仍需要 dma_wmb？** 缓存一致性保证可见内容，不自动保证 Device 观察字段与 owner 的先后关系。
 

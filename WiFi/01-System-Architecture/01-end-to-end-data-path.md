@@ -89,7 +89,7 @@ Host 抓包通常看 Ethernet/IP，monitor 看 802.11，仪表看波形；GRO/GS
 
 因此 Driver 能承诺资源最终回收和可解释的状态，不能承诺应用 exactly-once。需要可靠事务的业务仍须有上层确认和去重。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **为什么不能用 SKB 地址作为永久 ID？** 内存地址可复用，且 Device 不理解 Host 虚拟地址；需要 cookie、代际和显式映射。
 

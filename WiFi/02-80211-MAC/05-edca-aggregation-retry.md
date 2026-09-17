@@ -91,7 +91,7 @@ Rate Control 应以实际 attempt/success 和 airtime 更新，不能把“总�
 | 吞吐呈周期锯齿 | Rate probing、PS/scan、queue stop/wake 或 BA teardown |
 | AP 可见数据但无 BA 推进 | BA policy/SSN/bitmap/session 不一致 |
 
-## 面试追问
+## 工程追问
 
 - 为什么提高 A-MPDU 上限不一定提升吞吐？
 - BA bit 为 0 与完全没收到 BA 的处理有何不同？

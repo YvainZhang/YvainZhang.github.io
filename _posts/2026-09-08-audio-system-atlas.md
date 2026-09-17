@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Audio System Atlas：从芯片接口到实时语音的系统知识地图"
-subtitle: "把音频知识组织成可推导、可调试、可复习的工程链路"
+subtitle: "把音频知识组织成可推导、可调试、可验证的工程链路"
 date: 2026-09-08
 author: Yvain Zhang
 header-img: "img/post-bg-digital-native.jpg"
@@ -22,9 +22,9 @@ tags:
 
 ## 三条阅读路线
 
-- **复习主线**：从[总览]({{ '/tech/audio/00-Overview/' | relative_url }})建立信号链，再按接口→时钟→缓冲→算法→操作系统阅读。每层都区分 sample、frame、slot 和 byte。
+- **阅读主线**：从[总览]({{ '/tech/audio/00-Overview/' | relative_url }})建立信号链，再按接口→时钟→缓冲→算法→操作系统阅读。每层都区分 sample、frame、slot 和 byte。
 - **调试主线**：从 [PCM、时钟与缓冲证据链]({{ '/tech/audio/Case-Studies/06-pcm-clock-buffer-evidence/' | relative_url }})入手，先算流量与期限，再对齐 XRUN、调度和硬件状态。
-- **面试主线**：先看[复习与证据地图]({{ '/tech/audio/00-Overview/01-review-and-evidence-map/' | relative_url }})，选择熟悉的链路，讲清假设、取舍、失败条件和验证方法，而不是背“通用最佳值”。
+- **验证主线**：先看[掌握标准与证据地图]({{ '/tech/audio/00-Overview/01-review-and-evidence-map/' | relative_url }})，选择熟悉的链路，讲清假设、取舍、失败条件和验证方法，而不是背“通用最佳值”。
 
 ## 值得深入的几个问题
 

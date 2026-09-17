@@ -18,11 +18,11 @@
 | 性能指标 | [预算](../07-Performance/03-throughput-budget-model.md)、[Rate Control](../07-Performance/02-rate-control-link-adaptation.md) | airtime、Goodput、CPU/PPS、重试与统计口径 |
 | 验证/Bring-up | [模型到Silicon](../12-Validation-Productization/01-validation-bringup.md) | bit-true、定点、UVM、FPGA、分层loopback |
 | 认证/量产 | [测试与追溯](../12-Validation-Productization/02-certification-production.md) | DFS状态、限值版本、校准、guard band、工站相关性 |
-| 现场问题与学习路线 | [证据链](../10-Debug-Recovery/01-evidence-workflow.md)、[复习图谱](02-interview-review-map.md) | 因果、时钟误差、单包映射、回归 |
+| 现场问题与学习路线 | [证据链](../10-Debug-Recovery/01-evidence-workflow.md)、[能力图谱](02-interview-review-map.md) | 因果、时钟误差、单包映射、回归 |
 
 ## 从 Host–Device TRX 材料到实现
 
-| 原始章节范围 | 整合位置 | 复习时的具体任务 |
+| 原始章节范围 | 整合位置 | 阅读时的具体任务 |
 |---|---|---|
 | 1–3：分层、术语、TX | [端到端数据包](../01-System-Architecture/01-end-to-end-data-path.md) | 算每层长度，标记每次所有权转移 |
 | 4、6–7：HE插入点与EDCA/TB对比 | [HE响应](../02-80211-MAC/03-he-ofdma-trigger-path.md) | 解释谁选择RU，谁执行微秒级响应 |
@@ -35,7 +35,7 @@
 | 18：HE特性 | [OFDMA](../02-80211-MAC/03-he-ofdma-trigger-path.md)、[基带](../11-PHY-RF-Calibration/03-sync-channel-coding-mimo.md) | 连接RU、Vector、编码与接收失败 |
 | 20：速率控制 | [链路自适应](../07-Performance/02-rate-control-link-adaptation.md) | 用概率与airtime比较候选rate |
 | 21：功耗与调度 | [PS/TWT](../08-Power/01-power-state-machine.md)、[WoWLAN](../08-Power/02-wowlan-suspend-resume.md) | 算节能临界点，追踪唤醒事务 |
-| 22–23：指标与记忆框架 | [复习图谱](02-interview-review-map.md)、[掌握标准](01-knowledge-system.md) | 用证据回答连续追问 |
+| 22–23：指标与记忆框架 | [能力图谱](02-interview-review-map.md)、[掌握标准](01-knowledge-system.md) | 用证据回答连续追问 |
 | 24–25：并发与整合 | [并发资源](../09-Scenarios-Integration/02-concurrency-coexistence.md) | 推导dwell和共享资源上限 |
 
 ## 一手资料与版本

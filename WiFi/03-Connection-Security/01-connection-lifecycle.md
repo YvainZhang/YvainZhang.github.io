@@ -117,7 +117,7 @@ Cancel、interface delete 和 Firmware scan done 交错时，一个请求只应�
 
 IPv4 走 DHCP/ARP，IPv6 可能走 RA/SLAAC/ND 或 DHCPv6，不能要求所有连接都出现 DORA。对 UDP DNS、网关和业务地址分层测试；captive portal 策略可能改变 UI，却未改变 802.11 关联。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **扫描不到与扫描结果被丢弃如何区分？** 比较 PHY/MAC 接收、FW BSS 上报、cfg80211 BSS cache 和候选过滤，定位第一处缺失。
 

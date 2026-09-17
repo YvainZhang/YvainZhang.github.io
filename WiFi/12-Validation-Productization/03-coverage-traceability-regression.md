@@ -96,7 +96,7 @@ ATE/Factory Test 数据不只用于 pass/fail，还应按 wafer/lot/board/calibr
 - RF/法规结果记录 reference plane、仪表、线损、温压与校准版本；
 - blocker defect 有明确 disposition，不以“低概率”代替风险评估。
 
-## 面试追问
+## 工程追问
 
 - code coverage 100% 为什么仍可能漏掉严重 Bug？
 - 怎样为 Trigger Response 写可验证需求？

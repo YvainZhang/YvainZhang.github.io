@@ -90,7 +90,7 @@ hide:
 
 ## 文档约定与原厂工程“七问”
 
-先从 [知识体系与面试复习](00-Overview/01-review-and-evidence-map.md) 检查掌握标准，再用 [量化 GEMM 映射案例](Case-Studies/04-quantized-gemm-contract.md) 串联章节。文档计数包含首页、模块索引与实验说明，不代表全部都是独立深度文章。
+先从 [知识体系与掌握标准](00-Overview/01-review-and-evidence-map.md) 检查掌握程度，再用 [量化 GEMM 映射案例](Case-Studies/04-quantized-gemm-contract.md) 串联章节。文档计数包含首页、模块索引与实验说明，不代表全部都是独立深度文章。
 
 本知识库以以下 7 个问题作为持续完善标准，不代表每篇现有笔记都已经完成全部工程验证：
 

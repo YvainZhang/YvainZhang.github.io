@@ -79,7 +79,7 @@ TSF 提供 BSS 时间基准，TBTT 是计划 Beacon 时间。实际 Beacon 仍�
 
 AP 侧测 planned TBTT→actual TX 的偏差；STA 侧测预唤醒→接收窗口→Beacon decode。把所有晚发都判成 Firmware 调度失败，会忽略正常介质竞争。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **Host 不在 SIFS 路径里，那它负责什么？** 预先配置响应规则、上下文与 Buffer，并消费结果、处理慢速策略和错误恢复。
 

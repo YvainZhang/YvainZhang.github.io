@@ -76,7 +76,7 @@ terminal claim 只能成功一次。Timeout 后迟到响应即使 generation 没
 
 如果某些空口结果未知，单独记录 unknown outcome；资源回收成功和业务投递成功分别统计。验证既要查内存/引用，也要确认新会话可发可收、Control queue 不再阻塞。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **Timeout 后还要保留什么？** transaction 终止身份、晚到判定所需信息及尚被总线/Device 引用的内存，保留范围由 ABI 定义。
 

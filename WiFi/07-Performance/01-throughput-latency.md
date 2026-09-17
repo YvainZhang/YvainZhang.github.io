@@ -73,7 +73,7 @@ Byte counter 跨层包含不同 header、padding 和 retry，需归一化。MAC 
 
 如果 Device queue 持续增长且 USB inflight归零，Host refill值得怀疑；如果 HIF持续工作、NAPI积压而 CPU热点在复制，则深度增加可能只延后崩溃，需减少消费成本。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **平均吞吐提高就算优化吗？** 还要检查 p99、内存、功耗、弱信号与公平性，避免把成本转移到别的维度。
 

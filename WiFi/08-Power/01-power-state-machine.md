@@ -69,7 +69,7 @@ break_even t = 100 μJ / 190 mW ≈ 0.526 ms
 
 `Pavg=ΣPstate×duty + Etransition×transition_rate`。只降低Sleep电流但增加false wake次数，平均功耗可能变差。统计协议唤醒、主机唤醒、系统业务唤醒分别的占比。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **TWT开启就一定省电吗？** 不，真实驻留、突发业务、窗口错过与唤醒开销决定收益。
 

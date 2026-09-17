@@ -61,7 +61,7 @@ extra_javascript:
 nav:
   - 首页: README.md
   - 总览与路线: 00-Overview/README.md
-  - 知识体系与面试复习: 00-Overview/01-review-and-evidence-map.md
+  - 知识体系与掌握标准: 00-Overview/01-review-and-evidence-map.md
   - 01 音频子系统总体架构:
       - 模块概览: 01-Audio-Architecture/README.md
       - 音频子系统定义与演进: 01-Audio-Architecture/01-audio-subsystem-fundamentals.md

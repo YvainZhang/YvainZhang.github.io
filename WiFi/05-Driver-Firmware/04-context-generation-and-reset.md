@@ -100,7 +100,7 @@ freeze new entry
 
 建议维护 `stale_event`、`generation_mismatch`、`double_completion`、`orphan_packet`、`context_busy_on_delete`、`reset_drain_timeout` 六类计数。
 
-## 面试追问
+## 工程追问
 
 - ID 已经唯一，为什么还要 generation？
 - Firmware Reset 后哪些状态可以恢复，哪些必须重新协商？

@@ -1,6 +1,6 @@
 # 00 总览与学习路线（原厂视角）
 
-先阅读 [掌握标准与面试复习图谱](01-review-and-evidence-map.md)，用可验收的能力组织以下路线；完整推演见 [GEMM 性能证据链](../Case-Studies/04-gemm-evidence-path.md)。
+先阅读 [掌握标准与证据图谱](01-review-and-evidence-map.md)，用可验收的能力组织以下路线；完整推演见 [GEMM 性能证据链](../Case-Studies/04-gemm-evidence-path.md)。
 
 ## 原厂研发分工与全局视角
 

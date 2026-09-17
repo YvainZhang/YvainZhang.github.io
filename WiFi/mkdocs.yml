@@ -69,9 +69,9 @@ exclude_docs: |
 nav:
   - 首页: README.md
   - 总览与阅读路线: 00-Overview/README.md
-  - 知识体系与复习:
+  - 知识体系与能力图谱:
       - 掌握标准与覆盖矩阵: 00-Overview/01-knowledge-system.md
-      - 面试复习图谱: 00-Overview/02-interview-review-map.md
+      - 工程能力图谱: 00-Overview/02-interview-review-map.md
       - 资料整合与正文索引: 00-Overview/03-source-and-topic-map.md
   - 01 Wi-Fi 系统架构:
       - 模块概览: 01-System-Architecture/README.md

@@ -83,7 +83,7 @@ HE常用有效symbol时长12.8 μs，对应子载波间隔78.125 kHz；加GI后�
 
 参考：[MathWorks Packet Recovery](https://www.mathworks.com/help/wlan/gs/packet-recovery.html)。仿真调用演示算法阶段，不等同于真实芯片处理延迟或硬件模块划分。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **提高FFT点数必然增加数据率吗？** 不，采样率、子载波间隔、GI、有效tone和编码共同决定。
 

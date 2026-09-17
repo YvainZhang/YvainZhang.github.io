@@ -84,7 +84,7 @@ BSS Color 帮助区分 BSS，OBSS_PD 在满足条件时改变对 inter-BSS 信�
 
 Packet Extension 为符合条件的接收处理提供额外时间，其取值由协议参数决定；不是 MAC payload，也不能随意当作 SIFS 延长。Preamble puncturing 的具体允许组合应按 HE/EHT 格式逐项核对。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **为什么 RU 变小不一定让总吞吐下降？** 多个短业务共享一次 PPDU 可摊薄竞争与前导码，但低缓存用户、padding 和调度开销也会抵消收益。
 

@@ -97,7 +97,7 @@ ALLOCATED → QUEUED → SENT → ACKED/COMPLETED
 
 在 Command 发送后、Event 到达前、DMA doorbell 后、completion 前、Key 写一半和 suspend 切换点注入延迟/丢失/重复。每个点验证：无 use-after-free、无 double completion、无旧状态复活、队列最终可恢复、统计能解释丢弃原因。
 
-## 面试追问
+## 工程追问
 
 - generation、reference count 和 transaction ID 分别解决什么问题？
 - 为什么 bus completion 与 air completion 不能共用一个状态？

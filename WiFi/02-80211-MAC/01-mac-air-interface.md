@@ -64,7 +64,7 @@ A-MSDU 的多个子帧放在一个 MPDU 中，共享外层 FCS/Sequence/PN；一
 
 接收端依据收到的 MPDU Sequence 和本地窗口 reorder；发送端依据 BA 决定重传。不能把 BA 说成接收端的排序输入。BA 成功还不代表 crypto、replay 或上层交付成功。
 
-## 复习追问与答案
+## 工程追问与答案
 
 **为什么接入优先级不是固定带宽保证？** AIFS/CW 改变获得机会的概率；碰撞、其他 BSS、低速 airtime 和自身队列仍会影响结果。
 
