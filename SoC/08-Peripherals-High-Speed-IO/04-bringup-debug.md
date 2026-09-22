@@ -28,9 +28,9 @@ flowchart TD
 flowchart TD
     Fault["外设寄存器访问异常或无响应"] --> Check_Type{"异常表现类型?"}
 
-    Check_Type -->|CPU 读写时触发 Synchronous External Abort| Abort_Cause["1. 总线级错误 (DECERR / SLVERR)\n• 模块电源域 (Power Domain) 未上电\n• 模块总线时钟 (PCLK / ACLK) 处于门控关闭状态\n• 访问地址超出总线解码器的地址空间窗口 (Address Decode Error)"]
+    Check_Type -->|"CPU 读写时触发 Synchronous External Abort"| Abort_Cause["1. 总线级错误 (DECERR / SLVERR)\n• 模块电源域 (Power Domain) 未上电\n• 模块总线时钟 (PCLK / ACLK) 处于门控关闭状态\n• 访问地址超出总线解码器的地址空间窗口 (Address Decode Error)"]
 
-    Check_Type -->|寄存器可读写但写入后值不变 (维持复位值)| Reset_Cause["2. 内部逻辑处于复位或时钟缺失\n• 模块功能工作时钟 (Func Clock / Baud Clock) 未开启\n• 模块内部复位信号未由软件解冻 (Reset Asserted)\n• 寄存器字段属于只读 (RO) 或特定自清除 (Self-clearing) 属性"]
+    Check_Type -->|"寄存器可读写但写入后值不变 (维持复位值)"| Reset_Cause["2. 内部逻辑处于复位或时钟缺失\n• 模块功能工作时钟 (Func Clock / Baud Clock) 未开启\n• 模块内部复位信号未由软件解冻 (Reset Asserted)\n• 寄存器字段属于只读 (RO) 或特定自清除 (Self-clearing) 属性"]
 
     Check_Type -->|寄存器正常工作但外部引脚无信号波形| Pin_Cause["3. 引脚复用与电气配置错误 (IOMUX / Pad)\n• 引脚复用控制寄存器 (Pinmux) 未切换至该外设功能\n• Pad 输出驱动使能 (OE) 未置位\n• 外部上拉电阻缺失或引脚被其他芯片死死拉低"]
 ```

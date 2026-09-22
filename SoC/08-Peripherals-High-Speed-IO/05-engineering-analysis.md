@@ -36,9 +36,9 @@ sequenceDiagram
 flowchart TD
     SPI_Fault["SPI 读数据返回全 0xFF 或全 0x00"] --> Branch{"全 0xFF 还是全 0x00?"}
 
-    Branch -->|全 0xFF (高电平)| High_Side["1. MISO 引脚被弱上拉且从机处于高阻态\n• CS 片选引脚未真正拉低 (从机未被激活)\n• SPI 模式错配 (如设备要求 Mode 3, 主机配置为 Mode 0)\n• 发送的 Read JEDEC ID 命令码错误 (如误发 0x00 而非 0x9F)"]
+    Branch -->|"全 0xFF (高电平)"| High_Side["1. MISO 引脚被弱上拉且从机处于高阻态\n• CS 片选引脚未真正拉低 (从机未被激活)\n• SPI 模式错配 (如设备要求 Mode 3, 主机配置为 Mode 0)\n• 发送的 Read JEDEC ID 命令码错误 (如误发 0x00 而非 0x9F)"]
 
-    Branch -->|全 0x00 (低电平)| Low_Side["2. MISO 引脚被拉死或时钟缺失\n• SCLK 时钟引脚无输出 (Pinmux 未配置或分频器为 0)\n• 从机供电不足 (VCC 跌落使从机陷入复位)\n• Dummy Cycles 数量配置错误 (读高速 Dual/Quad 模式数据被提早采样)"]
+    Branch -->|"全 0x00 (低电平)"| Low_Side["2. MISO 引脚被拉死或时钟缺失\n• SCLK 时钟引脚无输出 (Pinmux 未配置或分频器为 0)\n• 从机供电不足 (VCC 跌落使从机陷入复位)\n• Dummy Cycles 数量配置错误 (读高速 Dual/Quad 模式数据被提早采样)"]
 ```
 
 ### 读 JEDEC ID（`0x9F`）最小系统实验法则
