@@ -2,7 +2,7 @@
 layout: post
 title: "终端 Autonomous Coding Agent 深度解构：Claude Code、Aider 与 MCP 原理实战"
 subtitle: "从代码补全到数字工程师：终端自主代理的技术架构、机制对比与安全实战"
-date: 2026-09-08
+date: 2026-08-11
 author: "Yvain Zhang"
 series: "技术"
 header-img: "img/post-bg-rwd.jpg"

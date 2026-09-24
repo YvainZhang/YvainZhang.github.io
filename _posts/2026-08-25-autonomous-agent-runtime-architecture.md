@@ -2,7 +2,7 @@
 layout: post
 title: "自治 Agent 核心运行时与有限状态机 (FSM) 工程实战：沙箱隔离、超时熔断与自愈闭环"
 subtitle: "从有限状态机、参数契约校验、并发超时看门狗到独立外部验收"
-date: 2026-09-08
+date: 2026-08-25
 author: "Yvain Zhang"
 series: "技术"
 header-img: "img/post-bg-unix-linux.jpg"

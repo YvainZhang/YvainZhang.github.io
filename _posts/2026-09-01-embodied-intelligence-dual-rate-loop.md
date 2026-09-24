@@ -2,7 +2,7 @@
 layout: post
 title: "具身智能双速率控制架构：从 1kHz 裸机/RTOS 确定性力控到 10Hz Linux/VLA 大模型端侧协同"
 subtitle: "结合半导体底层与多模态 AI：物理世界闭环的软硬件协同工程"
-date: 2026-09-08
+date: 2026-09-01
 author: "Yvain Zhang"
 series: "技术"
 header-img: "img/home-bg-geek.jpg"

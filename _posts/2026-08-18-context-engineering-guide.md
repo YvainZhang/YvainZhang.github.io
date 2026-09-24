@@ -2,7 +2,7 @@
 layout: post
 title: "上下文工程 (Context Engineering) 完全指南：KV Cache 优化、Attention 衰减与三层记忆架构"
 subtitle: "为什么说“提示词已死，上下文工程当立”"
-date: 2026-09-08
+date: 2026-08-18
 author: "Yvain Zhang"
 series: "技术"
 header-img: "img/post-bg-desk.jpg"
