@@ -1,0 +1,131 @@
+---
+layout: default
+title: "年度阅读"
+description: "年度读书分享：留下真正改变理解、判断与行动的书。"
+permalink: /reading/
+body_class: reading-page
+---
+
+{% assign reading = site.data.reading %}
+{% assign current_year = reading.years | first %}
+{% assign current_books = current_year.books | default: empty %}
+{% assign current_recommended = site.data.reading_list.current.books | default: empty %}
+
+<main class="reading-hub">
+    <header class="reading-hero">
+        <div class="reading-hero-copy">
+            <p class="reading-kicker"><span aria-hidden="true"></span>{{ reading.intro.eyebrow }}</p>
+            <h1>{{ reading.intro.title }}</h1>
+            <p class="reading-hero-lead">{{ reading.intro.description }}</p>
+            <blockquote>“{{ reading.intro.principle }}”</blockquote>
+        </div>
+
+        <aside class="reading-year-card" aria-label="{{ current_year.year }} 年阅读概览">
+            <div class="reading-year-card-head">
+                <span>YEAR IN BOOKS</span>
+                <i aria-hidden="true"></i>
+            </div>
+            <strong>{{ current_year.year }}</strong>
+            <p>{{ current_year.theme }}</p>
+            <dl>
+                <div><dt>{{ current_books | size }}</dt><dd>本阅读随记</dd></div>
+                <div><dt>{{ current_recommended | size }}</dt><dd>本推荐书籍</dd></div>
+                <div><dt>{{ current_year.status }}</dt><dd>年度状态</dd></div>
+            </dl>
+        </aside>
+    </header>
+
+    <nav class="reading-year-nav" aria-label="按年份浏览阅读记录">
+        <span>阅读年份</span>
+        <div>
+            {% for edition in reading.years %}
+            {% assign edition_id = edition.id | default: edition.year %}
+            <a href="#year-{{ edition_id }}"{% if forloop.first %} aria-current="page"{% endif %}>{{ edition.year }}</a>
+            {% endfor %}
+        </div>
+    </nav>
+
+    {% for edition in reading.years %}
+    {% assign edition_id = edition.id | default: edition.year %}
+    {% assign books = edition.books | default: empty %}
+    <section class="reading-edition" id="year-{{ edition_id }}" aria-labelledby="year-{{ edition_id }}-heading">
+        <div class="reading-section-heading">
+            <p>{{ edition.year }} / {{ edition.status }}</p>
+            <div>
+                <h2 id="year-{{ edition_id }}-heading">{{ edition.theme }}</h2>
+                <span>{{ edition.summary }}</span>
+            </div>
+        </div>
+
+        {% if books.size > 0 %}
+        <div class="reading-book-grid">
+            {% for book in books %}
+            <article class="reading-book-card">
+                <div class="reading-book-cover reading-cover-{{ book.cover.color | default: 'teal' }}">
+                    <span>{{ book.cover.label | default: edition.year }}</span>
+                    <div>
+                        <h3>{{ book.title }}</h3>
+                        {% if book.subtitle %}<p>{{ book.subtitle }}</p>{% endif %}
+                    </div>
+                    <small>{{ book.author }}</small>
+                </div>
+                <div class="reading-book-copy">
+                    <header>
+                        <div>
+                            <span>{{ book.category }}</span>
+                            {% if book.finished %}<time>{{ book.finished }}</time>{% endif %}
+                        </div>
+                        {% if book.recommended %}<b>特别推荐</b>{% endif %}
+                    </header>
+                    <h3>{{ book.title }}</h3>
+                    <p class="reading-book-verdict">{{ book.one_liner }}</p>
+                    <dl>
+                        <div><dt>我的感受</dt><dd>{{ book.thoughts }}</dd></div>
+                        <div><dt>还记得的</dt><dd>{{ book.stayed_with_me }}</dd></div>
+                    </dl>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        {% if edition.id == "2026" %}
+        <a class="reading-empty reading-recommend-card" href="{{ '/reading/list/' | prepend: site.baseurl }}">
+            <div class="reading-empty-shelf" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <div>
+                <span>2026 / RECOMMENDED BOOKS</span>
+                <h3>可以找来翻翻的书</h3>
+                <p>先收在单独的书单里，不算已经读过。看到哪本有兴趣，就从哪本开始。</p>
+                <strong>查看 {{ current_recommended | size }} 本推荐书籍 <i aria-hidden="true">→</i></strong>
+            </div>
+        </a>
+        {% else %}
+        <div class="reading-empty">
+            <div class="reading-empty-shelf" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <div>
+                <span>BOOKS ARE ON THE WAY</span>
+                <h3>还没有写下第一本</h3>
+                <p>书在慢慢读，记录也慢慢补。等读完了，也想清楚了，再把当时的感受写在这里。</p>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+    </section>
+    {% endfor %}
+
+    <section class="reading-method" aria-labelledby="reading-method-heading">
+        <div class="reading-section-heading">
+            <p>WHY I READ / 为什么读书</p>
+            <div>
+                <h2 id="reading-method-heading">给自己留一点不被打断的时间。</h2>
+            </div>
+        </div>
+        <div class="reading-method-copy">
+            <p>平时大部分时间都在屏幕前。工作时看代码和文档，休息时也很容易顺手拿起手机。翻开一本书，至少能让我暂时离开不断刷新的信息，安静地把注意力放在一件事上。</p>
+            <p>很多书读完以后，并不会马上带来什么答案。只是过了一阵子，在工作、散步或者旅途中，书里的一句话又突然冒出来。这个页面，就是想把这些零零散散的时刻记下来。</p>
+        </div>
+    </section>
+</main>

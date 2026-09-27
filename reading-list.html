@@ -1,0 +1,85 @@
+---
+layout: default
+title: "推荐书籍"
+description: "以前随手记下、可以找来翻翻的书。"
+permalink: /reading/list/
+body_class: reading-page reading-list-page
+---
+
+{% assign list = site.data.reading_list %}
+{% assign current_books = list.current.books | default: empty %}
+{% assign past_books = list.past.books | default: empty %}
+
+<main class="reading-list-hub">
+    <header class="reading-list-hero">
+        <div>
+            <a class="reading-back-link" href="{{ '/reading/' | prepend: site.baseurl }}"><span aria-hidden="true">←</span> 返回年度阅读</a>
+            <p class="reading-kicker"><span aria-hidden="true"></span>{{ list.intro.eyebrow }}</p>
+            <h1>{{ list.intro.title }}</h1>
+            <p>{{ list.intro.description }}</p>
+        </div>
+        <aside aria-label="书单数量">
+            <strong>{{ current_books | size }}</strong>
+            <span>本书</span>
+            <small>{{ list.current.year }} 推荐</small>
+        </aside>
+    </header>
+
+    <section class="reading-list-content" aria-labelledby="reading-list-heading">
+        <section class="reading-list-section">
+            <div class="reading-section-heading">
+                <p>{{ list.current.year }} / 推荐书籍</p>
+                <div>
+                    <h2 id="reading-list-heading">今年推荐的一本书。</h2>
+                    <span>最近想认真读一读，也想在这里留下一点记录。</span>
+                </div>
+            </div>
+
+            <div class="reading-archive-grid">
+                {% for book in current_books %}
+                <figure class="reading-archive-card">
+                    <div class="reading-archive-photo">
+                        <img src="{{ book.image | prepend: site.baseurl }}" alt="《{{ book.title }}》实拍" loading="lazy">
+                        <span>BOOK 0{{ forloop.index }}</span>
+                    </div>
+                    <figcaption>
+                        <p>{{ book.category }}</p>
+                        <h3>{{ book.title }}</h3>
+                        {% if book.subtitle %}<small>{{ book.subtitle }}</small>{% endif %}
+                        <span>{{ book.author }}</span>
+                    </figcaption>
+                </figure>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="reading-list-section" aria-labelledby="past-reading-list-heading">
+            <div class="reading-section-heading">
+                <p>PAST / 往期推荐</p>
+                <div>
+                    <h2 id="past-reading-list-heading">往期推荐</h2>
+                    <span>之前记下的几本书，整理在这里，方便以后再翻。</span>
+                </div>
+            </div>
+
+            <div class="reading-archive-grid">
+                {% for book in past_books %}
+                <figure class="reading-archive-card">
+                    <div class="reading-archive-photo">
+                        <img src="{{ book.image | prepend: site.baseurl }}" alt="《{{ book.title }}》实拍" loading="lazy">
+                        <span>BOOK 0{{ forloop.index }}</span>
+                    </div>
+                    <figcaption>
+                        <p>{{ book.category }}</p>
+                        <h3>{{ book.title }}</h3>
+                        {% if book.subtitle %}<small>{{ book.subtitle }}</small>{% endif %}
+                        <span>{{ book.author }}</span>
+                    </figcaption>
+                </figure>
+                {% endfor %}
+            </div>
+        </section>
+
+        <a class="reading-list-return" href="{{ '/reading/' | prepend: site.baseurl }}"><span aria-hidden="true">←</span> 回到年度阅读</a>
+    </section>
+</main>

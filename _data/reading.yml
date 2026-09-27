@@ -1,0 +1,28 @@
+intro:
+  eyebrow: "ANNUAL READING / 年度阅读"
+  title: "读万卷书，行万里路。"
+  description: "工作和生活忙起来以后，能安静读完一本书并不容易。这里记下每年读过的书，也写几句当时的感受。"
+  principle: "有空读几页，慢慢看，慢慢想。"
+
+years:
+  - year: 2026
+    id: "2026"
+    status: "持续更新"
+    theme: "推荐书籍"
+    summary: "今年想看、也觉得可以找来翻翻的书，单独放在一页里。想到一本，就慢慢补一本。"
+    books: []
+
+# 新增书目时，把下面的模板复制到对应年份的 books 下方，并删除行首注释。
+# books:
+#   - title: "书名"
+#     subtitle: "可选副标题"
+#     author: "作者"
+#     category: "技术 / 人文 / 商业 / 传记"
+#     finished: "2026.09"
+#     recommended: true
+#     cover:
+#       label: "BOOK / 01"
+#       color: "teal" # 可选：teal / amber / blue / plum
+#     one_liner: "读完以后最直接的感受。"
+#     thoughts: "读这本书时想到的人、事，或者过去的经历。"
+#     stayed_with_me: "过了一段时间，仍然记得的内容。"
