@@ -1,6 +1,6 @@
 # 09 AI 编译器与计算图软硬件映射
 
-本模块剖析 NPU 的核心命脉——**AI 编译器（AI Compiler）**，详解计算图优化、算子融合、多级 Tiling 切分算法、片上 SRAM 静态内存规划与 MLIR 代码生成。
+本章跟踪 **AI 编译器（AI Compiler）**如何将计算图映射到 NPU，依次介绍算子融合、Tiling、片上 SRAM 内存规划与 MLIR 代码生成。
 
 ## 章节导航
 

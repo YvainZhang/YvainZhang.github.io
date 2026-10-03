@@ -166,7 +166,7 @@
 <header class="blog-bar">
   <div class="blog-bar-inner">
     <a class="blog-home" href="{{ '/' | relative_url }}" aria-label="返回博客首页"><span class="blog-mark">YZ</span><em>返回博客</em></a>
-    <div class="blog-title"><span>Interactive field note</span><strong>{{ page.title }}</strong></div>
+    <div class="blog-title"><span>FreeRTOS Notes</span><strong>{{ page.title }}</strong></div>
     <div class="blog-meta"><time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: '%Y.%m.%d' }}</time><a href="{{ '/series/#tech' | relative_url }}">技术</a></div>
   </div>
 </header>
@@ -191,23 +191,23 @@
   <header class="article-hero">
     <p class="article-kicker">FreeRTOS Kernel / RISC-V Port</p>
     <h1>FreeRTOS 整体架构图集</h1>
-    <p class="lead">以 <b>RISC-V（机器模式、单核）GCC 移植</b> 为锚点。<b>每个流程步骤下直接附上游真实代码</b>（<code>port.c</code> / <code>portASM.S</code> / <code>portmacro.h</code>，为清晰做了裁剪与中文注释）。</p>
+    <p class="lead">以 <b>RISC-V（机器模式、单核）GCC 移植</b> 为例，整理启动、Tick 和上下文切换。相关步骤附有 <code>port.c</code>、<code>portASM.S</code> 和 <code>portmacro.h</code> 的代码片段，经过裁剪和中文注释；启动代码另用示例说明。</p>
     <div class="article-chips">{% for tag in page.tags %}<span>{{ tag }}</span>{% endfor %}</div>
   </header>
 
   <!-- ============================ 0 ============================ -->
   <section id="primer">
-    <h2><span class="ico">0</span> 前置知识:从零理解</h2>
-    <p class="lead">已熟悉 RTOS / 嵌入式 / RISC-V 的可跳到 <a href="#s1">第 1 节</a>。本节用大白话把"为什么、是什么"讲清楚,后面的架构图和代码才看得懂。</p>
+    <h2><span class="ico">0</span> 前置知识</h2>
+    <p class="lead">本节先说明任务、调度、trap 和寄存器。已熟悉这些概念，可以跳到 <a href="#s1">第 1 节</a>。</p>
 
     <h3>0.1 为什么单片机要用 RTOS</h3>
-    <p><b>裸机程序</b>:一个 <code>main()</code> 塞个 <code>while(1)</code>,事情串行做,等延时时 CPU 干等空转;想"一边采数据一边发串口"得自己拆状态机。<b>RTOS</b> 把程序拆成多个独立 <b>任务</b>,内核负责 <b>调度</b> 谁先跑。"实时"不是"快",是 <b>可预测/确定</b>——承诺某动作一定在截止时间内完成(<b>硬实时</b>错过即失败,如安全气囊;<b>软实时</b>偶尔可容忍,如视频掉帧)。FreeRTOS 是小巧开源、工业界用得最多的 RTOS 之一。</p>
+    <p><b>裸机程序</b>常在 <code>main()</code> 的循环中安排工作，多个操作交错进行时需要自行组织状态机和中断。使用 <b>RTOS</b> 后，可以把工作拆成多个任务，由内核调度执行。实时系统关注的是响应能否满足截止时间；硬实时对错过期限有严格要求，软实时允许一定程度的超时。使用 FreeRTOS 提供了调度机制，具体期限仍需要根据任务执行时间和系统配置验证。</p>
 
-    <h3>0.2 一个 CPU 怎么"同时"跑多个任务(核心直觉)</h3>
-    <p>CPU 同一时刻只执行一条指令,"多任务"是快速切换造成的 <b>假象</b>。每个任务 = 一段代码 + <b>自己的栈</b> + 一组"自己的寄存器值"。<b>上下文切换</b>:把 A 此刻的寄存器值 <b>存进 A 的栈</b>,把 B 上次存的寄存器值 <b>从 B 的栈取回</b>——B 就"继续"运行,仿佛没被打断。这就是本文反复出现"保存/恢复上下文、栈帧"的原因——它就是切换的物理动作。</p>
+    <h3>0.2 单核上的多任务与上下文切换</h3>
+    <p>本文的单核模型中，一次运行一个任务。每个任务有自己的代码、栈和保存的寄存器状态。切换时，port 将任务 A 的上下文存入 A 的栈，再从任务 B 的栈恢复上下文，让 B 从上次停止的位置继续执行。后面的栈帧图展示的就是这些保存和恢复动作。</p>
 
-    <h3>0.3 调度:优先级、抢占、Tick 心跳</h3>
-    <p><b>优先级</b>高者一旦就绪立即 <b>抢占</b> 正在跑的低者;同优先级 <b>时间片轮转</b> 各跑一个 Tick;<b>Tick</b> 是固定间隔(常 1ms)的定时器中断,系统的"心跳",每次推进计数、唤醒到期任务、可能切换;<b>空闲任务</b>优先级最低,没任务可跑时它运行。</p>
+    <h3>0.3 优先级、抢占与 Tick</h3>
+    <p>启用抢占调度时，较高优先级任务就绪后可以抢占低优先级任务；同优先级任务是否按 Tick 轮转，取决于时间片配置。<b>Tick</b> 是周期性定时器中断，推进计数、唤醒延时到期的任务，并可能触发切换。<b>空闲任务</b>的优先级最低，没有其他就绪任务时运行。</p>
 
     <h3>0.4 任务的状态</h3>
     <div class="diagram">
@@ -226,10 +226,10 @@
         <div><b>解冻</b>：挂起 → 就绪(vTaskResume)</div>
       </div>
     </div>
-    <p>关键：<b>阻塞态不占 CPU</b>——任务等延时时不是"空转",而是被移出就绪表,CPU 去跑别的任务。这是 RTOS 高效的核心。</p>
+    <p>阻塞任务会被移出就绪列表，等待期间不执行，CPU 可以运行其他就绪任务。它与在循环中忙等待不同。</p>
 
-    <h3>0.5 中断、异常、trap(本文最关键的概念)</h3>
-    <p><b>中断(Interrupt)</b>:硬件主动发的"打断信号",让 CPU 暂停当前任务去处理紧急事件(定时器到期、按键、收到数据),处理完自动回来。<b>异常(Exception)</b>:CPU 执行指令时撞上的"状况"(非法指令、除零、主动 <code>ecall</code>),与指令 <b>同步</b> 发生。<b>trap</b>:RISC-V 对"中断或异常"的 <b>统称</b>——都进同一入口 <code>mtvec</code>,靠 <code>mcause</code> 区分。<b>保存现场</b>:一进 trap 先存当前寄存器(否则处理函数会冲掉任务的值),处理完恢复。<b>ISR</b>:中断里跑的函数,越短越好。</p>
+    <h3>0.5 中断、异常与 trap</h3>
+    <p><b>中断（Interrupt）</b>由定时器或外设等异步事件触发。<b>异常（Exception）</b>与当前执行的指令有关，例如非法指令或 <code>ecall</code>。RISC-V 用 <b>trap</b> 统称中断和异常。本文使用 <code>mtvec</code> 直接模式，通过 <code>mcause</code> 区分来源。处理程序先保存寄存器状态，退出前恢复；<b>ISR</b> 是中断服务程序，执行时间需要纳入响应时延分析。</p>
 
     <h3>0.6 RISC-V 的"模式"——特权级别</h3>
     <div class="table-wrap"><table>
@@ -240,7 +240,7 @@
         <tr><td><b>U-mode</b></td><td>User 用户</td><td>给普通应用程序用</td><td>最低,被隔离</td></tr>
       </tbody>
     </table></div>
-    <p>为什么 FreeRTOS 选 M-mode?裸机没有"内核 vs 用户程序"的隔离需求,直接用最高权限最省事——能直接配定时器、直接收中断。模式之间切换靠专门指令(<code>ecall</code> 向下请求、<code>mret</code> 向上返回)和 CSR 的 MPP 字段。所以代码里全是 <code>mstatus</code>/<code>mtvec</code>/<code>mcause</code> 这些 <code>m</code> 开头的——<code>m</code> = Machine 模式专属。</p>
+    <p>本文采用的 port 在 M-mode 中运行任务和内核，可以直接配置机器定时器和中断。<code>mstatus</code>、<code>mtvec</code>、<code>mcause</code> 都是机器模式的 CSR。<code>ecall</code> 触发环境调用异常；<code>mret</code> 根据保存的机器状态返回。这里的配置不代表所有 FreeRTOS 系统都不需要权限隔离。</p>
 
     <h3>0.7 反复出现的硬件概念</h3>
     <p><b>寄存器</b>:CPU 内部极快的存储。① <b>通用寄存器</b> 32 个 <code>x0–x31</code>,有小名:<code>ra</code>(返回地址)、<code>sp</code>(栈顶)、<code>a0–a7</code>(参数)、<code>s0–s11</code>(需保存)、<code>t0–t6</code>(临时)。② <b>CSR(控制状态寄存器)</b>:管 CPU 状态的特殊寄存器,如 <code>mstatus</code>(中断开关)、<code>mtvec</code>(trap 入口)、<code>mcause</code>(原因)、<code>mepc</code>(断点 PC);用 <code>csrr</code> 读、<code>csrw</code> 写、<code>csrs/csrc</code> 置/清位。</p>
@@ -301,7 +301,7 @@
   <!-- ============================ 3 ============================ -->
   <section id="s3">
     <h2><span class="ico">3</span> 上电 → 正常工作 全流程（RISC-V）</h2>
-    <p>从硬件复位到第一个任务、再到 Tick 驱动的稳定调度。<b>每一步展开即见其上游真实代码</b>。</p>
+    <p>按硬件复位、进入第一个任务、Tick 调度的顺序阅读。展开各步骤可以查看代码片段或板级说明。</p>
     <div class="toolbar"><button id="toggleAll">收起全部</button></div>
 
     <div class="timeline">
@@ -326,12 +326,12 @@ _start:
         </div>
       </details>
 
-      <details class="step" open><summary><span class="num">3</span><span class="title">★ 装载 mtvec（port 不负责！）</span><span class="mods"><span class="m">startup.S</span></span></summary>
+      <details class="step" open><summary><span class="num">3</span><span class="title">装载 mtvec：由启动代码完成</span><span class="mods"><span class="m">startup.S</span></span></summary>
         <div class="body">
           <p>把统一 trap 入口写进 <code>mtvec</code>。<b>port 层自己不写 mtvec</b>——漏了这步，首个 Tick 中断就找不到入口。</p>
           <div class="codeblock"><div class="cap"><b>startup.S</b> （接上一步）</div><pre><code>    la      t0, freertos_risc_v_trap_handler
     csrw    mtvec, t0                # ★ mtvec = 统一 trap 入口（直接模式）</code></pre></div>
-          <div class="note warn">⚠ 这两行是 <code>startup.S</code> 的责任，<code>xPortStartScheduler()</code> 里<b>没有</b>写 mtvec。</div>
+          <div class="note warn">这里需要由启动代码写入 <code>mtvec</code>；本图所用的 <code>xPortStartScheduler()</code> 片段没有包含这一步。</div>
         </div>
       </details>
 
@@ -435,7 +435,7 @@ _start:
         </div>
       </details>
 
-      <details class="step" open><summary><span class="num">10</span><span class="title">xPortStartFirstTask()：切到第一个任务（用 ret，不是 mret！）</span><span class="mods"><span class="m">portASM.S</span></span></summary>
+      <details class="step" open><summary><span class="num">10</span><span class="title">xPortStartFirstTask()：通过 ret 进入第一个任务</span><span class="mods"><span class="m">portASM.S</span></span></summary>
         <div class="body">
           <p>把寄存器直接载回寄存器堆、手动置 <code>mstatus.MIE</code>、然后 <code>ret</code> 跳到 <code>ra(=pxCode)</code>。此时并没有"正在处理的中断"可以 <code>mret</code> 返回。</p>
           <div class="codeblock"><div class="cap"><b>portASM.S</b> · xPortStartFirstTask （真实，裁剪）</div><pre><code>xPortStartFirstTask:
@@ -469,7 +469,7 @@ _start:
 
       <details class="step" open><summary><span class="num">13</span><span class="title">Tick 中断 → trap handler（按 mcause 分流）</span><span class="mods"><span class="m">portASM.S</span></span></summary>
         <div class="body">
-          <p><code>mtime ≥ mtimecmp</code> 触发机器定时器中断（<code>mcause = MSB|7</code>），进统一入口。<b>完整汇编</b>如下（也是第 4 节流程图对应的代码）：</p>
+          <p><code>mtime ≥ mtimecmp</code> 触发机器定时器中断（<code>mcause = MSB|7</code>），进入统一入口。下面是经过裁剪的处理代码，对应第 4 节流程图：</p>
           <div class="codeblock"><div class="cap"><b>portASM.S</b> · freertos_risc_v_trap_handler （真实，裁剪）</div><pre><code>freertos_risc_v_trap_handler:
     portcontextSAVE_CONTEXT_INTERNAL      # 保存到任务栈；更新 pxCurrentTCB->pxTopOfStack
     csrr a0, mcause
@@ -509,7 +509,7 @@ processed_source:
 
       <details class="step" open><summary><span class="num">14</span><span class="title">重配 mtimecmp + xTaskIncrementTick()</span><span class="mods"><span class="m">portASM.S</span><span class="m">tasks.c</span></span></summary>
         <div class="body">
-          <p>每次 Tick 中断里把比较值往后推一个 Tick，否则不再触发；随后 <code>xTaskIncrementTick()</code> 推进计数、搬到期任务回就绪表。</p>
+          <p>每次 Tick 中断更新比较值，安排下次定时事件；随后 <code>xTaskIncrementTick()</code> 推进计数，把延时到期的任务移回就绪列表。</p>
           <div class="codeblock"><div class="cap"><b>portASM.S</b> · portUPDATE_MTIMER_COMPARE_REGISTER （真实，64 位路径）</div><pre><code>.macro portUPDATE_MTIMER_COMPARE_REGISTER
     load_x a0, pullMachineTimerCompareRegister   # a0 = &mtimecmp
     load_x a1, pullNextTime                       # a1 = &ullNextTime
@@ -647,7 +647,7 @@ processed_source:
 
     <div class="cat">A. RTOS / 调度</div>
     <dl>
-      <dt>RTOS</dt><dd>实时操作系统:支持多任务、对响应时间有确定性保证的微型内核。FreeRTOS 是其一。</dd>
+      <dt>RTOS</dt><dd>实时操作系统，提供支持实时任务调度的机制；具体响应期限需要结合应用和配置验证。</dd>
       <dt>内核 Kernel</dt><dd>操作系统的核心;这里指 FreeRTOS 的调度 + 同步 + 通信那层。</dd>
       <dt>任务 Task / 线程</dt><dd>一个独立执行流,有自己的栈和寄存器现场;基本调度单位。</dd>
       <dt>调度器 Scheduler</dt><dd>决定"此刻运行哪个任务"的机制。</dd>
@@ -655,7 +655,7 @@ processed_source:
       <dt>优先级 Priority</dt><dd>任务的重要级,高者优先。</dd>
       <dt>抢占 Preemption</dt><dd>高优先级任务打断低优先级任务。</dd>
       <dt>时间片 / 轮转</dt><dd>同优先级任务轮流各跑一个 Tick。</dd>
-      <dt>Tick 滴答</dt><dd>固定周期的定时器中断,系统的"心跳"。</dd>
+      <dt>Tick 滴答</dt><dd>周期性定时器中断，用于推进内核时间和处理延时任务。</dd>
       <dt>临界区 Critical Section</dt><dd>不可被打断的代码段,靠关中断保护。</dd>
       <dt>空闲任务 Idle Task</dt><dd>最低优先级的系统任务,无任务可跑时执行。</dd>
     </dl>
@@ -668,7 +668,7 @@ processed_source:
       <dt>信号量 Semaphore</dt><dd>计数式"凭证",用于同步/计数资源;二值的叫二值信号量。</dd>
       <dt>互斥量 Mutex</dt><dd>带"优先级继承"的二值信号量,防优先级反转。</dd>
       <dt>优先级反转</dt><dd>高优先级等低优先级持有的锁,反被中优先级抢 CPU 的现象。</dd>
-      <dt>任务通知</dt><dd>轻量的任务间事件/数据机制,比队列快。</dd>
+      <dt>任务通知</dt><dd>保存在任务控制块中的事件或数据机制，适合部分任务间通知场景。</dd>
       <dt>软件定时器</dt><dd>由"定时器守护任务"回调,非硬件中断。</dd>
       <dt>事件组 Event Group</dt><dd>一组二进制位,用于"等多事件"。</dd>
       <dt>流/消息缓冲</dt><dd>单生产者-单消费者的高效缓冲。</dd>

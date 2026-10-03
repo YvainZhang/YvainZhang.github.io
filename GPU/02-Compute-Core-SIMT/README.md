@@ -1,6 +1,6 @@
 # 02 计算核心与 SIMT 执行模型
 
-本模块深入剖析现代 GPU 最核心的执行引擎——**SM (Streaming Multiprocessor) / CU (Compute Unit)** 的微架构实现与 SIMT（Single Instruction, Multiple Threads）硬件调度机制。
+本章介绍 **SM (Streaming Multiprocessor) / CU (Compute Unit)** 的执行过程，重点看 SIMT（Single Instruction, Multiple Threads）如何组织线程，以及调度、寄存器和分支如何影响指令发射。
 
 ## 章节导航
 

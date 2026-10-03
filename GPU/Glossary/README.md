@@ -17,7 +17,7 @@
 | **Coalescing** | Global Memory Coalescing | 访存合并，将 Warp 内 32 个线程的连续显存访问合并为单次 128-byte 事务 |
 | **Tensor Core** | Tensor Core (MMA Engine) | 专用于稠密矩阵乘累加（$D = A 	imes B + C$）的高吞吐硬件计算引擎 |
 | **SFU** | Special Function Unit | 特殊函数单元，用于快速硬件逼近 `sin`、`cos`、`exp`、`rsqrt` 等非线性函数 |
-| **HBM** | High Bandwidth Memory | 高带宽显存，通过 3D TSV 硅通孔垂直堆叠 DRAM Die，提供数 TB/s 极致带宽 |
+| **HBM** | High Bandwidth Memory | 高带宽显存，通过 3D TSV 硅通孔垂直堆叠 DRAM Die，提供数 TB/s 级带宽 |
 | **CoWoS** | Chip-on-Wafer-on-Substrate | TSMC 2.5D 晶圆级封装技术，将 GPU 计算 Die 与 HBM 堆叠在中介层上 |
 | **TSV** | Through-Silicon Via | 硅通孔，垂直穿透硅晶圆实现高密度芯片间电气互连的微通道 |
 | **GDDR** | Graphics Double Data Rate SDRAM | 显存专用的高速板载表面贴装 DDR 颗粒（如 GDDR6X、GDDR7） |

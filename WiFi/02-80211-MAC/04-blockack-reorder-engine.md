@@ -1,6 +1,6 @@
 # BlockAck、Sequence 与 Reorder Engine
 
-BA 问题的难点不是 ADDBA 两个 Action Frame，而是 12-bit Sequence Number 回绕、滑动窗口、选择性重传与 teardown 竞态。
+ADDBA 协商之后，BA Session 还需要处理 12-bit Sequence Number 回绕、滑动窗口、选择性重传与 teardown 竞态。本章沿这些状态变化分析常见问题。
 
 ## Sequence 空间
 

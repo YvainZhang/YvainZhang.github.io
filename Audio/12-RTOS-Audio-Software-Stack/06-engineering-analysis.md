@@ -2,7 +2,7 @@
 
 ## 1. 资源受限 RTOS 嵌入式内存预算数学推导
 
-在无虚拟内存的嵌入式系统（SRAM 容量 $M_{\text{total}} = 384\text{ KB}$）中，系统稳定运行的充分必要条件为：所有并发任务的峰值静态栈、动态堆、DMA 硬件独占区与系统协议栈总和严格小于物理上限，且预留安全防护边限（Margin $\ge 15\%$）：
+以 SRAM 容量 $M_{\text{total}} = 384\text{ KB}$ 的系统为例，可以汇总任务栈、堆、DMA 与协议栈占用，并单列余量（例如 Margin $\ge 15\%$）。容量满足下式只是资源检查之一，还需要验证连续块需求、峰值并发和分配失败路径：
 
 $$M_{\text{total}} \ge \sum_{i=1}^{N} \text{Stack}_i + M_{\text{WiFi\_Stack}} + M_{\text{DMA\_Ring}} + M_{\text{Audio\_Heap}} + M_{\text{OS\_Kernel}} + M_{\text{Margin}}$$
 
@@ -11,7 +11,7 @@ $$M_{\text{total}} \ge \sum_{i=1}^{N} \text{Stack}_i + M_{\text{WiFi\_Stack}} + 
 * 若任务栈深度配置为 $S_{\text{task}}$，函数调用栈深为 $D_{\text{call}}$，中断嵌套开销为 $S_{\text{ISR}}$：
   $$S_{\text{task}} \ge \max(D_{\text{call}}) + S_{\text{ISR}} + S_{\text{local\_arrays}}$$
 * 在 RISC-V 32 位系统（32 个 GPR，中断压栈 16 个寄存器 = 64 字节）中，若解码器使用栈上大数组（如 `int32_t work_buf[1024]` = 4KB），极易导致栈溢出（Stack Overflow）。
-* **工程设计法则**：严禁在音频解码函数栈上声明大于 128 字节的局部数组，所有临时运算暂存区必须分配在片内静态 `.sram.bss` 中，将音频任务栈从 16KB 稳定压减到 **4KB**。
+* **栈配置**：可以把大于 128 字节的局部数组列为重点检查项，但不必一律移到静态区。若将栈从 16KB 减到 **4KB**，需要通过高水位与最深调用路径测试确认余量；共享静态工作区还要处理并发访问。
 
 ---
 
@@ -24,7 +24,7 @@ $$R_{\text{byte}} = f_s \times C \times B = 48000 \times 2 \times 2 = 192,000\te
 若底层 DMA 的一个传输周期尺寸设置为 $P_{\text{size}}$（单位：Frames），则每秒产生的硬件中断频率为：
 $$f_{\text{irq}} = \frac{f_s}{P_{\text{size}}}$$
 
-每次中断服务程序（ISR）触发，伴随现场保存（Context Save）、清中断标志、释放信号量（`xSemaphoreGiveFromISR`）和 RTOS 任务上下文切换（Task Context Switch），平均耗费时钟周期 $T_{\text{ctx}} \approx 1200\text{ Cycles}$。在 CPU 主频 $f_{\text{cpu}} = 160\text{ MHz}$ 下：
+若一次 ISR 及相关唤醒开销按 $T_{\text{ctx}} \approx 1200\text{ Cycles}$ 估算，在 CPU 主频 $f_{\text{cpu}} = 160\text{ MHz}$ 下可得到下式。实际周期数应测量，ISR 也不一定每次都触发任务切换：
 $$\text{CPU Overhead} = \frac{f_{\text{irq}} \times T_{\text{ctx}}}{f_{\text{cpu}}} \times 100\%$$
 
 ### 周期尺寸与系统性能权衡曲线
@@ -33,7 +33,7 @@ $$\text{CPU Overhead} = \frac{f_{\text{irq}} \times T_{\text{ctx}}}{f_{\text{cpu
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **64** | $1.33\text{ ms}$ | $750\text{ Hz}$ | $256\text{ B}$ | $0.56\%$ | 极低（易受 WiFi 突发打断） |
 | **128** | $2.67\text{ ms}$ | $375\text{ Hz}$ | $512\text{ B}$ | $0.28\%$ | 较低 |
-| **256** | $5.33\text{ ms}$ | $187.5\text{ Hz}$ | $1024\text{ B}$ | $0.14\%$ | **工业推荐最佳平衡点** |
+| **256** | $5.33\text{ ms}$ | $187.5\text{ Hz}$ | $1024\text{ B}$ | $0.14\%$ | 可作为待测试配置 |
 | **512** | $10.67\text{ ms}$ | $93.75\text{ Hz}$ | $2048\text{ B}$ | $0.07\%$ | 极高（但端到端时延增加） |
 
 ---
@@ -55,4 +55,4 @@ $$\text{CPU Overhead} = \frac{f_{\text{irq}} \times T_{\text{ctx}}}{f_{\text{cpu
   $$T_{\text{lookup}} = 5000 \times 6.25\text{ ns} = 0.031\text{ ms}$$
 * **全 PSRAM 模式（假设 Cache 命中率仅 80%，产生 1000 次 Miss）**：
   $$T_{\text{lookup}} = 4000 \times 6.25\text{ ns} + 1000 \times 1275\text{ ns} = 1.30\text{ ms}$$
-查表耗时飙升 **41 倍**。一旦 Cache 频繁失效，解码单帧耗时将突破 $26.12\text{ ms}$ 上限，直接导致扬声器输出断流爆音。这从数学上证明了：**将解码高频热点表强制锁定在片内 SRAM 是保障实时性的绝对刚性要求**。
+这组假设下，查表耗时约增加 **41 倍**，但 1.30 ms 本身仍未超过 $26.12\text{ ms}$。是否错过输出期限，需要加上其余解码计算和调度等待。热点表放入 SRAM 是可评估的优化方向，收益取决于 Cache 命中、访问模式和可用容量。

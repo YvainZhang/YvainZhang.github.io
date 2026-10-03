@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "ARM 处理器启动流程与引导架构"
-subtitle: "从 BootROM、SPL/BL2、ATF/BL31 安全固件、U-Boot 到 Linux 内核启动"
+subtitle: "BootROM、SPL、TF-A、U-Boot 与 Linux 的交接"
 date: 2022-01-09
 redirect_from:
   - /2022/11/07/arm-boot-process/
@@ -17,11 +17,11 @@ tags:
   - 嵌入式
 ---
 
-在嵌入式 Linux 系统开发中，从按下电源键到进入终端命令行，系统经历多级接力式引导。
+嵌入式 Linux 系统上电后，通常由几级引导程序依次初始化硬件、加载镜像，最后交给内核。
 
 当遇到板卡上电无输出、DDR 初始化失败、内核停在 `Starting kernel ...` 等启动故障时，需要理解 **BootROM -> SPL/BL2 -> ATF (BL31) -> U-Boot (BL33) -> Linux Kernel** 的时序与硬件状态切换。
 
-本文梳理现代 ARM（包含 ARMv7-A 与 ARMv8-A 64位架构）处理器的引导流程与底层机制。
+下面以使用 TF-A 和 U-Boot 的 ARMv8-A 平台为例。不同 SoC 的 BootROM、启动级数和镜像名称可能不同，ARMv7-A 也不能直接套用这里的异常等级模型。
 
 ---
 
@@ -121,8 +121,4 @@ graph TD
 
 ## 4. 总结
 
-ARM 处理器的启动过程遵循分层加载与权限隔离：
-- **BootROM (BL1)** 提供最基础的片上自举；
-- **SPL (BL2)** 负责在片内 SRAM 阶段点亮 DDR 内存并搬运后续镜像；
-- **TF-A (BL31)** 在 EL3 建立安全边界与 PSCI 运行时服务，并将 CPU 转入非安全状态；
-- **U-Boot (BL33)** 负责外设驱动与多介质加载，最终引导 **Linux 内核**。
+定位启动故障时，先找最后一个确认执行成功的阶段，再检查下一阶段的镜像、加载地址和硬件依赖。串口无输出并不一定表示 BootROM 没运行；停在 `Starting kernel ...` 也可能只是内核早期串口配置不匹配。

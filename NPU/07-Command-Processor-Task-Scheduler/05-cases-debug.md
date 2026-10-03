@@ -65,11 +65,11 @@ sequenceDiagram
 ```
 
 ### 2. 根因剖析
-- **DSA 极简无乱序设计理念**：为了极致压缩控制逻辑功耗与面积，许多 NPU 的 VPU 引擎彻底移除了动态流水线冒险检查器（Hardware Hazard Scoreboard / Interlocking），完全依赖**静态编译期软件流水编排（Static Software Scheduling）**保证依赖正确。
+- **DSA 极简无乱序设计理念**：本例中的 VPU 为减少控制逻辑，省去了动态流水线冒险检查器（Hardware Hazard Scoreboard / Interlocking），由**静态编译期软件流水编排（Static Software Scheduling）**保证依赖正确。
 - **根因**：VPU 的向量加法指令到操作数旁路（Bypass Network）需要 3 个周期的流水线延迟。编译器代码生成器中对于浮点乘加（FMA）指令的延迟延迟表（Latency Table）被误配为 1 个周期，导致编译器未在两条指令之间插入 2 个 `NOP`（或调度其他无关指令填充），消费者提前读出了寄存器堆中的旧数据。
 
 ### 3. 根治方案
-- **修正编译调度器机器模型**：更正编译器目标芯片 Target Architecture Description 文件，将 VPU 指令延迟矩阵（Instruction Latency Matrix）与硬件流水线级数 100% 对齐。
+- **修正编译调度器机器模型**：更正编译器目标芯片 Target Architecture Description 文件，逐项核对 VPU 指令延迟矩阵（Instruction Latency Matrix）与硬件流水线级数。
 - **硬件 Scoreboard 兜底（可选模式）**：在芯片调试模式（Debug Mode）下，通过使能 `DBG_SCOREBOARD_EN` 寄存器，硬件会在发现 RAW 违规时强制暂停流水线并打印警告日志，便于在 Bring-up 阶段快速拦截编译器调度 Bug。
 
 ---

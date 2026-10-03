@@ -2,9 +2,7 @@
 
 ## 1. 硬件解决什么问题：主动降噪闭环系统的声学物理极限
 
-为什么目前市面上所有顶级的主动降噪耳机，其有效降噪频段都**无法逾越 3kHz ~ 4kHz**？为什么降噪无法消除高频人声和哨音？
-
-这绝非算法算力不足，而是受制于**控制理论中的闭环相位延迟与奈奎斯特稳定性准则（Nyquist Stability Criterion）**。
+主动降噪的效果通常随频率变化。本文用一个简化反馈模型，观察延迟如何影响相位与稳定裕度；模型中的 **3kHz ~ 4kHz** 范围不作为所有耳机的统一性能上限。
 
 ---
 
@@ -28,8 +26,9 @@ graph LR
 $$S(s) = \frac{E(s)}{N(s)} = \frac{1}{1 + G(s) W(s) e^{-s T_{\text{delay}}}}$$
 为了实现降噪，残余能量必须小于外界噪声：
 $$|S(j\omega)| < 1 \iff |1 + G(j\omega) W(j\omega) e^{-j\omega T_{\text{delay}}}| > 1$$
-最理想情况是开环增益相位为 $180^\circ$（反相）：
+这里采用负反馈约定，开环增益为 $L=GWe^{-sT_{\text{delay}}}$。当 $L$ 为正实数时，分母为 $1+|L|$，残余噪声受到抑制；扬声器在求和点产生反向声波，不等于这个约定下的开环增益应取 $180^\circ$。相反，当开环相位达到 $180^\circ$ 时（下式的 $|T(j\omega)|$ 表示开环增益幅值）：
 $$G(j\omega) W(j\omega) e^{-j\omega T_{\text{delay}}} = -|T(j\omega)| = |T(j\omega)| e^{j\pi}$$
+分母幅值变为 $|1-|T(j\omega)||$，开环幅值接近 1 时，残余噪声可能被放大，并需要检查闭环稳定性。负反馈灵敏度函数的符号约定可参见 [MathWorks loopsens 文档](https://www.mathworks.com/help/robust/ref/dynamicsystem.loopsens.html)。
 
 ---
 
@@ -37,9 +36,9 @@ $$G(j\omega) W(j\omega) e^{-j\omega T_{\text{delay}}} = -|T(j\omega)| = |T(j\ome
 
 系统总延迟引入的相位滞后（Phase Lag）与频率成正比：
 $$\theta_{\text{delay}}(\omega) = \omega \cdot T_{\text{delay}} = 2\pi f \cdot T_{\text{delay}}$$
-当频率升高，相位延迟不断累加：
-- 当 $\theta_{\text{delay}} = 60^\circ$（$\frac{\pi}{3}$）时，降噪能力降为 0dB（无法降噪）；
-- 当 $\theta_{\text{delay}} = 180^\circ$（$\pi$）时，原本用于抵消的反相声波由于延迟，在耳道内完全变成了**与外界噪声同相相加（In-phase Addition）**，灵敏度函数分母变小，系统产生强烈的**噪声自发放大与自激尖叫（Bode Sensitivity Integral / Waterbed Effect）**！
+当频率升高，延迟引入的相位滞后不断累加：
+- 本例把 $60^\circ$（$\frac{\pi}{3}$）选作延迟项的相位预算；它本身不能推出降噪能力恰好降为 0dB。
+- $180^\circ$（$\pi$）的延迟相位也不能单独判定系统失稳。还需结合 $G$、$W$ 的相位及幅值，检查完整开环增益是否接近临界点 $-1$。噪声放大与闭环自激应分别由灵敏度函数和稳定性分析确认。
 
 ### 降噪截止频率理论上限推导
 令最大允许相位误差为 $\Delta \theta_{\text{max}} = \frac{\pi}{3}$（$60^\circ$ 裕量）：
@@ -49,14 +48,14 @@ $$2\pi f_{\text{limit}} T_{\text{delay}} \le \frac{\pi}{3} \implies f_{\text{lim
 
 ## 4. 真实工程系统参数极限测算
 
-在典型高端降噪耳机中，硬件总延迟分解：
+以下取一组参数计算延迟预算，机械与声学通路的频率相关相位在这里用等效延迟近似：
 - 麦克风与出音孔空气声学延时：$15\mu\text{s}$；
 - 麦克风与扬声器机械振膜相位延迟：$10\mu\text{s}$；
 - 极速 Sigma-Delta ADC 与 DAC 群延迟（768kHz 超采样）：$12\mu\text{s}$；
 - 数字 IIR 硬件滤波器计算延迟：$3\mu\text{s}$。
 **系统总延迟极限**：
 $$T_{\text{delay}} = 15 + 10 + 12 + 3 = \mathbf{40\mu\text{s}}$$
-代入理论截止频率公式：
+代入本例的相位预算公式：
 $$f_{\text{limit}} = \frac{1}{6 \times 40 \times 10^{-6}\text{ s}} = \frac{1}{240 \times 10^{-6}} \approx \mathbf{4166\text{ Hz}}$$
 
 ---
@@ -64,5 +63,5 @@ $$f_{\text{limit}} = \frac{1}{6 \times 40 \times 10^{-6}\text{ s}} = \frac{1}{24
 ## 5. 原厂架构设计结论
 
 推论：
-1. **4.1kHz 是物理延迟铸就的绝对铁律天花板**：在 $40\mu\text{s}$ 的极致硬件延迟下，系统在 $4.1\text{ kHz}$ 以上不仅无法降噪，而且必须使用高通滤波器强行将开环增益滚降到 0，否则系统必然发生剧烈啸叫。
-2. **水床效应（Waterbed Effect）**：根据波特灵敏度积分定理，低频处获得的降噪深度（如在 100Hz 处降低 40dB），必须以高频处灵敏度抬升放大为代价。工程师调调音的本质就是在低频降噪深度与高频啸叫裕量之间进行拉锯平衡。
+1. **4.1kHz 来自本例的延迟与相位预算**：取 $40\mu\text{s}$ 延迟和 $60^\circ$ 相位预算，得到约 $4.1\text{ kHz}$。实际降噪频段与稳定性还需结合声学通路、控制器传递函数和增益交越点分析。
+2. **水床效应（Waterbed Effect）**：根据波特灵敏度积分定理，低频处获得的降噪深度（如在 100Hz 处降低 40dB），必须以高频处灵敏度抬升放大为代价。调音时需要同时检查低频降噪深度、其他频段的噪声放大和稳定裕度。

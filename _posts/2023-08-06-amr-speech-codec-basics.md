@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "AMR 语音编解码与文件格式详解"
-subtitle: "从 CELP 线性预测、AMR-NB/WB 多速率自适应到 IF1/IF2 接口帧与 Magic 标识"
+title: "AMR 语音编码与文件格式"
+subtitle: "窄带与宽带模式、接口帧及文件头"
 date: 2023-08-06
 redirect_from:
   - /2022/01/21/amr-speech-codec-basics/
@@ -19,7 +19,7 @@ tags:
 
 **AMR（Adaptive Multi-Rate，自适应多速率音频压缩）** 是由 3GPP 组织制定并应用于蜂窝移动通信网络（GSM、UMTS 等）的语音编码标准。
 
-与 MP3/AAC 侧重音乐保真不同，AMR 是专为人声通话定制的**码激励线性预测（CELP, Code-Excited Linear Prediction）语音编解码器**。它能根据无线蜂窝信道质量，以 **20ms 帧为粒度自适应切换编码码率**。本文梳理 AMR-NB、AMR-WB 规格、IF1/IF2 传输帧格式及存储文件结构。
+AMR 使用**码激励线性预测（CELP, Code-Excited Linear Prediction）**，面向语音通话编码。它以 20 ms 为一帧，支持多个码率模式；蜂窝系统可以根据信道条件调整所用模式。下面整理 AMR-NB、AMR-WB、接口帧和存储文件的区别。
 
 ---
 
@@ -108,6 +108,4 @@ int frame_size = block_size[mode]; // 例如 12.2kbps (mode 7) 对应 32 字节
 
 ## 4. 总结
 
-1. **语音建模**：AMR 基于 CELP 模型以较低码率（4.75~12.2 kbps）实现清晰的人声通信；
-2. **信道自适应**：通过 20ms 一帧的多速率自适应与 Class A/B/C 分级保护提升弱网鲁棒性；
-3. **轻量封装**：识别 `#!AMR\n` 文件头后，按 Frame Header 查表即可完成流式切帧与解码。
+解析 `.amr` 文件时，先用文件头区分 NB 和 WB，再按各自的 Frame Type 表读取帧长。接口帧、RTP 载荷与文件帧的布局不能混用；切出完整帧以后，还需要对应的语音解码器才能得到 PCM。

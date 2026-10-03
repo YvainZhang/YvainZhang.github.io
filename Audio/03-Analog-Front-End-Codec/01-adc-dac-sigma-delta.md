@@ -6,7 +6,7 @@
 
 参考：[AD4630-24 原厂产品资料](https://www.analog.com/en/products/ad4630-24.html)。
 
-**Sigma-Delta（$\Sigma\Delta$）转换器**通过两大革命性架构创新：**过采样（Oversampling）**与**噪声整形（Noise Shaping）**，将极其粗糙的低分辨率（甚至 1-bit）量化器输出的高频高量化噪声“推”到人耳听不见的超高频带外，从而在音频带内实现高达 $110\text{ dB} \sim 130\text{ dB}$ 的惊人动态范围。
+**Sigma-Delta（$\Sigma\Delta$）转换器**利用：**过采样（Oversampling）**与**噪声整形（Noise Shaping）**，将低分辨率（甚至 1-bit）量化器的量化噪声更多地分配到带外，再通过滤波降低音频带内噪声。下文讨论 $110\text{ dB} \sim 130\text{ dB}$ 动态范围目标涉及的设计条件。
 
 ---
 

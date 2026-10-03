@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "FreeRTOS 常见故障排查指南"
-subtitle: "中断优先级嵌套、Cortex-M 双栈模型 (MSP/PSP)、栈溢出检测与 Heap 选型"
+subtitle: "Cortex-M 中断优先级、任务栈、printf 与堆管理"
 date: 2022-07-10
 redirect_from:
   - /2023/02/11/freertos-troubleshooting-guide/
@@ -16,26 +16,24 @@ tags:
   - C语言
 ---
 
-在嵌入式 MCU/SoC 上运行 FreeRTOS 时，偶发性崩溃和 HardFault 较为常见：
+FreeRTOS 应用出现下面这些故障时，可以先检查中断配置、栈和内存分配：
 - 系统运行一段时间后偶发进入 HardFault；
 - 增加任务或调用 `printf` 后系统出现异常；
 - 触发中断后调度器出现死锁；
 - 内存变量被异常改写。
 
-排查 FreeRTOS 系统故障时，通常优先检查三大常见诱因：**中断优先级与临界区配置、任务栈空间分配、以及标准 C 库 `printf` 的使用方式**。
-
-本文结合 FreeRTOS 内核机制，梳理排查思路与配置要点。
+本文的中断和双栈说明以常见 Cortex-M 移植为例，其他架构需要对照对应的 port 实现。
 
 ---
 
 ## 1. 中断优先级与 `configMAX_SYSCALL_INTERRUPT_PRIORITY`
 
-中断优先级配置错误是导致 FreeRTOS 临界区失效与死锁的高频原因。
+中断优先级配置错误可能让 ISR 在内核临界区内访问队列等数据结构。
 
 ### 1.1 Basepri 寄存器与临界区保护机制
 在 ARM Cortex-M 架构上，FreeRTOS 的内核临界区（`taskENTER_CRITICAL()`）通过向 **`BASEPRI` 寄存器** 写入 `configMAX_SYSCALL_INTERRUPT_PRIORITY`（部分端口命名为 `configMAX_API_CALL_INTERRUPT_PRIORITY`）实现中断屏蔽：
 - **逻辑优先级低于或等于该阈值的中断**：被硬件临时屏蔽，确保内核数据结构操作的安全；
-- **更高优先级（数值更小）的中断**：不会被屏蔽，享受极低的中断延迟（Zero Latency Interrupts）。
+- **更高优先级（数值更小）的中断**：不会被这类内核临界区屏蔽，但不能调用 FreeRTOS 的 ISR API。
 
 ```
 硬件最高优先级 (Priority 0)  ───┐
@@ -64,7 +62,7 @@ configMAX_SYSCALL_PRIORITY ────┴── [BASEPRI 临界区屏蔽边界]
 
 > **关于中断嵌套与任务栈的关系**：
 > 在 Cortex-M 上，发生中断或中断嵌套时，硬件会自动切换到 **MSP（系统中断栈）** 运行，中断执行期间的栈消耗不会直接占用当前被抢占任务的 PSP 栈。
-> 任务 private 栈溢出通常是由**局部数组过大、函数调用过深、递归调用或任务切换时的上下文寄存器保存**引起的。
+> 任务自身的栈占用需要考虑局部数组、函数调用深度、递归和上下文保存。
 
 ---
 
@@ -106,7 +104,7 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
 2. **栈开销较大**：处理浮点数和长格式化字符串时，局部变量栈深度可能达到数百字节，容易导致小容量任务栈溢出；
 3. **隐式动态分配**：部分 libc 会在初次格式化时调用底层 `malloc` 分配 I/O 缓冲区。
 
-> **建议**：在嵌入式环境中，推荐使用轻量级、无动态分配的专用实现（如 `mpaland/printf`）或硬件调试打印通道。
+> 可以按项目需求选择轻量格式化实现或调试打印通道，同时确认线程安全、栈占用和输出阻塞行为。
 
 ---
 
@@ -130,4 +128,4 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
 #define configASSERT(x) if ((x) == 0) { taskDISABLE_INTERRUPTS(); for(;;); }
 ```
 
-内核中的许多前置条件校验（包括中断优先级范围检查）都会在异常发生的第一时间触发断言，便于通过调试器快速定位调用栈。
+内核会用断言检查部分前置条件，包括一些端口的中断优先级范围。停在断言处时，保留调用栈和配置值，通常比等到后续 HardFault 再追查更容易定位。

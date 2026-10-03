@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Wi-Fi P2P (Wi-Fi Direct) 架构与协议全流程"
-subtitle: "从社交信道发现、GO 协商、WPS 配对到 SCC/MCC 多角色并发"
+title: "Wi-Fi P2P 的建链过程与并发模式"
+subtitle: "设备发现、GO 协商、WPS 与 SCC/MCC"
 date: 2024-08-18
 redirect_from: /2023/11/03/wifi-p2p-basics/
 author: Yvain Zhang
@@ -15,9 +15,9 @@ tags:
   - Linux
 ---
 
-Wi-Fi P2P（商业推广名 **Wi-Fi Direct**）允许支持该协议的无线设备在**无需传统无线路由器（AP）介入**的前提下，直接建立点对点的无线局域网。它被广泛应用于无线投屏（Miracast / Wi-Fi Display）、文件快传（如基于 Wi-Fi Direct 的无线快传）、无线打印和无人机图传等场景。
+Wi-Fi P2P（**Wi-Fi Direct**）让设备在没有外部无线路由器的情况下建立无线连接，常用于投屏、文件传输和无线打印。
 
-然而在工程实现与驱动适配中，Wi-Fi P2P 包含**社交信道发现、服务查询、GO 角色协商（Intent 竞选）、WPS 配对、内部 DHCP 分配以及多角色并发（SCC/MCC）**等完整状态机。
+建链时仍需要设备发现、GO 角色协商、安全配对和地址配置。设备同时连接路由器时，还要处理 STA 与 P2P 接口的信道关系。下面按这些步骤整理协议和调试命令。
 
 ---
 
@@ -54,7 +54,7 @@ Wi-Fi Direct 在拓扑上仍然复用了经典的 802.11 基础设施架构，�
 
 ## 2. P2P 连接全流程与状态机
 
-一次完整的 Wi-Fi Direct 建链过程包含以下 5 个核心阶段：
+下面是一条经过 GO 协商的建链路径，服务发现为可选步骤：
 
 ```mermaid
 sequenceDiagram
@@ -175,6 +175,4 @@ $ wpa_cli status
 
 ## 5. 总结
 
-1. **架构本质**：Wi-Fi P2P 是建立在 802.11 传统架构上的“动态 AP/STA 临时组网”，通过意愿值（GO Intent）协商与自主 GO 实现灵活自治。
-2. **三步核心**：**社交信道发现（1/6/11）** $\rightarrow$ **GON 握手与 WPS 配对** $\rightarrow$ **内部 DHCP 分配与 WPA2 通信**。
-3. **驱动适配重点**：在单芯片多接口场景下，优先推动系统策略实现 **SCC（同信道并发）**；若必须使用 **MCC（多信道时分切换）**，需严格校验 NoA 机制与 Beacon 保护时序，防止投屏或传输卡顿。
+P2P 故障可以按发现、协商、配对和地址分配逐段定位。单射频设备同时运行 STA 与 P2P 时，还需要记录两个接口的工作信道；使用 MCC 时，重点检查信道切换、Beacon 接收和 NoA 配合，观察它们是否影响业务时延。

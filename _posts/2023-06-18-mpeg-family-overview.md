@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "MPEG 系列标准谱系全景"
-subtitle: "从 MPEG-1/2 (VCD/DVD)、MPEG-4 (AVC/AAC/ISOBMFF) 到 MPEG-7/21 多媒体演进"
+title: "MPEG 系列标准与常见格式的关系"
+subtitle: "MPEG-1、MPEG-2、MPEG-4 及其主要子规范"
 date: 2023-06-18
 redirect_from:
   - /2021/12/14/mpeg-family-overview/
@@ -20,7 +20,7 @@ tags:
 
 从 **MPEG-1 Layer 3、MPEG-2 AAC、MPEG-4 Part 10 (AVC/H.264)、MPEG-4 Part 14 (MP4)** 到 **MPEG-H (HEVC/H.265)**，MPEG 包含多个代际与众多的 Part 子规范。
 
-MPEG 是由 **ISO（国际标准化组织）** 与 **IEC（国际电工委员会）** 于 1988 年联合成立的专家组（ISO/IEC JTC 1/SC 29/WG 11）。本文梳理 MPEG 系列标准的演进脉络、各代代表技术及核心 Part 划分。
+MPEG 由 **ISO（国际标准化组织）** 与 **IEC（国际电工委员会）** 联合组织。下面按标准系列列出常见编码、系统和容器规范，方便查清“某个格式属于哪一部分”。
 
 ---
 
@@ -65,7 +65,7 @@ MPEG-H (2013, ISO/IEC 23008) ──> 4K/8K 时代 (H.265/HEVC + 3D 音频 + MMT 
 
 ## 4. MPEG-4 (ISO/IEC 14496)：网络流媒体规范
 
-MPEG-4 面向对象化编码与网络流媒体构建了多项子规范体系：
+MPEG-4 包含音视频编码、基础文件格式和具体封装等多项子规范：
 
 ```mermaid
 graph LR

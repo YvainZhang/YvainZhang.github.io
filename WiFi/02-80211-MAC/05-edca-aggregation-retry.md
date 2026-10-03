@@ -1,6 +1,6 @@
 # EDCA、聚合、重传与 Airtime
 
-高吞吐不是由单一高 MCS 决定，而是竞争信道、获得 TXOP、形成足够聚合、在有限 Retry Budget 内被确认的共同结果。
+吞吐取决于信道竞争、TXOP、聚合规模和有限 Retry Budget 内的确认结果。高 MCS 只是其中一个条件。
 
 ## EDCA 的四组参数
 

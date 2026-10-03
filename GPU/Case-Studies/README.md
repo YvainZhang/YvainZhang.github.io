@@ -1,6 +1,6 @@
 # 跨模块工程案例
 
-本目录收录芯片原厂级的跨模块全链路端到端工程推演案例：
+本目录结合计算核心、存储、驱动与互联，推演几个任务的执行过程：
 
 1. [FlashAttention 在 SM 内部的硬件执行路径推演](01-flash-attention-hardware-path.md)
 2. [PCIe/NVLink P2P 跨卡零拷贝直接内存访问事务流](02-pcie-p2p-direct-transfer.md)

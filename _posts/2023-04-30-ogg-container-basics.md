@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "OGG 容器格式与流式复用机制"
-subtitle: "从 OggS 页面结构、Lacing 变长分包、Granule 颗粒定位到 Opus/Vorbis 封装"
+subtitle: "Page、Packet、Lacing 与 Granule Position"
 date: 2023-04-30
 redirect_from:
   - /2021/11/30/ogg-container-basics/
@@ -19,7 +19,7 @@ tags:
 
 **Ogg** 是由 Xiph.Org 基金会维护的开源多媒体容器格式（RFC 3533），广泛用于文件存储、HTTP 流式音频以及游戏音效引擎（封装 Opus / Vorbis 编码）。
 
-与 MP4 依赖集中全局索引表（`moov`）的结构不同，Ogg 面向连续流式传输设计，采用 **Ogg Page（页面）** 串联机制，支持多逻辑流复用（Multiplexing）与断点重同步。解复用器通过维护分段状态机实现跨页 Packet 的重组还原。本文梳理 Ogg 页面头部结构、Lacing 变长分包算法以及 Granule 时间戳定位机制。
+Ogg 用连续的 **Page（页面）** 承载编解码器输出的 Packet。一个 Packet 可以跨页，一页也可以装下多个 Packet；解复用器需要按逻辑流维护重组状态。下面整理页面头、Lacing 与时间定位字段。
 
 ---
 
@@ -115,6 +115,4 @@ Segment Table 写入: [ 255, 245, 100, 255, 255, 0 ]
 
 ## 5. 总结
 
-1. **流式设计**：基于 `OggS` 同步字与 27 字节轻量页头，支持网络切片中的断点重同步；
-2. **时间戳抽象**：利用 64 位 `granule_position` 由底层编解码器自主维护采样时钟；
-3. **分包开销低**：通过 Lacing 机制支持变长 Packet 的跨页拼接与边界识别。
+实现 Ogg 读取时，要分清 Page 和 Packet：页面校验通过后，Packet 仍可能尚未收齐。时间定位也需要知道具体编解码器对 `granule_position` 的定义，不能把所有 Ogg 流都按同一种时间单位解释。

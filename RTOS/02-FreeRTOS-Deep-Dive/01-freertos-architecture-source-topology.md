@@ -2,8 +2,8 @@
 
 ## 1. 架构设计哲学：极简调度微内核
 
-与 Linux 或宏内核（Monolithic Kernel）不同，FreeRTOS 的核心定位是一个**不可分拆的高性能任务调度器库**。本文分析以官方长期维护版本 [FreeRTOS Kernel V10.5.1](https://github.com/FreeRTOS/FreeRTOS-Kernel/tree/V10.5.1) 为基准。
-* **零额外硬件依赖**：只要硬件平台具备一个可递增的时钟中断和一个堆栈指针，只需编写数十行汇编即可跑起 FreeRTOS。
+FreeRTOS 内核以任务调度和同步机制为主，通过移植层适配处理器。本文以 [FreeRTOS Kernel V10.5.1](https://github.com/FreeRTOS/FreeRTOS-Kernel/tree/V10.5.1) 为基准分析源码。
+* **移植层**：需要适配任务栈初始化、上下文切换、节拍中断和临界区保护。工作量取决于处理器架构、编译器和现有端口，不能只按汇编行数估计。
 * **可裁剪性**：所有功能均通过静态编译宏 `FreeRTOSConfig.h` 控制，未使用的功能在编译链接阶段由死代码消除（Dead Code Elimination）移出固件，最小内核镜像仅需 **4KB~9KB Flash 与不到 1KB RAM**（参考 [官方二进制体积说明](https://www.freertos.org/Embedded-RTOS-Binary-Sizes.html)）。
 * **严格代码规范**：遵循 MISRA-C 规范与官方 [FreeRTOS Coding Standard](https://www.freertos.org/FreeRTOS-Coding-Standard-and-Style-Guide.html)，全套源码采用特定的匈牙利命名法前缀，使变量作用域与数据类型在阅读时一目了然。
 
@@ -90,7 +90,7 @@ FreeRTOS 刻意避免为每种同步原语写独立实现。信号量、互斥�
 | `queueQUEUE_TYPE_RECURSIVE_MUTEX` | `xSemaphoreCreateRecursiveMutex()` | `1 × 0` 字节 | 在互斥量之上再挂 `uxRecursiveCallCount`，同任务可重复 take |
 
 !!! tip
-    **复用的红利与代价**：一份 `Queue_t` 代码同时获得临界区保护、阻塞/超时、ISR 安全路径与优先级排序唤醒，测试面集中；代价是"互斥量内部是个队列"这种概念错位——排查 IPC 问题时永远从 `Queue_t` 的数据结构出发思考（见[Queue 队列与互斥量继承](04-queue-internals-semaphore-mutex.md)）。
+    **实现复用**：队列、信号量和互斥量共用 `Queue_t`，复用了临界区、阻塞、超时和唤醒逻辑。排查这几类对象时，可以从 `Queue_t` 的字段和对应分支入手，但也要区分计数、数据拷贝和优先级继承的语义（见[Queue 队列与互斥量继承](04-queue-internals-semaphore-mutex.md)）。
 
 
 同理，`timers.c` 不自建通信机制：所有定时器启停命令（start/stop/reset/change-period）都打包成 `DaemonTaskMessage_t` 投递给一条**普通队列**（timer command queue），由守护任务消费——这是"用现有 IPC 原语搭建系统服务"哲学的第二个样本。
@@ -173,4 +173,4 @@ FreeRTOS 刻意避免为每种同步原语写独立实现。信号量、互斥�
 | 一切正常唯独偶发断言/复位，时间点与某外设初始化相关 | 外设库把某中断优先级设到了 syscall 阈值之上，且该 ISR 调了 `FromISR` API | 检查 `HAL_NVIC_SetPriority` 数值与 `configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY` 的关系（详见[中断安全规范](06-freertos-isr-safety-pitfalls.md)第 2 节） |
 
 !!! note
-    **三条启动期铁律**：① 三个异常 handler 的映射宏必须与向量表符号严格一致；② 所有创建类 API 的返回值必须检查；③ `configASSERT` 与栈溢出检测（`configCHECK_FOR_STACK_OVERFLOW = 2`）在开发期永远开启——这些检查有助于尽早定位配置和内存错误。
+    **启动时要检查的三件事**：① 异常 handler 的映射与向量表一致；② 检查创建类 API 的返回值；③ 开发期启用 `configASSERT` 与栈溢出检测（如 `configCHECK_FOR_STACK_OVERFLOW = 2`），尽早发现配置和内存错误。

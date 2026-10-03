@@ -2,9 +2,9 @@
 
 ## 模块导读与原厂定位
 
-音频编解码器（Audio Codec）是物理模拟现实世界与数字二进制计算世界之间的混合信号桥梁。它集成了极低噪声前置放大器（LNA/PGA）、高阶 Sigma-Delta 模数与数模转换器（ADC/DAC）、高效率功率放大器（Class-D/AB PA）以及高精度插入检测阻抗测量电路。
+音频编解码器（Audio Codec）负责模拟信号与数字采样之间的转换。常见部件包括前置放大器（LNA/PGA）、Sigma-Delta ADC/DAC、功率放大器（Class-D/AB PA）和插孔检测电路，具体集成范围因芯片而异。
 
-在芯片原厂中，Codec 的微架构设计直接决定了整机的信噪比（SNR）、动态范围（DNR）、总谐波失真（THD+N）以及无播放时的底噪极限。
+Codec 设计影响信噪比（SNR）、动态范围（DNR）、总谐波失真（THD+N）和底噪；整机指标还需要结合供电、PCB 与负载测量。
 
 ```mermaid
 graph LR

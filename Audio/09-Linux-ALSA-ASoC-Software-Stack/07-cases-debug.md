@@ -6,7 +6,7 @@
 ```bash
 tinyplay /test.wav -D 0 -d 0
 ```
-系统出现诡异现象：
+观察到以下现象：
 1. 终端命令行光标停滞卡死，持续 10 秒后打印错误退出：`pcm_write: cannot write stream: Broken pipe (Underrun)`；
 2. 整个过程中，扬声器完全没有发出任何声音，使用万用表测量功放使能引脚，始终处于拉低未使能状态。
 
@@ -34,7 +34,7 @@ sequenceDiagram
 ### 深入分析排查步骤
 
 1. **查看声卡拓扑状态（DAPM 调试秘籍）**：
-   Linux 内核提供了强大的 Debugfs 接口，直接反映每个 DAPM Widget 的物理供电状态：
+   Linux 内核的 Debugfs 接口可以查看每个 DAPM Widget 的物理供电状态：
    ```bash
    cat /sys/kernel/debug/asoc/my-soundcard/dapm/SPK
    # 输出显示: SPK: Off (电源关闭)
@@ -77,4 +77,4 @@ static const struct snd_soc_dapm_route fixed_audio_routes[] = {
     { "SPK", NULL, "Speaker Amp" },
 };
 ```
-并在驱动 probe 函数末尾调用 `snd_soc_dapm_sync(dapm)` 强制同步初始拓扑，彻底杜绝首次播放无声故障。
+并在驱动 probe 函数末尾调用 `snd_soc_dapm_sync(dapm)` 同步初始拓扑，再检查首次播放时的路由、部件电源状态与实际输出。

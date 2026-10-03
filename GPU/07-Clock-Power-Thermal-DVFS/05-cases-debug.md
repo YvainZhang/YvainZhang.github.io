@@ -19,4 +19,4 @@ graph TD
 - **根因**：没有阶梯式时钟升频缓冲，全芯片数万个 MAC 单元在同一周期翻转产生巨大电流冲击。
 - **修复方案**：在 PMU 固件中引入 **Clock Ramping（阶梯升频）** 策略：
   - 在 Kernel 启动的前 $15\mu s$ 内，将 Core Clock 分 8 步逐渐提升（800MHz $\rightarrow$ 1.2GHz $\rightarrow$ 1.6GHz $\rightarrow$ 2.0GHz）；
-  - 将 $di/dt$ 峰值限制在 $< 15\text{ A/}\mu\text{s}$，电压跌落幅度控制在 $<3\%$，彻底解决断电问题。
+  - 将 $di/dt$ 峰值限制在 $< 15\text{ A/}\mu\text{s}$，电压跌落幅度控制在 $<3\%$。需在相同负载下复测供电波形与 OCP 触发情况，确认调整效果。

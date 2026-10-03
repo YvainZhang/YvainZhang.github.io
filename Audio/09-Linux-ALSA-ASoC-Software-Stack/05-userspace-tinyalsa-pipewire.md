@@ -26,7 +26,7 @@ graph TD
 | :--- | :--- | :--- | :--- | :--- |
 | **TinyALSA** | 嵌入式 Linux / Android HAL | **极简 (< 30KB)** | **极低 (取决于底层内核)** | 直接对 ALSA ioctl 进行极简 C 语言封装，原厂 Bring-up 与产测调试首选 |
 | **PulseAudio** | 传统 Ubuntu / 桌面 Linux | 庞大 | 较高 (20ms ~ 50ms) | 功能极其丰富（网络音频串流、多蓝牙编解码支持、动态混音） |
-| **PipeWire** | 现代 Linux (Fedora/SteamOS) / 专业音频 | 适中 | **发烧级 (< 5ms)** | 基于 Pipe 消息与环形缓冲设计，彻底解决专业音乐制作低延迟与桌面易用性冲突 |
+| **PipeWire** | 现代 Linux (Fedora/SteamOS) / 专业音频 | 适中 | 低时延目标（< 5ms，取决于配置） | 基于 Pipe 消息与环形缓冲设计，同时服务桌面与专业音频，实际时延需要结合设备和缓冲设置测量 |
 
 ---
 

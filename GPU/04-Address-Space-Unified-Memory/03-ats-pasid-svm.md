@@ -11,5 +11,7 @@
 
 ## 2. Linux HMM (Heterogeneous Memory Management)
 
-Linux 内核主线通过 HMM 框架实现了系统级无缝内存共享：
+Linux HMM 提供进程地址空间镜像与设备内存迁移的辅助接口；设备驱动仍需要完成硬件相关的页表更新与同步：
 - 驱动通过 `hmm_range_fault()` 将 CPU 进程的匿名虚拟内存页面安全镜像映射至 GPU 页表中，支持 C++ 原生指针与动态分配（`malloc` / `std::vector`）直接在 GPU 核心内解引用。
+
+参考：[Linux HMM 文档](https://docs.kernel.org/mm/hmm.html)。

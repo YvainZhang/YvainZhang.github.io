@@ -1,6 +1,6 @@
 # 05 专用张量 DMA 引擎
 
-本模块探讨 NPU 芯片内部最关键的数据搬运中枢——**多维 Tensor DMA 引擎**，解析多维 Stride 寻址、硬件数据格式转换（NCHW $\leftrightarrow$ NC4HW4）与权重在线解压技术。
+本章介绍 **多维 Tensor DMA 引擎**：如何按 Stride 搬运张量、转换数据排布（NCHW $\leftrightarrow$ NC4HW4），以及在搬运过程中解压权重。
 
 ## 章节导航
 

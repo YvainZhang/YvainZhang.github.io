@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "自治 Agent 核心运行时与有限状态机 (FSM) 工程实战：沙箱隔离、超时熔断与自愈闭环"
-subtitle: "从有限状态机、参数契约校验、并发超时看门狗到独立外部验收"
+title: "Agent 运行时设计笔记：控制循环、参数校验与外部验收"
+subtitle: "按六个阶段梳理执行流程，附 Python 参考骨架和实现边界"
 date: 2026-08-25
 author: "Yvain Zhang"
 series: "技术"
@@ -16,16 +16,17 @@ tags:
     - Python
 ---
 
-## 1. 为什么问答式 LLM 无法解决真实工程任务？
+## 1. 让模型输出接上环境反馈
+{: id="1-为什么问答式-llm-无法解决真实工程任务"}
 
-在大语言模型被广泛用作聊天助手（Chatbot）时，整个交互模型是单轮或基于直觉的多轮追加：用户输入一段文本，模型返回一段文本。这种模式被称为 **Stateless Generation（无状态生成）**。
+模型可以根据输入给出代码和排查建议，但如果没有工具反馈，就无法直接确认文件是否修改、代码是否编译通过，或设备是否处于预期状态。多轮对话可以由应用保存历史，运行状态也需要应用维护。
 
-但在操作系统、芯片固件、复杂代码重构以及长周期网络排障等真实工程场景中，单次生成面临致命缺陷：
-1. **缺乏环境感知反馈**：模型无法确认自己编写的代码是否能通过编译，也无法确认自己修改的驱动寄存器是否引发死锁。
-2. **缺乏原子动作与状态机约束**：模型极易陷入虚假推断（Hallucination），当中间某个步骤出错时，只会盲目道歉并重复错误代码。
-3. **不可逆副作用失控**：如果在没有权限围栏的真实终端中随意执行命令，一条错误的 `rm -rf` 或破坏性写盘操作将直接摧毁开发环境。
+在代码重构、固件调试或网络排障中，运行时需要处理几个问题：
+1. **环境反馈**：把编译、测试或设备查询结果返回给模型，区分建议与已验证事实。
+2. **执行状态**：记录任务进度、失败原因和下一步动作，限制重复调用和无进展的重试。
+3. **副作用与权限**：明确工具可访问的路径、可执行的动作，以及哪些操作需要授权或恢复方案。
 
-**工业级自治 Agent（Autonomous Agent）的本质，不是让大模型更像人说话，而是一个以大模型为决策内核、由确定性有限状态机（FSM）进行约束、并在受控沙箱中执行工具并根据环境反馈持续自愈的控制系统。**
+本文把 Agent 运行时按目标、上下文、决策、执行、观察和状态更新六个阶段拆开讨论。有限状态机（FSM）可用于规定允许的转移；下面的代码则演示较简化的顺序控制循环，并未实现完整的状态转移表。
 
 ```
  ┌──────────────────────────────────────────────────────────────┐
@@ -39,7 +40,7 @@ tags:
    [02. 上下文装配]    ──> 前缀缓存 (Prefix Cache) 对齐 + 注意力预算裁剪
            │
            ▼
-   [03. 决策推理]      ──> LLM 产生思考链 (Thought) 与结构化 Tool Call
+   [03. 决策推理]      ──> LLM 产生结构化 Tool Call 或完成声明
            │
      ┌─────┴─────────────────────┐
      ▼                           ▼
@@ -47,7 +48,7 @@ tags:
      │                           │
      ▼                           ▼
 [04. 沙箱受控执行]          [最终断言评估]
-  - PTY 伪终端隔离            - 单元测试与构建检查
+  - 权限与隔离边界            - 单元测试与构建检查
   - 超时心跳熔断              - 产物完整性验证
   - 破坏性命令拦截                 │
      │                           ▼
@@ -62,44 +63,47 @@ tags:
 
 ---
 
-## 2. 核心架构三大硬约束公理 (Runtime Axioms)
+## 2. 三个运行时设计问题
+{: id="2-核心架构三大硬约束公理-runtime-axioms"}
 
-在设计自动化执行引擎时，我们总结了三条不容妥协的工程硬约束：
+设计执行循环时，可以先明确工具范围、状态来源和失败恢复方式。
 
-### 公理一：约束优于自由 (Constraint Over Freedom)
-给模型过高的自由度是灾难的开端。必须将任务解空间严格限制在预设的工具集合与状态转移矩阵中：
-- 工具的入参必须使用强类型声明（如 JSON Schema 或 Pydantic 校验），非法参数在执行前直接拦截报错并要求模型纠偏，杜绝传参幻觉。
-- 设定不可逾越的 **Step Budget（最大步数限制，如 25 步）** 与 **Token Budget**，防止因模型死循环而耗尽配额。
+### 一：限制工具范围与执行预算
+{: id="公理一约束优于自由-constraint-over-freedom"}
+- 用 JSON Schema 或 Pydantic 等校验工具参数，在执行前返回类型、必填字段或范围错误。通过校验的参数仍可能在业务语义上不合适。
+- 设定 **Step Budget（最大步数限制，如 25 步）**、Token 和时间预算。预算耗尽时返回未完成状态，而不是继续无上限重试。
 
-### 公理二：状态显式化 (Explicit State Representation)
-绝不依赖大模型在漫长的自注意力机制中隐式“记住”环境状态。
+### 二：显式记录环境状态
+{: id="公理二状态显式化-explicit-state-representation"}
+运行时可以维护以下状态，并将本轮需要的部分提供给模型：
 - **当前激活的工作路径**（Working Directory）
 - **当前已修改但未提交的文件清单**（Dirty File List）
 - **当前步骤消耗与剩余步数**（Step Counter）
 - **环境检查的关键断言结果**（Assertion Status）
 
-这些状态必须在每轮推理提示词的尾部作为强约束元数据显式序列化注入，消除上下文膨胀带来的状态漂移。
+状态应来自实际工具查询或运行时记录，不能只沿用模型的描述。放在动态上下文区域可避免频繁改变静态前缀。
 
-### 公理三：工具原子化与回滚守卫 (Atomic & Rollback Guard)
-所有可调用工具必须具备幂等性与事务保护：
-- 在调用代码修改工具前，运行时自动对目标文件创建临时快照（Shadow Backup）。若执行过程异常或语法校验崩溃，自动回滚至干净状态。
-- 终端命令执行必须跑在非阻塞 PTY（伪终端）内部，设置严格的超时阈值（如单命令默认 30 秒），超时自动发出 `SIGTERM` / `SIGKILL` 终止子进程，坚决防止交互提示符挂死。
+### 三：定义失败后的恢复方式
+{: id="公理三工具原子化与回滚守卫-atomic--rollback-guard"}
+- 文件修改可以先创建快照，失败后恢复该步骤触及的文件。恢复时要保留用户原有改动；外部设备写入或网络操作不一定可回滚。
+- 命令执行需要持续读取输出、设置超时并回收进程。交互程序可使用 PTY，普通构建也可使用管道；PTY 本身不是安全沙箱。
+- 区分可重复执行的幂等操作与有副作用的操作，避免重试时重复提交或写入。
 
 ---
 
 ## 3. 六阶段状态机执行流详解
 
 ### Stage 1: 目标规范化 (Goal & Constraints Initialization)
-接收用户自然语言指令，解析出根任务目标，并锁定不可变的上下文元数据：
+接收用户指令，记录任务目标、验收要求和初始环境信息：
 - 工作区绝对路径（Workspace Root）
 - 权限安全模式（Safe / Approval / Bypass）
 - 初始环境快照（Git HEAD Commit）
 
 ### Stage 2: 上下文装配与预算裁剪 (Context Assembly)
-上下文装配阶段负责组织即将喂给大模型的完整消息数组：
-1. **不可变前缀（Immutable Prefix）**：包含系统提示词、可用工具声明、静态规范。该部分严格保持字节级不变，以确保触发大模型推理引擎（如 Gemini / Claude）的 **Prefix Prompt Caching**，免去重复 Prefill 计算并显著改善首字生成时延与吞吐表现。
-2. **动态滑动窗口（Sliding History）**：只保留最近 3~4 轮的完整工具交互日志。
-3. **压缩摘要（Folded Ephemera）**：超过 4 轮的中间试错日志，折叠为结构化的摘要（如 `[COMPACT: Step 1-3 compiled failed with C2065, fixed in Step 4]`），大幅降低长文本注意力负担。
+上下文装配阶段组织模型请求中的消息：
+1. **稳定前缀（Stable Prefix）**：包含系统提示词、工具声明和静态规范。保持一致有利于前缀缓存复用，但实际命中还取决于服务的缓存规则。
+2. **近期历史（Recent History）**：按任务保留最近几轮工具交互，例如 3~4 轮；窗口大小需要结合上下文预算调整。
+3. **历史摘要（Compact Summary）**：提取较早步骤中的决定、错误与修复记录，例如 `[COMPACT: Step 1-3 compile failed with C2065, fixed in Step 4]`。完整记录另存，必要时回查。
 
 ### Stage 3: 模型决策与参数路由 (Inference & Tool Routing)
 调用模型生成输出。输出通常分为两类：
@@ -107,10 +111,10 @@ tags:
 - **Final Message**：模型认为任务已达成，输出总结性报告。
 
 ### Stage 4: 沙箱隔离执行 (Sandboxed Execution)
-工具分发器执行具体动作：
+工具分发器先校验权限和参数，再执行动作。下面只是流程示意，命令模式匹配不能代替操作系统隔离：
 ```python
 def dispatch_command(cmd_args: List[str], timeout_sec: int = 30) -> ToolResult:
-    # 1. 危险命令模式与可执行文件白名单拦截
+    # 1. 检查已列出的危险命令模式；可执行文件白名单需另行实现
     cmd_line = " ".join(cmd_args)
     if any(pat.search(cmd_line) for pat in DANGEROUS_PATTERNS):
         return ToolResult(status=ToolStatus.SECURITY_BLOCK, error="Security Guard: Dangerous command blocked.")
@@ -121,29 +125,33 @@ def dispatch_command(cmd_args: List[str], timeout_sec: int = 30) -> ToolResult:
 ```
 
 ### Stage 5: 观察清洗与确定性断言 (Observation & Assertion)
-工具执行完后，不能把动辄上万行的编译器输出原封不动塞回上下文：
+工具执行后，可以从长日志中提取本轮需要的信息：
 - 剥离无用的进度条文本（如 `[===>    ] 34%`）。
 - 提取非零退出码和包含 `error:`, `fatal:`, `panic` 的核心错误堆栈。
-- 运行针对性断言：例如代码修改后，自动运行静态语法检查 `python -m py_compile` 或 `gcc -fsyntax-only`，将确凿的机器验证结果转化为文字观察。
+- 运行针对性检查：例如 `python -m py_compile` 或 `gcc -fsyntax-only`。语法检查只能说明对应检查通过，功能正确性还需测试或其他验收。
 
 ### Stage 6: 状态流转与 Reflexion 反思 (State Transition)
 将清洗后的结构化观察回写进会话记忆：
 - 若观察表明操作成功，推进子任务进度表。
-- 若观察表明操作失败，要求模型在下一步思考中显式输出 **Reflexion（自愈反思）**：
+- 若操作失败，可以要求模型说明下一轮排查依据：
   > “上一步失败的原因是什么？当前的假设错在哪里？下一步应当如何调整策略？”
 
 ---
 
 ## 4. 控制循环参考骨架实现：Python 核心状态机与进程安全守卫
 
-> **定位说明**：本节代码为**教学与架构验证用的精简参考骨架（Reference Skeleton）**。它完整呈现了状态机流转、参数契约拦截（包括 `null` 与非对象保护）、超时参数归一化、可强制终止并清理的子进程执行方案，以及外部独立验收机制。在量产多租户或工业级研发环境中，底层命令需进一步置于 Docker 隔离容器、Firecracker MicroVM 或非阻塞受限 PTY 沙箱中执行。
+本节代码展示参数检查、历史裁剪、子进程调用和外部验收如何接到同一循环。它是参考骨架，需要补上 `llm_client`、工具注册和验收器才能使用。
+
+阅读时有几个实现边界要分清：`max_tokens` 尚未参与实际计数；`prune()` 丢弃较早历史并插入固定提示，并没有生成内容摘要；参数检查只覆盖部分字段类型，不是完整 JSON Schema 校验。进程组便于终止同组进程，但不限制文件或网络权限，脱离该组的后代也不在清理范围内。管道 `poll()` 的超时不等于整个接收过程都有同样的期限。代码依赖 Unix 进程机制，其他启动方式需要调整。
+
+实际部署还需补充权限隔离、输出限制、完整超时处理和任务状态持久化，不能把示例中的命令正则当作安全边界。
 
 ```python
 """
 Minimal Autonomous Agent Runtime Skeleton (可终止进程执行与契约校验参考实现)
 Author: Yvain Zhang
 Architecture: ReAct FSM + Context Budget + Schema Validation + Process Watchdog + External Verifier
-Note: 用于系统架构验证与教学演示。在真实生产多租户环境中，需套接容器/微虚拟机沙箱。
+Note: 用于阅读控制流程；权限隔离、完整预算与超时处理需另行实现。
 """
 
 import os
@@ -223,7 +231,7 @@ def validate_schema(schema: Dict[str, Any], args: Any) -> Optional[str]:
     return None
 
 class ContextBudgetManager:
-    """负责上下文窗口预算管理、前缀缓存对齐与长历史有损压缩"""
+    """按近期轮数裁剪历史；未实现 Token 计数或历史内容摘要"""
     def __init__(self, max_tokens: int = 128000, keep_recent_turns: int = 4):
         self.max_tokens = max_tokens
         self.keep_recent_turns = keep_recent_turns
@@ -241,7 +249,7 @@ class ContextBudgetManager:
         return prefix + [compact_summary] + recent
 
 def _kill_process_tree(proc: mp.Process):
-    """强制清理子进程及其衍生的整棵进程树，防止任何忽略 SIGTERM 的后代进程逃逸"""
+    """尝试终止 worker 及同组进程；不覆盖脱离该进程组的后代"""
     pid = proc.pid
     if not pid:
         return
@@ -249,7 +257,7 @@ def _kill_process_tree(proc: mp.Process):
     parent_pgid = os.getpgrp()
 
     # 1. 尝试向 worker 建立的独立进程组发送 SIGTERM（优雅终止）
-    # worker 启动时已执行 os.setsid()，其 PGID 等于 pid
+    # 若 worker 的 os.setsid() 成功，其 PGID 等于 pid
     if pid != parent_pgid:
         try:
             os.killpg(pid, signal.SIGTERM)
@@ -265,8 +273,8 @@ def _kill_process_tree(proc: mp.Process):
     # 给予短暂优雅退出窗口
     proc.join(timeout=0.05)
 
-    # 2. 关键修复：无论 worker 是否存活，必须无条件向该进程组强制下发 SIGKILL！
-    # 彻底剿灭任何忽略 SIGTERM（如 trap '' TERM 或自定义信号处理器）的后代进程
+    # 2. 再向该进程组发送 SIGKILL
+    # 同组内忽略 SIGTERM 的后代进程也会收到该信号
     if pid != parent_pgid:
         try:
             os.killpg(pid, signal.SIGKILL)
@@ -286,7 +294,7 @@ def _kill_process_tree(proc: mp.Process):
         pass
 
 class ToolDispatcher:
-    """强类型参数校验、独立进程组隔离、超时排空防死锁与受控沙箱分发器"""
+    """部分参数类型校验、进程组执行与超时检查示例；未实现权限沙箱"""
     def __init__(self):
         self.registry: Dict[str, ToolSpec] = {}
         self.dangerous_patterns = [
@@ -322,7 +330,7 @@ class ToolDispatcher:
                     if pat.search(val):
                         return ToolResult(status=ToolStatus.SECURITY_BLOCK, output="", exit_code=126, error=f"安全阻断: 检测到高危指令模式 '{pat.pattern}'")
 
-        # 3. 真实可终止的进程执行方案：独立进程组隔离、超时排空防死锁与整组物理清理
+        # 3. 在 worker 进程中执行工具，并尝试建立独立进程组
         ctx = mp.get_context("fork" if hasattr(os, "fork") else None)
         parent_conn, child_conn = ctx.Pipe()
 
@@ -347,16 +355,16 @@ class ToolDispatcher:
         proc.start()
         child_conn.close()  # 父进程关闭子端，防止句柄泄露
 
-        # 关键机制：在超时预算内先通过 poll 轮询管道数据，排空缓冲区，杜绝管道写满死锁导致的误判超时
+        # 等待管道可读；后续 recv 的完整读取还需单独处理超时与输出上限
         if not parent_conn.poll(clean_timeout):
-            # 真正超时：物理终止并回收整棵进程树（包括 worker 及其衍生所有子进程）
+            # 等待超时：尝试终止 worker 及其同组进程
             _kill_process_tree(proc)
             parent_conn.close()
             return ToolResult(
                 status=ToolStatus.TIMEOUT,
                 output="",
                 exit_code=124,
-                error=f"工具执行超时 (超过 {clean_timeout} 秒)，整棵进程树已被强制终止并清理。"
+                error=f"工具执行超时 (超过 {clean_timeout} 秒)，已尝试终止工具进程及其同进程组内的子进程。"
             )
 
         # 管道就绪后立即读取排空数据，解除 worker 端 send 阻塞，随后回收进程
@@ -389,7 +397,7 @@ class AutonomousRunner:
     def __init__(self, llm_client, dispatcher: ToolDispatcher, verifier: Optional[Callable[[], ToolResult]] = None, max_steps: int = 25):
         self.llm = llm_client
         self.dispatcher = dispatcher
-        self.verifier = verifier  # 外部独立验收断言器（关键安全护栏：绝不盲目信任模型自报）
+        self.verifier = verifier  # 外部验收器，检查结果是否符合任务要求
         self.budget = ContextBudgetManager()
         self.max_steps = max_steps
         self.history: List[Dict[str, str]] = []
@@ -407,7 +415,7 @@ class AutonomousRunner:
             # 2. 大模型决策推理
             decision = self.llm.generate_decision(messages=active_context)
 
-            # 3. 终结判断：必须经受外部独立断言器验收，拒绝模型虚假自报
+            # 3. 模型声明完成后，调用外部验收器；未配置时返回未验证状态
             if decision.get("is_complete"):
                 if self.verifier is None:
                     return {
@@ -422,7 +430,7 @@ class AutonomousRunner:
                 if verify_res.status == ToolStatus.SUCCESS:
                     return {"status": "SUCCESS", "steps": step, "output": decision.get("final_summary")}
                 else:
-                    # 验收未通过！将客观失败证据注入上下文，强迫模型分析并自愈纠偏
+                    # 将验收失败结果加入上下文，进入下一轮修正
                     obs_entry = (
                         f"[第 {step} 步独立验收失败] 退出码: {verify_res.exit_code}\n"
                         f"断言报错: {verify_res.error or verify_res.output}\n"
@@ -452,8 +460,9 @@ class AutonomousRunner:
 
 ---
 
-## 5. 总结与工程落地建议
+## 5. 从小范围任务开始验证
+{: id="5-总结与工程落地建议"}
 
-1. **永远从一个最小的状态机开始**：不要试图一次性让 Agent 自治做所有事。先将任务范围限制在只读排查、测试运行或单文件修复等可验证闭环内。
-2. **将单元测试当做 Agent 的“眼睛”**：只有当外部断言或编译器真正输出 exit 0 时，Agent 的任务才算成功。绝不轻信模型的自我汇报。
-3. **在终端集成中善用 MCP 标准协议**：将工具拆解为独立的微服务，为团队沉淀可复用的底层基础设施。
+1. **限制初始范围**：可先选择只读排查、测试运行或单文件修复，检查循环是否能正确处理成功、失败和预算耗尽。
+2. **按任务定义验收**：编译和测试的 exit 0 是证据之一，还要确认检查覆盖了任务要求，并记录未验证部分。
+3. **按复用需求组织工具**：需要被多个客户端调用的工具可用 MCP 暴露，本地函数也适合小范围实验。

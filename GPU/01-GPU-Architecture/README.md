@@ -1,6 +1,6 @@
 # 01 GPU 总体架构
 
-本模块建立现代高性能 GPGPU / 渲染 GPU 的芯片级宏观架构视图。学习完成后，读者应能够清晰剖析一颗顶级 GPU（如 Hopper/Blackwell 或 CDNA3 架构）的 Top-Level 框图、PCIe BAR 空间划分、时钟/电源拓扑、软硬件执行边界以及流片后的 Bring-up 流程。
+本章从 GPGPU / 渲染 GPU 的 Top-Level 框图开始，整理 PCIe BAR 空间、时钟与电源域、软硬件执行边界及 Bring-up 流程。Hopper/Blackwell 和 CDNA3 用作架构实例；阅读时需要区分不同厂商与代际的实现。
 
 ## 学习目标
 

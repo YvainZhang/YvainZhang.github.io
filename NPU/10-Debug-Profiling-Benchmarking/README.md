@@ -1,6 +1,6 @@
 # 10 性能评测、调试与利用率分析
 
-本模块建立 NPU 原厂级算力利用率评测模型（MFU/HFU）、性能瓶颈诊断（Roofline）与端到端 Timeline Trace 性能分析体系。
+本章整理算力利用率（MFU/HFU）、Roofline 与 Timeline Trace 的使用方法，重点区分计算、搬运和任务下发造成的等待。
 
 ## 章节导航
 

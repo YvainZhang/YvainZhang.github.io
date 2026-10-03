@@ -2,15 +2,15 @@
 
 ## 1. 为什么需要 minialsa：嵌入式 RTOS 的音频驱动困境
 
-在 Linux 平台中，ALSA (`libasound`) 与 ASoC 提供了完备的音频子系统抽象，但其代价是极其庞大的内核与用户态代码量（动辄数万行、数百 KB 内存占用），且深度依赖 POSIX 文件描述符 (`/dev/snd/pcmC*D*p`)、动态链接库与 VFS 虚拟文件系统。
+Linux 的 ALSA 和 ASoC 提供设备、PCM 流和板级音频连接等抽象，应用可通过 `libasound` 和 `/dev/snd/pcmC*D*p` 访问设备。这套接口依赖 Linux 的内核与用户态环境，移植到 MCU 时需要重新评估依赖和资源开销。
 
-在基于 **FreeRTOS / RT-Thread / 裸机** 的嵌入式 AIoT 芯片（如 RISC-V、Cortex-M）中，系统的 RAM 通常在几百 KB 级别，Flash 在几 MB 级别。如果直接移植 Linux ALSA 既不现实也没必要；而若直接暴露芯片原厂裸机 I2S/DMA 寄存器或简单的驱动函数（如 `hal_i2s_write()`），则会导致上层多媒体播放器、算法库（AEC/EQ）与底层硬件紧密耦合，无法实现跨芯片平台复用。
+在运行 **FreeRTOS / RT-Thread / 裸机** 的 RISC-V 或 Cortex-M 系统中，RAM 可能只有几百 KB，Flash 为几 MB。应用若直接调用特定芯片的 I2S/DMA 接口，如 `hal_i2s_write()`，跨平台时就需要处理这些接口差异。可以用一层较小的 PCM 抽象集中管理参数、状态和缓冲。
 
-**minialsa（轻量级 ALSA）应运而生**。它的核心使命是：
-* **API 标准化**：向上提供极度精简、但在语义上与 Linux ALSA/TinyALSA 完全对齐的标准 PCM 接口（`aos_pcm_open`, `aos_pcm_write`, `aos_pcm_read`, `aos_pcm_close`）。
-* **轻量级实现**：核心代码与数据结构控制在 **10KB 以内**，无需依赖 POSIX 文件系统。
+本文用 **minialsa** 这一 ALSA-like 抽象说明 RTOS PCM 层的设计，关注以下接口与约束：
+* **PCM 接口**：提供 `aos_pcm_open`、`aos_pcm_write`、`aos_pcm_read` 和 `aos_pcm_close`；与 ALSA/TinyALSA 的状态、返回值和单位是否一致，要逐项定义。
+* **实现体积**：若目标为核心代码与数据结构 **10KB 以内**，需要明确编译配置和统计范围；接口本身可以不依赖 POSIX 文件系统。
 * **硬件抽象与隔离**：通过函数指针虚表（`struct aos_pcm_ops`）解耦上层应用与底层硬件 I2S/DMA 控制器。
-* **确定性实时性与同步**：基于 RTOS 二值信号量（Binary Semaphore）或事件标志组（Event Group）实现高效的阻塞/非阻塞 PCM 投递，无缝桥接软件线程与硬件 DMA 环形中断。
+* **同步**：通过 RTOS 信号量或事件传递 DMA 完成通知，支持阻塞与非阻塞读写；能否满足实时期限，还取决于任务调度和缓冲配置。
 
 ---
 
@@ -142,14 +142,14 @@ sequenceDiagram
 ## 5. 软硬件设计约束：零拷贝与实时同步
 
 ### 5.1 零拷贝（Zero-Copy）优化机制
-在低算力 MCU（如主频 160MHz~320MHz 的 RISC-V）上，`memcpy` 会消耗宝贵的 CPU 周期与总线带宽。
+在主频 160MHz~320MHz 的 MCU 上，可以测量 `memcpy` 占用，判断重复拷贝是否值得优化。
 * **传统拷贝模式**：`App Buffer` $\xrightarrow{\text{memcpy}}$ `minialsa RingBuffer` $\xrightarrow{\text{memcpy}}$ `DMA Buffer`。
 * **零拷贝 Direct MMAP 模式**：
-  minialsa 借鉴 ALSA MMAP 思维，允许应用通过 `aos_pcm_mmap_begin` 直接获取底层 DMA 正在空闲的物理缓冲指针，音频解码器直接把 PCM 解码写入该内存，最后调用 `aos_pcm_mmap_commit` 提交。全程 **0 次内存拷贝**。
+  可以借鉴 ALSA MMAP 的接口方式，由 `aos_pcm_mmap_begin` 返回可写区域，解码器直接输出 PCM，再用 `aos_pcm_mmap_commit` 提交。这条路径以 **0 次额外 PCM 拷贝**为目标，但要明确区域所有权、对齐、缓存同步和取消时的生命周期。
 
 ### 5.2 确定性中断与欠载保护（Underrun 防护）
 * 当 CPU 被 WiFi 协议栈高优先级任务中断占用，应用写入线程无法及时唤醒时，DMA 缓冲区将被耗尽（Underrun / XRUN）。
-* 在 minialsa 中，若 DMA 发生欠载，ISR 不应直接停止硬件，而应将 DMA 源地址临时指向预先准备好的 **静音缓冲区（Mute / Zero Buffer）**，避免 I2S 总线由于断钟或输出浮空产生剧烈的直流偏置“POP”爆音。
+* 欠载时可以考虑切换到预先准备的静音缓冲区，或执行目标 Codec 支持的 mute/stop 流程。哪种方式安全，取决于 DMA 更新时机、时钟要求和模拟输出状态，应结合波形验证。
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Geek Lab"
-description: "前沿技术雷达：上下文工程、自治 Agent 运行时、终端 Harness、具身闭环与开发工具链。"
+description: "关于上下文工程、Agent 运行时、终端编程工具与具身控制的学习笔记。"
 permalink: /geek/
 ---
 
@@ -25,7 +25,7 @@ permalink: /geek/
                 </div>
                 <aside class="geek-console" aria-label="实验室控制台与导航">
                     <div class="geek-console-head">
-                        <span>AGENT LAB / 2026 ACTIVE</span>
+                        <span>AGENT LAB / STUDY NOTES</span>
                         <i aria-hidden="true"></i>
                     </div>
                     <ol>
@@ -59,10 +59,10 @@ permalink: /geek/
         <!-- 00 Flagship Deep-Dive Handbooks -->
         <section class="geek-section geek-handbook-section" id="handbooks" aria-labelledby="handbooks-heading">
             <div class="geek-section-heading">
-                <p>00 / FLAGSHIP HANDBOOKS</p>
+                <p>00 / STUDY NOTES</p>
                 <div>
-                    <h2 id="handbooks-heading">系统深度研习专篇 · 从内核到实践</h2>
-                    <p>摒弃空洞概念，针对自治系统工程的关键命题，提供系统级原理推导、主流技术架构解构与精简参考代码实现。点击卡片进入专篇研习。</p>
+                    <h2 id="handbooks-heading">四篇系统设计笔记</h2>
+                    <p>分别讨论运行时、上下文、终端工具和具身控制，整理机制与实现边界。参考代码用于说明流程，具体效果仍需在目标任务和环境中验证。</p>
                 </div>
             </div>
 
@@ -83,7 +83,7 @@ permalink: /geek/
                         </div>
                     </div>
                     <div class="geek-handbook-btn">
-                        进入专篇深入学习 <i>→</i>
+                        阅读笔记 <i>→</i>
                     </div>
                 </a>
                 {% endfor %}
@@ -227,7 +227,7 @@ permalink: /geek/
                         </ul>
                         {% if agent.expand_points %}
                         <details class="geek-expand-box">
-                            <summary>展开核心机制与评测实操</summary>
+                            <summary>展开机制与检查要点</summary>
                             <div class="geek-expand-content">
                                 <ul>
                                     {% for ep in agent.expand_points %}
@@ -281,7 +281,7 @@ permalink: /geek/
                         <li>{{ duty }}</li>
                         {% endfor %}
                     </ul>
-                    <div class="geek-loop-constraint"><strong>硬实时约束：</strong>{{ loop.constraint }}</div>
+                    <div class="geek-loop-constraint"><strong>运行约束：</strong>{{ loop.constraint }}</div>
                     {% if loop.expand_points %}
                     <details class="geek-expand-box">
                         <summary>展开控制模型与保护机制</summary>
@@ -332,9 +332,9 @@ permalink: /geek/
                 </div>
                 <pre><code class="language-python">"""
 Minimal Autonomous Agent Runtime Skeleton (可终止进程执行与契约校验参考实现)
-Author: Yvain Zhang (Base Nanjing)
+Author: Yvain Zhang
 Architecture: ReAct FSM + Context Budget + Schema Validation + Process Watchdog + External Verifier
-Note: 用于系统架构验证与教学演示。在真实生产多租户环境中，需套接容器/微虚拟机沙箱。
+Note: 用于阅读控制流程；权限隔离、完整预算与超时处理需另行实现。
 """
 import os
 import sys
@@ -404,7 +404,7 @@ def validate_schema(schema: Dict[str, Any], args: Any) -> Optional[str]:
     return None
 
 class ContextBudgetManager:
-    """负责上下文窗口预算管理、前缀缓存对齐与长历史有损压缩"""
+    """按近期轮数裁剪历史；未实现 Token 计数或历史内容摘要"""
     def __init__(self, max_tokens: int = 128000, keep_recent_turns: int = 4):
         self.max_tokens = max_tokens
         self.keep_recent_turns = keep_recent_turns
@@ -421,7 +421,7 @@ class ContextBudgetManager:
         return prefix + [compact_summary] + recent
 
 def _kill_process_tree(proc: mp.Process):
-    """强制清理子进程及其衍生的整棵进程树，防止任何忽略 SIGTERM 的后代进程逃逸"""
+    """尝试终止 worker 及同组进程；不覆盖脱离该进程组的后代"""
     pid = proc.pid
     if not pid:
         return
@@ -429,7 +429,7 @@ def _kill_process_tree(proc: mp.Process):
     parent_pgid = os.getpgrp()
 
     # 1. 尝试向 worker 建立的独立进程组发送 SIGTERM（优雅终止）
-    # worker 启动时已执行 os.setsid()，其 PGID 等于 pid
+    # 若 worker 的 os.setsid() 成功，其 PGID 等于 pid
     if pid != parent_pgid:
         try:
             os.killpg(pid, signal.SIGTERM)
@@ -445,8 +445,8 @@ def _kill_process_tree(proc: mp.Process):
     # 给予短暂优雅退出窗口
     proc.join(timeout=0.05)
 
-    # 2. 关键修复：无论 worker 是否存活，必须无条件向该进程组强制下发 SIGKILL！
-    # 彻底剿灭任何忽略 SIGTERM（如 trap '' TERM 或自定义信号处理器）的后代进程
+    # 2. 再向该进程组发送 SIGKILL
+    # 同组内忽略 SIGTERM 的后代进程也会收到该信号
     if pid != parent_pgid:
         try:
             os.killpg(pid, signal.SIGKILL)
@@ -466,7 +466,7 @@ def _kill_process_tree(proc: mp.Process):
         pass
 
 class ToolDispatcher:
-    """强类型参数校验、独立进程组隔离、超时排空防死锁与受控沙箱分发器"""
+    """部分参数类型校验、进程组执行与超时检查示例；未实现权限沙箱"""
     def __init__(self):
         self.registry: Dict[str, ToolSpec] = {}
         self.dangerous_patterns = [
@@ -502,7 +502,7 @@ class ToolDispatcher:
                     if pat.search(val):
                         return ToolResult(status=ToolStatus.SECURITY_BLOCK, output="", exit_code=126, error=f"安全阻断: 检测到高危指令模式 '{pat.pattern}'")
 
-        # 3. 真实可终止的进程执行方案：独立进程组隔离、超时排空防死锁与整组物理清理
+        # 3. 在 worker 进程中执行工具，并尝试建立独立进程组
         ctx = mp.get_context("fork" if hasattr(os, "fork") else None)
         parent_conn, child_conn = ctx.Pipe()
 
@@ -527,12 +527,12 @@ class ToolDispatcher:
         proc.start()
         child_conn.close()
 
-        # 关键机制：在超时预算内先通过 poll 轮询管道数据，排空缓冲区，杜绝管道写满死锁导致的误判超时
+        # 等待管道可读；后续 recv 的完整读取还需单独处理超时与输出上限
         if not parent_conn.poll(clean_timeout):
-            # 真正超时：物理终止并回收整棵进程树（包括 worker 及其衍生所有子进程）
+            # 等待超时：尝试终止 worker 及其同组进程
             _kill_process_tree(proc)
             parent_conn.close()
-            return ToolResult(status=ToolStatus.TIMEOUT, output="", exit_code=124, error=f"工具执行超时 (超过 {clean_timeout} 秒)，整棵进程树已被强制终止并清理。")
+            return ToolResult(status=ToolStatus.TIMEOUT, output="", exit_code=124, error=f"工具执行超时 (超过 {clean_timeout} 秒)，已尝试终止工具进程及其同进程组内的子进程。")
 
         # 管道就绪后立即读取排空数据，解除 worker 端 send 阻塞，随后回收进程
         try:
@@ -559,7 +559,7 @@ class AutonomousRunner:
     def __init__(self, llm_client, dispatcher: ToolDispatcher, verifier: Optional[Callable[[], ToolResult]] = None, max_steps: int = 25):
         self.llm = llm_client
         self.dispatcher = dispatcher
-        self.verifier = verifier  # 外部独立验收断言器（关键安全护栏：绝不盲目信任模型自报）
+        self.verifier = verifier  # 外部验收器，检查结果是否符合任务要求
         self.budget = ContextBudgetManager()
         self.max_steps = max_steps
         self.history: List[Dict[str, str]] = []
@@ -577,7 +577,7 @@ class AutonomousRunner:
             # 2. 大模型决策推理
             decision = self.llm.generate_decision(messages=active_context)
 
-            # 3. 终结判断：必须经受外部独立断言器验收，拒绝模型虚假自报
+            # 3. 模型声明完成后，调用外部验收器；未配置时返回未验证状态
             if decision.get("is_complete"):
                 if self.verifier is None:
                     return {"status": "SUCCESS_UNVERIFIED", "steps": step, "output": decision.get("final_summary"), "warning": "未配置独立验证器，结果未经验收断言"}

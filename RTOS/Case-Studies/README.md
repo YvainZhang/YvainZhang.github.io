@@ -19,7 +19,7 @@ graph TD
 
 2. [任务栈溢出与中断嵌套现场破坏排查](02-stack-overflow-isr-corruption-debug.md)
    - 内存无痕破坏（Silent Corruption）现象
-   - MPU 硬件 Guard Region 零延迟捕获故障现场
+   - MPU 硬件 Guard Region 访问保护与故障记录
    - 栈底水位线（Canary Watermark）探测与调试器 HardFault 现场回溯手记
 
 3. [异构多核 AMP RPMsg 跨核通信实战](03-amp-rpmsg-heterogeneous-multicore.md)

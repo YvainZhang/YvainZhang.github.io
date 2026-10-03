@@ -23,8 +23,8 @@ sequenceDiagram
 ```
 
 !!! note
-    **设计铁律**：PendSV（Pended Service Call）的硬件优先级必须被设置为**系统最低优先级（0xFF）**。
-    这样保证了**上下文切换永远推迟到所有嵌套硬件中断全部执行完毕后**，在系统安全返回线程模式前夕统一执行，彻底杜绝了中断现场被任务调度破坏的致命隐患。
+    **端口配置要求**：本文的 Cortex-M 端口将 PendSV（Pended Service Call）设为**系统最低优先级（寄存器值 0xFF）**。
+    这样，PendSV 在更高优先级的活跃异常退出后执行，任务切换不会发生在它们的处理过程中。这个配置仍需配合正确的中断优先级和 FromISR API 使用方式。
 
 
 ---
@@ -128,7 +128,7 @@ xPortPendSVHandler:
 mov r0, #configMAX_SYSCALL_INTERRUPT_PRIORITY
 msr basepri, r0
 ```
-如果将其替换为全局关中断指令 `cpsid i`（修改 PRIMASK），将导致系统内所有不调用内核 API 的“零延迟强实时中断”（如急停保护、高频逆变器采样）也被无差别死死锁住，彻底摧毁系统的最高实时保证。使用 BASEPRI 既保护了内核链表不被可调用 API 的中断重入破坏，又赋予了关键硬件最高响应权。
+若改用 `cpsid i`（修改 PRIMASK），不调用内核 API 的高优先级可屏蔽中断也会被屏蔽，增加其响应延迟。BASEPRI 只屏蔽阈值范围内的中断，在保护内核数据的同时，允许更高优先级中断响应。
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## 1. 全双工大模型流式语音全链路时延数学模型
 
-在评估端侧大模型智能音箱（Voice Agent）的用户体验时，最核心的指标是 **交互响应时延（Turn-around Time / Time-to-First-Audio, TTFA）**，即从用户停止说话的物理瞬间 $t_0$，到音箱扬声器输出回复第一声物理声波的瞬间 $t_1$ 的全链路总时间差：
+**首声时延（Time-to-First-Audio, TTFA）**可以定义为用户停止说话的时刻 $t_0$，到扬声器输出回复首声的时刻 $t_1$。下面用 ASR → LLM → TTS 级联列出预算项；流式阶段可能重叠，实际总时延需要按关键路径测量：
 
 $$T_{\text{TTFA}} = T_{\text{VAD\_hangover}} + T_{\text{enc}} + T_{\text{net\_up}} + T_{\text{cloud\_ASR}} + T_{\text{cloud\_LLM\_TTFT}} + T_{\text{cloud\_TTS\_chunk}} + T_{\text{net\_down}} + T_{\text{jitter\_buf}} + T_{\text{dec}} + T_{\text{dma\_render}}$$
 
@@ -20,7 +20,7 @@ $$T_{\text{TTFA}} = T_{\text{VAD\_hangover}} + T_{\text{enc}} + T_{\text{net\_up
 | $T_{\text{jitter\_buf}}$ | 端侧抗网络抖动安全缓冲深度 | 60 ~ 100 | 40 | 自适应动态门限：根据网络丢包率动态调整蓄水池深度 |
 | $T_{\text{dec}}$ | 端侧首帧 Opus 解码并写入 DMA | 5 | 2 | 解码后 PCM 直接投喂 DMA 描述符，免中间拷贝 |
 | $T_{\text{dma\_render}}$ | DMA 缓冲吐到扬声器物理发声 | 20 | 10 | 将 Period 尺寸从 512 压缩到 256 采样点 |
-| **全链路总和** | **总交互延迟** | **725 ~ 1265 ms** | **467 ms** | **达成人类自然对话无顿挫感的物理极限** |
+| **全链路总和** | **串行预算总和** | **725 ~ 1265 ms** | **467 ms** | 这组配置下的预算，需测量实际阶段重叠与首声时间 |
 
 ---
 
@@ -37,6 +37,6 @@ $$P_{\text{underrun}} = P(t_{\text{arrival}} > T_{\text{jb}}) = \int_{T_{\text{j
 
 $$T_{\text{jb}}(k) = \max \left( T_{\text{min}}, \mu_{\text{jitter}}(k) + \alpha \times \sigma_{\text{jitter}}(k) \right)$$
 
-* 其中 $\alpha = 3$（对应正态分布 99.7% 置信区间，破音率 $P < 0.3\%$）；
+* 其中 $\alpha = 3$，可参考正态分布 99.7% 的区间覆盖；$P < 0.3\%$ 只对应这里的统计假设，不能直接作为设备破音率保证；
 * 当网络平稳（$\sigma \to 0$）时，$T_{\text{jb}}$ 自动收缩至 $T_{\text{min}} = 40\text{ ms}$（仅需缓存 2 帧）；
-* 当检测到 WiFi 拥塞发生（$\sigma > 30\text{ ms}$）时，缓冲池在 3 帧内自适应平滑扩张至 $120\text{ ms}$，并协同 Opus PLC 启动丢包补偿，防止扬声器产生撕裂破音。
+* 当 $\sigma > 30\text{ ms}$ 时，可以评估在 3 帧内将缓冲目标扩张至 $120\text{ ms}$。调整仍需考虑可用数据量、增加的交互等待和 PLC 的适用范围；网络时延的长尾与相关性可能不符合高斯假设。

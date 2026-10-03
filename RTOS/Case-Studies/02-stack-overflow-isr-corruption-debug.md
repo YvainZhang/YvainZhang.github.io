@@ -2,7 +2,7 @@
 
 ## 1. 静默破坏（Silent Corruption）现象
 
-在嵌入式开发中，任务栈溢出往往不会在第一时间内引发崩溃，而是展现为极其诡异的“幽灵故障”：
+任务栈溢出可能先破坏相邻内存，过一段时间才出现崩溃。常见线索包括：
 * 某个全局变量在没有任何代码写它的情况下值被随机修改。
 * 某个正在睡眠的任务莫名其妙醒来，或者在下一次切入时直接跳入 `0xFFFFFFFE`。
 * 串口打印偶尔乱码，几个小时后触发随机 HardFault。
@@ -37,14 +37,14 @@ printf("Task remaining stack space: %lu words\n", uxHighWaterMark);
 ```
 * 如果返回值趋近于 0，说明任务栈已濒临溢出，必须立即在创建时扩容。
 
-### 2.2 方案二：MPU 硬件 Guard Region（零延迟就地捕获）
-软件水印只能在任务切换或定时检查时后知后觉地发现。为了在溢出的**第一条指令发生瞬间**捕获现场，可以配置 ARM MPU：
+### 2.2 方案二：MPU 硬件 Guard Region
+软件检查需要等到任务切换或检查点。MPU 可以在访存命中保护区时触发异常，但不会在栈指针刚越界时自动报警，也不能保证捕获跨过保护区的访问。配置时要核对处理器的区域大小、对齐和权限要求：
 
 ```mermaid
 flowchart LR
     Task["用户任务指令执行: PUSH {R4-R11}"] --> SP["SP 指针触碰 MPU 保护的 Guard 32B 区域"]
-    SP --> Fault["硬件总线阻断! 立即触发 MemManage Fault 异常"]
-    Fault --> Freeze["CPU 在事故现场立即停机，保留完整的函数调用栈与寄存器!"]
+    SP --> Fault["访问保护区，触发 MemManage Fault"]
+    Fault --> Freeze["异常处理程序记录故障地址、栈帧与寄存器"]
 ```
 
 ### 2.3 方案三：内核自检钩子（`configCHECK_FOR_STACK_OVERFLOW`）
@@ -99,7 +99,7 @@ void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
 | `CFSR.STKERR`/`UNSTKERR`（bit 12/11，总线fault） | 异常出入栈期间访问非法——多为**主栈（MSP/ISR 栈）**耗尽 | 核查中断嵌套深度与 `configISR_STACK_SIZE`（如使用） |
 | `CFSR.IBUSERR`（CFSR bit 8 / BFSR bit 0） + PC 值异常（如 `0xFFFFFFFE`） | 跳转到非法地址执行——典型于**函数指针/返回地址被栈践踏后** `bx lr` 飞跳 | 检查 LR 来源函数的栈帧是否与被破坏区域相邻（map 文件比对地址归属） |
 | `CFSR.INVSTATE=1`（CFSR bit 17 / UFSR bit 1） | 跳转目标非 Thumb 状态（xPSR 状态异常）——同样是控制流被改写的次生症状 | 同上，先找「谁写了栈」而非「谁跳的飞」 |
-| `HFSR.FORCED=1` | 可配置异常升级为 HardFault：读 `CFSR` 找真凶 | 永远优先解码 CFSR 而非停在 HardFault 本身 |
+| `HFSR.FORCED=1` | 可配置异常升级为 HardFault：继续读取 `CFSR` | 根据 CFSR 区分内存管理、总线和用法异常 |
 
 ### 3.2 从证据到源码的工具链闭环
 
@@ -115,10 +115,10 @@ HardFault 钩子提取栈帧(PC/LR) ──► arm-none-eabi-addr2line -e fw.elf 
 
 ## 4. 症状二分：栈溢出 / 堆破坏 / 野指针
 
-三类「幽灵故障」表象相似，按以下顺序二分可最快收敛：
+这三类故障的表象相似，可以按破坏位置、栈检查和访问记录逐步缩小范围：
 
 1. **先看破坏对象的位置属性**：受害数据紧贴某任务栈下界 → 栈溢出；受害数据在 `.bss` 中离任何栈都远 → 野指针/DMA 误写；受害对象位于堆区（`heap_4` 空闲链表节点被改）→ 堆越界（`pvPortMalloc` 断言或链表环死为伴生症状）。
-2. **栈溢出验证**：`uxTaskGetStackHighWaterMark` 全任务扫描 + 模式 2 钩子 + MPU Guard 复现（三者任一命中即定罪）。
+2. **栈溢出验证**：扫描各任务的 `uxTaskGetStackHighWaterMark`，结合模式 2 钩子和 MPU Guard 记录，判断是否发生了越界访问；水位低本身不等于已经溢出。
 3. **堆越界验证**：在 `pvPortMalloc/vPortFree` 加前哨字节检查（块头尾各埋魔数）；`heap_4` 的 `configASSERT( pxLink->xBlockSize & heapBLOCK_ALLOCATED_BITMASK )` 命中即为经典证据。
 4. **野指针/DMA 验证**：将可疑缓冲区先 `memset` 魔数并 MPU 设只读观察触发点；核查 DMA 目的地址/长度寄存器配置（Cache 使能时还须 clean/invalidate——参见 [Case 03](03-amp-rpmsg-heterogeneous-multicore.md) 的一致性章节）。
-5. **兜底手段**：DWT 数据观察点（watchpoint 对准受害地址，**写入即断**零侵入定罪；SEGGER Ozone 或 GDB `watch *(uint32_t*)0x...` 均可下）。
+5. **数据观察点**：若处理器支持 DWT watchpoint，可以监视被破坏的地址，捕获 CPU 的写入位置。SEGGER Ozone 或 GDB `watch *(uint32_t*)0x...` 可用于设置观察点，具体覆盖范围要结合硬件调试能力确认。

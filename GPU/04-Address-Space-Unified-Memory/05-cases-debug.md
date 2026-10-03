@@ -28,4 +28,4 @@ sequenceDiagram
 
 ### 2. 根因剖析与解决
 - **根因**：程序在 CPU 上更新配置参数，随后在 GPU 上计算，两者交替读写同一块未经区域隔离的统一内存，引发 2MB 大页在 PCIe 5.0 总线上来回无效搬运。
-- **优化方案**：使用 `cudaMemAdvise` 对只读参数配置 `cudaMemAdviseSetReadMostly`（硬件在 CPU 与 GPU 显存各自保留只读副本），并在训练前调用 `cudaMemPrefetchAsync` 预取，消除了 100% 的运行时缺页中断。
+- **优化方案**：使用 `cudaMemAdvise` 对只读参数配置 `cudaMemAdviseSetReadMostly`（硬件在 CPU 与 GPU 显存各自保留只读副本），并在计算前调用 `cudaMemPrefetchAsync` 预取，以减少运行时缺页与迁移。应对照访问模式检查缺页计数和传输量，不能仅凭启用这些接口就判断迁移已消除。

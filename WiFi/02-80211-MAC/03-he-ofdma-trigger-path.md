@@ -1,6 +1,6 @@
 # 802.11ax OFDMA 与 Trigger 实时路径
 
-OFDMA 的核心不是“把带宽切成 RU”，而是让多个 STA 在同一个 PPDU 时间窗口内满足频率、时间和功率对齐。
+OFDMA 将带宽分配为 RU，同时要求多个 STA 在同一个 PPDU 时间窗口内完成频率、时间和功率对齐。
 
 ## 下行 HE MU
 

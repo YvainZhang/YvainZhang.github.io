@@ -1,6 +1,6 @@
 # 状态、所有权与生命周期设计
 
-跨 Host/Firmware/Hardware 的 Wi-Fi 系统，最难的通常不是正常路径，而是对象在异步事件到达时是否仍然有效。VIF、Peer、Key、BA Session、Packet 和 Command 都应有显式生命周期。
+Wi-Fi 系统横跨 Host、Firmware 与 Hardware。异步事件到达时，对象可能已经销毁或被复用，因此 VIF、Peer、Key、BA Session、Packet 和 Command 都需要明确的生命周期。
 
 ## 先区分六类对象
 

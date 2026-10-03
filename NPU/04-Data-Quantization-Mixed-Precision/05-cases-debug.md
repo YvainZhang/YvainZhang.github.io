@@ -73,7 +73,7 @@ flowchart TD
    对于单侧非对称长尾激活层，禁用 KL 散度，切换为 **MSE（均方误差最小化）** 或 **Percentile 截断法（设定 99.99% 保留百分位）**：
    $$\arg\min_T \| X - \text{clip}(X, 0, T) \|_2$$
 2. **非对称量化（Asymmetric Quantization）结合零点偏移（Zero Point）**：
-   使量化区间完整覆盖 $[0, T]$，零点 $Z = -128$ 对应数值 0，释放完整的 8-bit（256 个档位）分辨率，mAP 完美恢复至 47.9%。
+   使量化区间完整覆盖 $[0, T]$，零点 $Z = -128$ 对应数值 0，释放完整的 8-bit（256 个档位）分辨率，本例的 mAP 恢复至 47.9%；其他模型仍需重新校准并验证。
 
 ---
 
@@ -107,4 +107,4 @@ graph LR
 ### 3. 根治方案：Mixed FP8 异构流水线配置
 - **混合格式编排**：在前向与反向 GEMM 密集矩阵乘中保持使用 **FP8-E4M3** 获取高精度尾数；在包含 Softmax、LayerNorm 及反向梯度张量（Gradients）阶段，强制采用 **FP8-E5M2** 或保持 **BF16**。
 - **动态延迟缩放（Delayed Dynamic Scaling）**：
-  硬件实现每 16 个 Step 统计一次张量最大绝对值 $A_{\text{max}}$，动态更新 Scale 因子 $S = \frac{\text{FP8\_Max}}{A_{\text{max}}}$，彻底杜绝下溢与饱和。
+  硬件实现每 16 个 Step 统计一次张量最大绝对值 $A_{\text{max}}$，动态更新 Scale 因子 $S = \frac{\text{FP8\_Max}}{A_{\text{max}}}$，降低下溢与饱和风险，并持续统计异常值比例。

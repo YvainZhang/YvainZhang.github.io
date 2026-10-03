@@ -1,6 +1,6 @@
 # VIF、Peer、Key、BA Context 与 Reset 一致性
 
-Firmware 中最重要的数据结构通常不是某个算法，而是把 VIF、Peer、Key、TID、BA、Power 和 Scheduler 状态正确绑定起来的 Context 图。
+Firmware 中的 VIF、Peer、Key、TID、BA、Power 和 Scheduler 状态通过 Context 关联。创建、删除与 Reset 时，都需要检查这些关联是否仍然有效。
 
 ## Context 关系
 

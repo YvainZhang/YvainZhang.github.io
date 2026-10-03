@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "网络编程与 Socket 实践指南"
-subtitle: "从 TCP 状态机、I/O 多路复用 (epoll)、TCP_NODELAY 到 lwIP 嵌入式协议栈调优"
+title: "Socket 编程中的连接、时延与 I/O 处理"
+subtitle: "TCP 状态机、常用选项、epoll 与 lwIP 内存模型"
 date: 2022-03-06
 redirect_from:
   - /2022/12/02/network-programming-practical-notes/
@@ -17,7 +17,7 @@ tags:
   - Linux
 ---
 
-无论是在 Linux 服务端开发，还是在嵌入式系统（Linux / RTOS lwIP）上开发联网组件，除了基础的 `socket()`、`bind()`、`listen()`、`connect()` API 之外，深入理解传输层行为对于排查网络异常至关重要。
+调用 `socket()`、`bind()`、`listen()` 和 `connect()` 可以建立连接，但连接建立后的行为仍需要单独排查。
 
 在弱网或高并发环境中，开发者常遇到以下问题：
 - 小包交互时偶发约 40ms 延迟抖动；
@@ -25,7 +25,7 @@ tags:
 - 对端断网后，本端连接长时间处于假死状态；
 - 嵌入式协议栈（如 lwIP）中网络驱动与应用层的数据传递开销。
 
-本文梳理 Socket 编程的状态机、I/O 模型、常用 Socket 选项与嵌入式网络优化策略。
+下面分别整理连接状态、小包时延、保活和 I/O 处理；最后补充 lwIP 的缓冲区与线程接口。
 
 ---
 
@@ -140,6 +140,4 @@ setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, &keepcount, sizeof(keepcount));
 
 ## 5. 总结
 
-1. **状态机把控**：理解 `TIME_WAIT` 与 `CLOSE_WAIT` 的产生时机，合理配置 `SO_REUSEADDR`；
-2. **时延与保活**：对时延敏感的小包交互可开启 `TCP_NODELAY`，对静默长连接可配置 `SO_KEEPALIVE`；
-3. **架构选型**：Linux 服务端采用非阻塞与 epoll 模型，嵌入式环境关注 lwIP `pbuf` 内存池与驱动数据流转。
+网络异常可以先按连接状态、发送等待和收包处理三个方向检查。`TCP_NODELAY` 和 Keepalive 都有适用条件，修改前后应观察抓包与应用日志；使用 epoll ET 模式时，则要确认所有读写路径都正确处理了非阻塞返回值。

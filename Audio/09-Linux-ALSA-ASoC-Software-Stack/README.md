@@ -2,9 +2,9 @@
 
 ## 模块导读与原厂定位
 
-在现代嵌入式系统、汽车座舱与移动设备中，Linux 音频子系统构成了硬件芯片与上层多媒体应用程序之间最关键的承重墙。
+Linux 音频子系统向应用提供 PCM 录放音接口，并协调 DMA、数字接口、Codec 和电源管理。
 
-从底层的 DMA 内存映射、I2S 控制器寄存器交互，到高层的声卡拓扑绑定与毫安级动态音频电源编排（DAPM），**ALSA（Advanced Linux Sound Architecture）及其专为嵌入式设计的 ASoC（ALSA System on Chip）框架**定义了一套严密、解耦且高度可复用的原厂驱动架构体系。
+本章介绍 **ALSA（Advanced Linux Sound Architecture）与 ASoC（ALSA System on Chip）**中的 PCM、声卡组件、DAPM 路由和驱动回调，重点看各层如何协作。
 
 ```mermaid
 graph TD

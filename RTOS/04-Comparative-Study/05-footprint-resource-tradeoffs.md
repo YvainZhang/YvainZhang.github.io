@@ -29,7 +29,7 @@ Flash 差距是「付一次」，RAM 差距才是「每线程都付」。两类�
 | **名称/调试字段** | `pcTaskName`（configMAX_TASK_NAME_LEN） | `thread_name`（可选配置） | 裁剪点：缩短或关闭 |
 
 !!! note
-    **任务栈通常是 RAM 预算的重要部分**：每线程 128B~4KB 的栈 × 线程数，远超控制块总和。FreeRTOS 的 `configMINIMAL_STACK_SIZE` 与 Zephyr 的 `CONFIG_MAIN_STACK_SIZE`/`K_THREAD_STACK_SIZEOF` 才是 RAM 预算的主战场。栈尺寸必须以「High-Water Mark 实测 + 最坏嵌套路径复核」双保险确定，而非拍脑袋常数。
+    **任务栈通常是 RAM 预算的重要部分**：以每线程 128B~4KB 为例，乘以线程数后可能超过控制块总量。应核对 FreeRTOS 的 `configMINIMAL_STACK_SIZE`、Zephyr 的 `CONFIG_MAIN_STACK_SIZE`/`K_THREAD_STACK_SIZEOF` 等配置，再结合 High-Water Mark 实测、最坏嵌套路径和余量确定栈尺寸。
 
 
 对象成本应从实际构建取值：FreeRTOS 的队列/信号量复用 `Queue_t`，软件定时器每个实例有自己的控制块，命令队列与服务任务由实例共享。Zephyr 的 `k_msgq`、`k_sem`、`k_timer` 等分别计量。栈、堆和缓冲池若已在 `.bss` 或 `.noinit` 中预留，不应重复加总。

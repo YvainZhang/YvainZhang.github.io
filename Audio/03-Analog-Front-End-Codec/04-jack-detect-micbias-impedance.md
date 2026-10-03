@@ -73,7 +73,7 @@ graph TD
 
 ## 5. 软硬件设计约束
 
-- **MICBIAS 极致电源抑制比与滤波**：MICBIAS 通常提供 1.8V 或 2.8V 电压，要求在 $20\text{ Hz} \sim 20\text{ kHz}$ 带宽内的噪声小于 **$2\mu\text{Vrms}$**。外部引脚必须紧靠配置一颗高频低 ESR 陶瓷电容（$1\mu\text{F} \sim 2.2\mu\text{F}$），严禁省略。
+- **MICBIAS 电源抑制与滤波**：这里以 1.8V 或 2.8V 偏置、$20\text{ Hz} \sim 20\text{ kHz}$ 带宽内噪声小于 **$2\mu\text{Vrms}$** 为设计示例。外接电容是否需要及其容量必须依目标 Codec 的稳定性要求决定，不能统一要求 $1\mu\text{F} \sim 2.2\mu\text{F}$；例如 [TI TLV320AIC3263 数据手册](https://www.ti.com/lit/ds/symlink/tlv320aic3263.pdf)明确不应在 MICBIAS/MICBIAS_EXT 线上额外放置电容。
 - **插孔防静电（ESD）防护**：耳机插孔暴露于外界，极易受到人体静电直接放电（接触放电 $\pm 8\text{ kV}$，空气放电 $\pm 15\text{ kV}$）。在进入 Codec 之前，必须串接专用的超低结电容（$< 0.5\text{ pF}$）双向 TVS 静电保护二极管，防止结电容过大引起高频音频失真。
 
 ---

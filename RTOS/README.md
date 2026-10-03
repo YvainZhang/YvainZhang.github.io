@@ -28,7 +28,7 @@ hide:
     <a href="02-FreeRTOS-Deep-Dive/04-queue-internals-semaphore-mutex/">IPC 解锁 / 唤醒</a><i>→</i>
     <a href="01-RTOS-Fundamentals/02-task-lifecycle-tcb-context-switch/">目标任务恢复</a>
   </div>
-  <p class="rtos-home-flow-note">实时性的核心不是“运行得最快”，而是“在严格限定的时限（Deadline）内确定性完成”。</p>
+  <p class="rtos-home-flow-note">实时系统需要在截止时间（Deadline）内完成任务。分析时要同时检查计算耗时、调度延迟和中断干扰。</p>
 </section>
 
 <section class="rtos-home-section">
@@ -45,7 +45,7 @@ hide:
     <a class="rtos-route-card" href="02-FreeRTOS-Deep-Dive/">
       <span>Step 02</span>
       <h3>FreeRTOS 源码分析</h3>
-      <p>极简微内核哲学、pxReadyTasksLists 双向链表与硬件前导零位图、PendSV 汇编现场切换、Queue 底层实现。</p>
+      <p>内核源码组织、pxReadyTasksLists 双向链表与位图调度、PendSV 汇编现场切换、Queue 底层实现。</p>
     </a>
     <a class="rtos-route-card" href="03-Zephyr-Deep-Dive/">
       <span>Step 03</span>

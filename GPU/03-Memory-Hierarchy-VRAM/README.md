@@ -1,6 +1,6 @@
 # 03 显存系统与存储层次
 
-本模块全方位剖析 GPU 芯片从**片上 SRAM（寄存器堆、Shared Memory、L1 Cache）到片上大容量 L2 Cache，再到片外高带宽显存（HBM3e / GDDR7）**的完整存储金字塔体系。
+本章沿 GPU 的存储层次阅读：**寄存器堆、Shared Memory、L1/L2 Cache 与片外显存（HBM3e / GDDR7）**。重点是容量、访问方式和带宽约束怎样影响算子性能。
 
 ## 学习目标
 

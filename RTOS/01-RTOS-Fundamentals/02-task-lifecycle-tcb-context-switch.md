@@ -33,7 +33,7 @@ stateDiagram-v2
 
 ## 2. 任务控制块（TCB）内存拓扑
 
-任务控制块（Task Control Block, TCB）是内核感知并操纵任务的唯一抽象句柄。为了实现汇编上下文切换的最高性能，**当前堆栈指针（Stack Pointer）必须作为 TCB 结构体的第一个成员**。
+任务控制块（Task Control Block, TCB）保存任务状态、优先级和栈等信息。在本文分析的 FreeRTOS 版本中，**栈顶指针是 TCB 的第一个成员**，移植层汇编按这个布局访问它。这是该实现的约定，不能据此推断所有 RTOS 都必须采用同一布局。
 
 ```c
 /* 依据 FreeRTOS V10.5.1 tasks.c 语义的教学精简版，条件编译字段视内核裁剪而定 */
@@ -150,14 +150,14 @@ flowchart TD
     F -->|"静态创建"| H["仅摘除，不释放（内存归应用所有）"]
 ```
 
-* **为什么必须延迟回收**：自删除的任务绝不能释放自己**正在其上运行**的栈；且 heap 的相邻块合并操作也不适合放在中断退出路径里执行。空闲任务是唯一保证不持有任何被删任务栈/TCB 引用的安全上下文。
+* **为什么需要延迟回收**：任务不能在自己的栈上运行时释放这块栈。FreeRTOS 将自删除任务的栈和 TCB 清理交给空闲任务，待任务退出执行后再回收。
 * **回收吞吐有限**：空闲任务的清理函数循环处理待清理任务；短时间内批量删除会积压在 `xTasksWaitingTermination` 中，依赖 `uxDeletedTasksWaitingCleanUp` 计数逐步清零。
 
 !!! warning
     **删除持锁任务 = 经典事故源**：
     1. 任务持有互斥量时被删除，内核**不会**代为释放锁——锁将永久保持占用状态，所有等待者无限阻塞；
     2. 应用层散落的任务句柄立即悬空（use-after-free），故障可能在删除后很久才显形。
-    工程铁律：**删除前确保任务不持锁、外部无残留句柄引用**；高频创建/删除的业务改用常驻任务 + 命令队列。
+    删除前应确认任务不持锁、外部没有残留句柄引用。若业务频繁创建和删除任务，可以评估常驻任务加命令队列的方式。
 
 
 ---
@@ -221,7 +221,7 @@ flowchart TD
    * **方法一**：在切换任务时检查 `pxTopOfStack <= pxStack`（栈指针是否已跌出下界）。
    * **方法二（Magic Pattern）**：在栈底保留 16~32 字节并预填充魔数（如 `0xA5A5A5A5`），切换时如果发现魔数被破坏，立即触发 `vApplicationStackOverflowHook`。
 3. **硬件 MPU 边界隔离（Hardware Guard Region）**：
-   利用 ARM Cortex-M MPU，将每个任务私有栈底前 32 字节配置为"不可读写无访问权限（No Access）"。当指针触碰栈底瞬间，硬件立刻触发 **MemManage Fault**，实现零延迟就地捕获。
+   可在任务栈边界设置 MPU 无访问权限区域。当访存落入保护区时，硬件触发 **MemManage Fault**。区域大小与对齐需符合具体 Cortex-M MPU 的要求；只移动栈指针或跨过整个保护区的访问，仍可能漏检。可参阅 [FreeRTOS MPU 说明](https://github.com/FreeRTOS/FreeRTOS-Website-Content/blob/main/content/en-us/Security/04-FreeRTOS-MPU-memory-protection-unit.md)。
 
 三种手段的取舍矩阵与栈尺寸确定方法学详见 [内存模型与保护机制](05-memory-management-safety.md)。
 
@@ -233,7 +233,7 @@ flowchart TD
 | :--- | :--- | :--- |
 | **硬件双栈解耦** | 硬件提供专用 **MSP** (Handler态) 与 **PSP** (线程态) | 仅单物理 SP，依靠 **`sscratch`** 寄存器在汇编入口执行原子交换 |
 | **异常进入压栈** | **硬件自动压入** 8 个 Caller 寄存器 (xPSR, PC, LR, R0-R3, R12) | **硬件零自动压栈**，仅更新 `sepc` / `scause`，由软件统一压入 144 字节 `trap_frame` |
-| **协作式调度换栈** | 依然触发 PendSV 异常完成完整现场出入栈 | 直接通过 `switch_context` 仅压入 14 个 Callee 寄存器 (`ra, sp, s0-s11`)，耗时减半 |
+| **协作式调度换栈** | 依然触发 PendSV 异常完成完整现场出入栈 | 通过 `switch_context` 保存 14 个 Callee 寄存器 (`ra, sp, s0-s11`)，具体耗时需实测 |
 | **特权隔离机制** | 特权模式 (Privileged) vs 非特权模式 (Unprivileged) + MPU 物理切分 | **S-Mode** (内核态) vs **U-Mode** (用户态) + **Sv32** 虚拟内存二级页表隔离 |
 | **动手实践入口** | [FreeRTOS PendSV 汇编现场切换](../02-FreeRTOS-Deep-Dive/03-context-switch-pendsv-assembly.md) | [RVKernel Lab 01 & 02: 启动与换栈实操](../Labs/lab01-rv32-boot-trap-paging.md) |
 

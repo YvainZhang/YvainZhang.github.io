@@ -51,13 +51,13 @@ static int mp4_read_descr_len(stream_reader_t *sr, uint32_t *len, uint32_t box_e
 ### 2. 全链路数据流抓包定位
 1. 在端侧 WiFi 驱动层、WebSocket 层和 Opus 解码层分别进行时间戳打点和帧计数；
 2. Wireshark 抓包表明：云端 TTS 下发的是 20ms 一帧的连续 Opus 语音包，每个包约为 40~60 字节；
-3. **关键发现**：由于端侧 lwIP 协议栈的 TCP 接收窗口较小，在 WiFi 丢包重传时，TCP 接收流将若干个 WebSocket 帧粘包或分片。端侧轻量级 WebSocket 库在处理 `FIN` 标志与分片帧（Continuation Frame）时，由于状态机漏洞，**在重传超时情况下错误地丢弃了一个音频切片，但向解码器喂入了长度为 0 的坏数据**；
-4. Opus 解码器在收到异常长度后内部滤波状态机失锁，输出的 PCM 数据产生了周期性的振铃伪影（Ringing Artifacts），直观听感即为金属机械音。
+3. **接收层检查**：TCP 提供可靠、有序的字节流，网络重传会增加等待，Socket 的一次读取也可能只返回部分 WebSocket 帧。应用需要自行保留未读完的数据，并区分 TCP 读边界和 WebSocket `FIN`/Continuation 的消息重组；TCP 重传本身不会把完整应用消息直接变成丢帧。[TCP 规范](https://www.rfc-editor.org/rfc/rfc9293.html)、[WebSocket 分片规则](https://www.rfc-editor.org/rfc/rfc6455.html#section-5.4)
+4. **音频层检查**：若端侧解析器错误丢弃音频分片，或播放期限到达前数据仍未可用，应记录丢弃位置、包序号与解码调用。需要结合输出 PCM 判断伪影，不能仅凭“金属音”就认定解码器状态失锁。
 
 ### 3. 修复方案
-1. **完善 WebSocket 分片组包状态机**：严格校验 `FIN` 位与操作码（Opcode `0x00` Continuation vs `0x02` Binary），确保切片完全重组后才交付上层；
+1. **完善 WebSocket 分片组包状态机**：校验 `FIN` 位与操作码（Opcode `0x00` Continuation vs `0x02` Binary），完整重组后再交付上层；TCP 读边界与 WebSocket 帧边界需要分别处理。
 2. **启用 Opus 丢包补偿（PLC, Packet Loss Concealment）机制**：
-   在检测到网络切片序号跳跃（丢失 1 帧）时，绝不向解码器传入空数据或静音，而是显式调用 `opus_decode(dec, NULL, 0, pcm_out, frame_size, 1)`（最后一个参数设为 `1` 声明丢失）。Opus 算法将利用历史清浊音谐波参数平滑预测丢失的 20ms 样本，彻底消除了金属声。
+   确认缺失一帧或该帧无法在播放期限内使用时，可调用 `opus_decode(dec, NULL, 0, pcm_out, frame_size, 0)` 执行无包 PLC。最后参数是 `decode_fec`，`1` 请求解码带内 FEC，并非“声明丢失”。PLC 的 `frame_size` 要对应缺失时长的每声道样点数；本例为 20ms，还需检查返回值和输出容量。补偿后应比较输出与听感，PLC 不能保证消除所有伪影。[Xiph Opus 解码 API](https://www.opus-codec.org/docs/opus_api-1.6/group__opus__decoder.html)
 
 ---
 
@@ -71,8 +71,8 @@ static int mp4_read_descr_len(stream_reader_t *sr, uint32_t *len, uint32_t box_e
 * 传输层使用了单一全局互斥锁 `tls_socket_mutex` 保护 socket 的 `send` 与 `recv`；
 * `Streamer_Task` 在通过 Downchannel 接收音乐时，持有了 `tls_socket_mutex` 并阻塞在 `recv()` 等待网络数据；
 * 当唤醒触发，高优先级的 `Audio_Record_Task` 试图通过 Events Channel 发射 `Recognize` 事件，调用 `send()` 请求同一个锁，被无限期挂起；
-* 此时若路由器因 WiFi 干扰发生短暂拥塞，`recv()` 未设置微秒级超时，两个任务形成不可逆的死锁。
+* 若 `recv()` 没有退出或超时机制，发送任务可能长期等待。应检查完整锁依赖，区分阻塞等待与循环等待造成的死锁。
 
 ### 3. 修复方案
-1. **Socket 读写分离**：底层 TCP Socket 原生支持全双工并发读写，取消粗暴的全局单一锁，将其拆分为独立的 `tx_mutex` 与 `rx_mutex`；
-2. **非阻塞超时机制**：对所有网络收发操作均施加最大 500ms 的硬超时机制，防止任何网络抖动演化为系统级死锁。
+1. **重新划分同步范围**：先核对 TLS 库的并发要求，避免持有全局状态锁等待网络。只有实现允许并发收发时，才考虑独立的 `tx_mutex` 与 `rx_mutex`；
+2. **有界等待**：可以评估 500ms 超时，但应按请求类型和网络条件配置，同时提供取消、重连和线程退出路径。

@@ -7,7 +7,7 @@ hide:
 <section class="gpu-home-hero">
   <p class="gpu-home-kicker"><span></span> Silicon Architecture / GPGPU System Atlas</p>
   <h1>GPU System Atlas</h1>
-  <p class="gpu-home-lead">从芯片原厂视角出发，系统梳理 GPU 从 SIMT 微架构、Warp 调度与 Tensor Core，到 HBM3e/GDDR7 显存系统、PCIe/NVLink 高速互联、Linux KMD/UMD 驱动、PTX/SASS 编译器后端，再到 NCCL 多卡集群与算子极致性能调优的全栈工程地图。</p>
+  <p class="gpu-home-lead">这里记录我对 GPU 硬件与软件的学习：从 SIMT、Warp 调度与 Tensor Core，到显存、互联、驱动和编译器，再结合 GEMM 与多卡通信分析性能问题。</p>
   <div class="gpu-home-stats">
     <span><strong>11</strong>核心模块</span>
     <span><strong>100</strong>篇文档</span>
@@ -59,7 +59,7 @@ hide:
 <section class="gpu-home-section">
   <div class="gpu-home-section-head">
     <p>Core Modules / 03</p>
-    <h2>十一个模块，拼合现代高性能 GPU 的完整硅片画像。</h2>
+    <h2>从计算核心、存储层次读到驱动与多卡互联。</h2>
   </div>
   <div class="gpu-module-grid">
     <a href="01-GPU-Architecture/"><span>01</span><strong>GPU 总体架构</strong><em>GPC · BAR · Bring-up</em></a>
@@ -79,11 +79,11 @@ hide:
 <section class="gpu-home-section gpu-home-practice">
   <div class="gpu-home-section-head">
     <p>Practice / 04</p>
-    <h2>把微架构理论放回全链路端到端案例与可复现源码实验。</h2>
+    <h2>结合案例和实验，检查对执行过程的理解。</h2>
   </div>
   <div class="gpu-practice-grid">
     <a href="Case-Studies/"><span>Case Studies</span><strong>跨模块工程案例</strong><p>FlashAttention 硬件路径、PCIe P2P 事务流与 8 卡 AllReduce 数据流推演。</p></a>
-    <a href="Labs/"><span>Labs</span><strong>可复现代码实验</strong><p>手写极致 GEMM 调优、NSight Roofline 实战与开源 GPU 驱动任务提交跟踪。</p></a>
+    <a href="Labs/"><span>Labs</span><strong>可复现代码实验</strong><p>CUDA GEMM 调优、NSight Roofline 分析与开源 GPU 驱动任务提交跟踪。</p></a>
     <a href="Glossary/"><span>Glossary</span><strong>专业术语与缩写</strong><p>涵盖 GPC、SIMT、Warp、HBM3e、NVLink、PTX、SASS、Xid 等 90+ 词条。</p></a>
   </div>
 </section>

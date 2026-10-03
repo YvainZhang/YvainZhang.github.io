@@ -30,11 +30,11 @@ graph TD
 
 ### 2. 根因剖析与通道依赖图（CDG）理论
 - **死锁机理**：根据 Dally 的通道依赖图理论，无死锁路由的充要条件是**依赖图中不存在任何有向环**。
-- **Turn Model 违规**：在设计阶段，为了缓解单链路拥塞，固件使能了“微自适应拥塞回避算法”。当 East 拥塞时允许报文临时转向 South，在 South 拥塞时允许转向 West。这种无约束的动态拐弯同时引入了 $E \rightarrow S$、$S \rightarrow W$、$W \rightarrow N$ 以及 $N \rightarrow E$ 四种转向，直接闭合了顺时针通道依赖环（Clockwise Cycle）。当 4 个报文同时填满各自的缓冲区并寻求下一步转发时，硬件形成彻底的循环资源等待死锁。
+- **Turn Model 违规**：在设计阶段，为了缓解单链路拥塞，固件使能了“微自适应拥塞回避算法”。当 East 拥塞时允许报文临时转向 South，在 South 拥塞时允许转向 West。这种无约束的动态拐弯同时引入了 $E \rightarrow S$、$S \rightarrow W$、$W \rightarrow N$ 以及 $N \rightarrow E$ 四种转向，直接闭合了顺时针通道依赖环（Clockwise Cycle）。当 4 个报文同时填满各自的缓冲区并寻求下一步转发时，形成循环资源等待，报文无法继续推进。
 
 ### 3. 根治与芯片配置约束
 1. **硬件路由强锁定：XY 维序路由（Dimension Order Routing, DOR）**：
-   在 NoC 路由器配置寄存器 `ROUTER_CFG` 中，强制将路由算法锁定为纯确定性 XY-DOR：**所有报文必须严格先沿 X 轴（East/West）路由，到达目标列后再沿 Y 轴（North/South）路由**。严禁任何 $Y \rightarrow X$ 的转弯，从数学定理层面彻底切断依赖环路。
+   在 NoC 路由器配置寄存器 `ROUTER_CFG` 中，强制将路由算法锁定为纯确定性 XY-DOR：**所有报文必须严格先沿 X 轴（East/West）路由，到达目标列后再沿 Y 轴（North/South）路由**。禁止 $Y \rightarrow X$ 转弯，切断本例中的路由依赖环。
 2. **多虚通道（Virtual Channel, VC）逃逸通道设计**：
    若必须支持自适应路由，则必须将物理链路划分为 2 个虚通道：VC0 运行自适应路由，VC1 作为确定性 XY 逃逸通道（Escape Virtual Channel）。一旦报文在 VC0 停顿超过 64 周期，强制降级转移至 VC1 逃逸排出。
 
@@ -97,7 +97,7 @@ flowchart LR
 
 ### 2. 根因剖析
 - **硬组播（Hardware Multicast）原子复制**：片上网络为节省总线带宽，采用树状分支复制策略（在途经的分支路由器就地复制一份发往本地 Core，一份继续发往下一跳）。
-- **慢节点反噬全网**：由于 Tile 3 瞬时发生 SRAM 写入拥塞拉低了接收速率，硬件组播要求当前 Flit 必须被所有目标端口同时接收才能前移。单个节点的背压立即导致整条组播主干道上的路由器输入 Buffer 被全数填满，导致后续经过该行路由器的所有普通流量遭受严重的**头阻阻塞（Head-of-Line Blocking）**。
+- **慢节点背压传播**：由于 Tile 3 瞬时发生 SRAM 写入拥塞拉低了接收速率，硬件组播要求当前 Flit 必须被所有目标端口同时接收才能前移。单个节点的背压立即导致整条组播主干道上的路由器输入 Buffer 被全数填满，导致后续经过该行路由器的所有普通流量遭受严重的**头阻阻塞（Head-of-Line Blocking）**。
 
 ### 3. 规避与根治措施
 - **虚拟通道隔离（VC Splitting by Traffic Class）**：

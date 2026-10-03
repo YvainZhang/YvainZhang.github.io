@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Linux 嵌入式驱动开发基础与常见问题"
-subtitle: "从字符设备注册、Platform 总线匹配、中断锁选型到 ioremap 与 Oops 调试"
+subtitle: "设备节点、Platform 匹配、锁、寄存器映射与 Oops 定位"
 date: 2021-07-04
 redirect_from:
   - /2022/06/28/linux-embedded-driver-faq/
@@ -16,13 +16,11 @@ tags:
   - C语言
 ---
 
-在嵌入式 Linux 驱动开发与底层调试中，常遇到以下基础机制问题：
+这篇笔记整理几个驱动开发中常见的问题：
 - 字符设备注册后，`/dev` 目录下如何生成设备节点；
 - 在驱动中操作硬件寄存器为何需要执行 `ioremap()`；
 - 中断服务例程（ISR）与普通进程共享数据时自旋锁的选型；
 - 发生内核 Oops 调用栈时如何定位对应的 C 代码行号。
-
-本文梳理 Linux 字符设备模型、同步机制、I/O 内存映射与驱动调试方法。
 
 ---
 
@@ -141,6 +139,4 @@ arm-linux-gnueabihf-addr2line -e my_driver.ko $TARGET_ADDR
 
 ## 6. 总结
 
-1. **设备模型**：Platform 总线用于解耦板级硬件描述（Device Tree）与驱动实现代码；
-2. **内核边界**：用户空间与内核空间传递数据使用 `copy_to_user()` / `copy_from_user()`，物理寄存器访问需经过 `ioremap()` 映射；
-3. **并发保护**：进程与 ISR 共享数据采用 `spin_lock_irqsave()` 避免中断重入竞争。
+设备节点创建、寄存器访问和并发保护分别属于不同的问题。调试时先确认设备与驱动是否匹配，再检查资源映射和调用上下文；发生 Oops 后，用与运行镜像一致、带调试信息的 `.ko` 或 `vmlinux` 定位源码。

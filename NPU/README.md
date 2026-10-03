@@ -7,7 +7,7 @@ hide:
 <section class="npu-home-hero">
   <p class="npu-home-kicker"><span></span> Domain-Specific Architecture / AI Accelerator Atlas</p>
   <h1>NPU System Atlas</h1>
-  <p class="npu-home-lead">从 AI 芯片原厂视角出发，系统梳理 NPU 从专用领域架构（DSA）定义、2D 脉动阵列微架构与片上 Scratchpad SRAM，到多维 Tensor DMA、AI 编译器离线 Tiling 切分与双缓冲、底层驱动、端云分化，再到万卡集群互联与极致算力利用率（MFU）调优的全栈知识地图。</p>
+  <p class="npu-home-lead">这里记录我对 NPU 的学习，重点关注计算阵列、片上 SRAM、Tensor DMA 与编译器之间的配合，再延伸到驱动、端云架构和集群通信。通过张量映射与性能推演，理解各环节的约束。</p>
   <div class="npu-home-stats">
     <span><strong>11</strong>核心模块</span>
     <span><strong>99</strong>篇文档</span>
@@ -59,7 +59,7 @@ hide:
 <section class="npu-home-section">
   <div class="npu-home-section-head">
     <p>Core Modules / 03</p>
-    <h2>十一个模块，拼合现代专用 AI 加速芯片的完整硅片画像。</h2>
+    <h2>从张量计算和数据搬运，读到编译器与集群通信。</h2>
   </div>
   <div class="npu-module-grid">
     <a href="01-NPU-Architecture/"><span>01</span><strong>NPU 总体架构与范式</strong><em>DSA · Spatial · Bring-up</em></a>
@@ -79,7 +79,7 @@ hide:
 <section class="npu-home-section npu-home-practice">
   <div class="npu-home-section-head">
     <p>Practice / 04</p>
-    <h2>把专用架构理论放回全链路端到端案例与可复现实战实验。</h2>
+    <h2>通过张量映射案例和实验，检查容量、数值与同步条件。</h2>
   </div>
   <div class="npu-practice-grid">
     <a href="Case-Studies/"><span>Case Studies</span><strong>跨模块工程案例</strong><p>Transformer 块硬件映射、LLM Prefill/Decode 硬件流与相机 ISP-NPU 零拷贝流水。</p></a>

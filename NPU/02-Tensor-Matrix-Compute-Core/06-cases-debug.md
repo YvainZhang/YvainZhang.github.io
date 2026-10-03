@@ -7,16 +7,17 @@
 ## 案例 1：脉动阵列内部累加器位宽截断导致特征图大面积归零
 
 ### 1. 现场故障现象与定位
-在 ResNet-50 模型的第 3 阶段（Layer 3 Bottleneck）进行 INT8 推理时，输出特征图在多个通道出现异常的纯 0 斑块。通过抓取 NPU 物理执行结果与 CPU 黄金参考模型（Golden C-Model）进行逐元素（Bit-Exact）比对：
+在 ResNet-50 模型的第 3 阶段（Layer 3 Bottleneck）进行 INT8 推理时，输出特征图在多个通道出现异常的纯 0 斑块。以下日志用于说明如何在同一流水级比较 NPU 结果与 CPU 黄金参考模型（Golden C-Model）；数值不作为其他平台的行为保证。这里先比较量化前的整数累加结果，再观察饱和与 ReLU 输出：
 
 ```text
 [MISMATCH_LOG] Layer: conv3_2, Batch: 0, Channel: 128
   Coordinate [0, 128, 14, 14]:
-    CPU Reference:   +245.200 (INT32 Accum: 49040 -> Dequant: 245.2)
-    NPU Output:      -128.000 (Saturated min after ReLU -> 0.0)
-    Delta:           -373.200
+    CPU Reference Accum: +49040 (INT32, before quantization)
+    NPU Accum:           -16496 (16-bit wrap-around, before quantization)
+    Accum Delta:         -65536
+    NPU Saturated INT8:  -128 (before ReLU -> after ReLU: 0)
   Accumulator Reg Dump (Cycle 1420):
-    PE[14][14] ACC_REG = 0x8030 (-32720, 16-bit 2's complement wrapped)
+    PE[14][14] ACC_REG = 0xBF90 (-16496, 16-bit 2's complement wrapped)
 ```
 
 ```mermaid
@@ -32,6 +33,8 @@ flowchart TD
         State -->|32-bit 累加器: Max +2.14B| Correct["正常保持 49040 无溢出"]
     end
 ```
+
+本例假定硬件保留累加结果的低 16 位，并按二进制补码解释：$49040 = \texttt{0xBF90}$，超过有符号 16 位范围后读作 $49040-65536=-16496$。建立 C 参考模型时应显式模拟位宽截断；C 的有符号算术溢出不保证回绕，参见 [WG14 C11 委员会草案 N1570，6.5 第 5 段](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf)。
 
 ### 2. 根因分析与数学推演
 - **累加动态范围极限计算**：

@@ -68,7 +68,7 @@ sequenceDiagram
 ```
 
 ### 2. 根因剖析
-- **AXI 协议规范**：ARM AMBA AXI4/AXI5 协议明确规定：**任何突发传输（Burst Transaction）均不得跨越 4KB 地址边界**。原因在于系统 MMU/IOMMU 采用 4KB 作为最小物理页管理粒度，跨界传输极可能落入不同的物理页或未授权地址空间，危及内存安全。
+- **AXI 协议规范**：**突发传输（Burst Transaction）不得跨越 4KB 地址边界**。这项规则避免单次突发跨越从设备边界，并限制从设备需要支持的地址递增范围；它不以系统必须使用 4KB 页为前提。参见 [Arm AMBA AXI/ACE 规范 IHI 0022H，A3.4.1](https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/IHI0022H_amba_axi_protocol_spec.pdf)。
 - **DMA 缺陷**：驱动下发大块连续 DMA 描述符时，仅配置了总长度和基地址，底层的 DMA 硬件分包逻辑（Packet Slicer）未对 4KB 边界进行动态截断与自动重组，导致长突发（Burst Length = 256）直接撞穿 4KB 边界。
 
 ### 3. 根治方案：硬件自动分包切片器（Auto 4KB Slicer）
@@ -77,7 +77,7 @@ sequenceDiagram
    $$\text{Bytes\_to\_Boundary} = 4096 - (\text{Addr} \ \& \ 0xFFF)$$
 2. **动态突发截断**：
    $$\text{Burst\_Len}_{\text{actual}} = \min(\text{Req\_Len}, \lfloor \frac{\text{Bytes\_to\_Boundary}}{\text{AXI\_Bus\_Bytes}} \rfloor)$$
-   若单次传输超出边界，硬件自动将其平滑拆分为两个独立的 AXI 事务，彻底消除跨界违规。
+   这里按总线宽度对齐的 INCR 传输计算本次可发出的 beat 数。若请求尚有剩余数据，更新地址后重新计算边界余量，继续生成独立事务；长请求可能需要多次拆分。还需验证非对齐起始地址、尾部字节使能和最大突发长度，不能仅凭这一个截断公式保证所有请求都符合协议。
 
 ---
 
@@ -108,4 +108,4 @@ sequenceDiagram
 
 ### 3. 原厂加固方案
 - **严格 ID 追踪机制**：DMA 控制器升级为具备 CAM（内容寻址寄存器）的事务跟踪表，精确记录每个 `AWID` 的应答状态；
-- **全系统内存栅障（System Memory Barrier）**：在两个依赖任务之间强制由 Command Processor 插入一条 `DMA_BARRIER` 微码，向 DDR 控制器广播 Drain 命令，强制等待所有 Outstanding 写响应 100% 确认收敛。
+- **全系统内存栅障（System Memory Barrier）**：在两个依赖任务之间由 Command Processor 插入 `DMA_BARRIER` 微码，按目标平台定义等待相关 Outstanding 写响应与可见性条件满足，再启动消费者。

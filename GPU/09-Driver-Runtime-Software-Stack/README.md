@@ -1,6 +1,6 @@
 # 09 驱动与软件运行时体系
 
-本模块深入剖析 GPU 的全栈软件系统架构，涵盖 **Linux KMD (Kernel Mode Driver / DRM / KMS)、UMD (User Mode Driver)、Ring Buffer 硬件指令下发机制与 LLVM / PTX / SASS 编译器链路**。
+本章跟踪 GPU 任务如何从软件进入硬件，涉及 **Linux KMD (Kernel Mode Driver / DRM / KMS)、UMD (User Mode Driver)、Ring Buffer 指令提交与 LLVM / PTX / SASS 编译链路**。
 
 ## 章节导航
 

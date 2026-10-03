@@ -2,7 +2,7 @@
 
 ## 1. `Queue_t` 控制块底层内存结构
 
-在 FreeRTOS 中，**信号量（Semaphore）和互斥锁（Mutex）在底层完全基于 `Queue_t` 结构体实现**。理解了 `Queue_t`，就理解了 FreeRTOS 整个 IPC 体系的基石。
+在本文分析的 FreeRTOS 版本中，**信号量（Semaphore）和互斥量（Mutex）复用 `Queue_t` 结构体**。从它入手，可以一起看清队列、计数和互斥操作共用的阻塞与唤醒路径。
 
 ```c
 typedef struct QueueDefinition
@@ -238,7 +238,7 @@ sequenceDiagram
 ```
 
 !!! note
-    **设计收益**：ISR 数据通路完全不需要知道任务侧正在做什么——最坏情况只是唤醒被推迟到解锁之后（微秒级），正确性依赖中断优先级与 API 使用约束。配合调度器挂起期的 `xPendingReadyList` 暂存机制（见[就绪列表页第 5.2 节](02-ready-lists-bitmap-scheduler.md)），整个内核实现了"**长操作不关中断、短临界区不记账**"的分层并发控制。
+    **延后唤醒**：队列锁定期间，ISR 可以记录待处理的唤醒，解锁后再更新等待链。延后多久取决于锁定窗口和调度时机，没有固定的微秒级保证。它与调度器挂起期间的 `xPendingReadyList` 暂存机制一起协调队列状态和任务状态（见[就绪列表页第 5.2 节](02-ready-lists-bitmap-scheduler.md)）。
 
 
 ---
@@ -291,7 +291,7 @@ taskEXIT_CRITICAL();
 | 队列 | `xQueueCreate(len, size)` | $len \times size$ | ❌ | ✓ | 定长消息传递 |
 
 !!! warning
-    **互斥量为什么彻底禁入 ISR？** 优先级继承的操纵对象是"持有者任务的 TCB"（提升/恢复其 `uxPriority` 并做就绪链更新）。ISR 没有任务身份：take 会阻塞（ISR 不可阻塞）；give 则找不到持有者可 disinherite，且 give 时若持有者是任务，语义上 ISR 根本不可能是资源占有者——它只是"事件到达"的信使。**"ISR 里通知事件用二值信号量，任务间保护共享资源用互斥量"**，两者不可互换。
+    **互斥量为什么不能用于 ISR？** 优先级继承操作的是持有者任务的 TCB，需要提升或恢复 `uxPriority`。ISR 不能作为互斥量的任务持有者，也不能阻塞等待。ISR 通知任务可使用二值信号量等支持 FromISR 的原语；任务间保护共享资源可使用互斥量，两者语义不同。
 
 
 ---

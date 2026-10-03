@@ -23,4 +23,6 @@ graph TB
     VRAM <--> SM_Compute
 ```
 
-- **硬件三向并发（Tri-directional Concurrency）**：`Host -> Device 传输`、`Device -> Host 传输` 和 `SM 内部计算` 三者由完全解耦的硬件执行管道驱动，互不干扰，可实现 100% 异步并发。
+- **硬件三向并发（Tri-directional Concurrency）**：`Host -> Device 传输`、`Device -> Host 传输` 和 `SM 内部计算` 可以使用不同执行引擎重叠运行，但仍可能争用互联与显存带宽。能否并发还受设备能力、Pinned Host Buffer、Stream 和依赖关系限制，需要用时间线确认。
+
+参考：[CUDA 异步执行与并发条件](https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/asynchronous-execution.html)。

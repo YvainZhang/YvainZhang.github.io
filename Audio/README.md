@@ -7,7 +7,7 @@ hide:
 <section class="audio-home-hero">
   <p class="audio-home-kicker"><span></span> Silicon Architecture / Audio System Atlas</p>
   <h1>Audio System Atlas</h1>
-  <p class="audio-home-lead">从芯片原厂与系统工程视角出发，系统梳理音频从物理声波、模拟前端 AFE、Sigma-Delta ADC/DAC，到 I2S/TDM/PDM/SoundWire 高速音频接口、Audio DSP 微架构、低功耗常开监听 (VAD/AON)、DMA 环形缓冲、Linux ALSA/ASoC 驱动栈、RTOS 嵌入式软件框架、软件编解码与端侧前沿声学算法的全栈工程地图。</p>
+  <p class="audio-home-lead">这里整理音频系统的学习与排查笔记：从模拟前端、ADC/DAC、数字接口和 DSP，读到时钟、DMA 缓冲、Linux/RTOS 软件栈与声学算法。重点看采样数据如何传递，时钟、延迟和内存预算怎样影响声音。</p>
   <div class="audio-home-stats">
     <span><strong>13</strong>核心模块</span>
     <span><strong>127</strong>篇文档</span>
@@ -62,7 +62,7 @@ hide:
 <section class="audio-home-section">
   <div class="audio-home-section-head">
     <p>Core Modules / 03</p>
-    <h2>十三个模块，拼合现代高性能音频芯片的完整硅片画像。</h2>
+    <h2>按信号链、软件栈和应用场景组织十三个模块。</h2>
   </div>
   <div class="audio-module-grid">
     <a href="01-Audio-Architecture/"><span>01</span><strong>音频子系统总体架构</strong><em>AFE · Digital Chain · Bring-up</em></a>
@@ -84,7 +84,7 @@ hide:
 <section class="audio-home-section audio-home-practice">
   <div class="audio-home-section-head">
     <p>Practice / 04</p>
-    <h2>把微架构理论放回全链路端到端案例与可复现源码实验。</h2>
+    <h2>结合系统案例与实验，核对时钟、缓冲和声学指标。</h2>
   </div>
   <div class="audio-practice-grid">
     <a href="Case-Studies/"><span>Case Studies</span><strong>跨模块工程案例</strong><p>TWS 降噪耳机端到端链路、智能座舱 A2B 多音区与智能音箱远场语音拾音。</p></a>

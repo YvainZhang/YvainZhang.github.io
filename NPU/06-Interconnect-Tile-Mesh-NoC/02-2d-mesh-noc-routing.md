@@ -38,4 +38,4 @@ graph TD
   3. 若 $X_{curr} = X_{dst}$ 且 $Y_{curr} < Y_{dst}$，路由至 **South** 端口；
   4. 若 $X_{curr} = X_{dst}$ 且 $Y_{curr} > Y_{dst}$，路由至 **North** 端口；
   5. 若坐标完全匹配，路由至 **Local** 端口。
-- **无死锁证明（Deadlock-Free Proof）**：由于数据包一旦转向 Y 维度后严禁再次转向 X 维度，信道依赖图（Channel Dependency Graph）中严格不存在任何闭环回路（No Cycles），在数学上严格保证 100% 免疫死锁。
+- **无死锁证明（Deadlock-Free Proof）**：由于数据包一旦转向 Y 维度后严禁再次转向 X 维度，信道依赖图（Channel Dependency Graph）中严格不存在任何闭环回路（No Cycles），这是本例二维 Mesh 单播路由的分析范围；完整系统还需检查虚通道分配、组播与请求/响应之间的依赖。

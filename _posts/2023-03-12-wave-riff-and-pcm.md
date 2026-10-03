@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "WAVE (WAV) 封装格式与 PCM 裸流"
-subtitle: "从 RIFF Chunk 树状结构、44字节标准头解析到双声道交错排列"
+subtitle: "RIFF 数据块、常见 PCM WAV 头与声道排列"
 date: 2023-03-12
 redirect_from:
   - /2021/10/28/wave-riff-and-pcm/
@@ -17,9 +17,9 @@ tags:
   - C语言
 ---
 
-在嵌入式音频开发、驱动采集测试以及 DSP 算法验证中，**WAV（Waveform Audio File Format）** 是常见的基础音频格式。与包含复杂索引表（MP4）或频域压缩（MP3/AAC）的格式不同，标准 PCM WAV 文件由 **44 字节头部描述信息 + 未压缩的原始 PCM 裸数据** 构成。
+在音频采集和 DSP 测试中，**WAV（Waveform Audio File Format）** 常用来保存 PCM 数据和采样参数。最简单的 PCM WAV 可以使用 44 字节头，但实际文件还可能包含扩展格式或其他数据块，不能一律从第 44 字节开始读音频。
 
-WAV 遵循微软与 IBM 制定的 **RIFF（Resource Interchange File Format）** 规范，采用**小端字节序（Little-Endian）**存储。本文梳理 WAV 的 Chunk 树状结构、44 字节标准头部的 C 语言结构体定义以及 PCM 数据的双声道交错排列规则。
+WAV 遵循微软与 IBM 制定的 **RIFF（Resource Interchange File Format）** 规范，常见形式采用小端字节序。下面以简单的 PCM WAV 为例，说明数据块和双声道排列。
 
 ---
 
@@ -78,7 +78,7 @@ graph TD
 
 ## 3. C 语言结构体定义与文件读写
 
-针对标准 44 字节 PCM WAV 头，在 C 语言中必须使用 **`#pragma pack(1)`（1 字节对齐）**，防止编译器默认的 4 字节或 8 字节内存对齐填充破坏协议字段偏移：
+下面用结构体展示常见 44 字节 PCM WAV 头的字段。示例通过 **`#pragma pack(1)`** 避免结构体填充；通用解析器仍应逐个读取 Chunk，并显式处理小端字节序。
 
 ```c
 #include <stdint.h>
@@ -130,6 +130,4 @@ typedef struct {
 
 ## 5. 总结
 
-1. **结构清晰**：WAV 由 `RIFF` 头、`fmt ` 描述块与 `data` 载荷块顺序拼装；
-2. **结构体对齐**：C 语言解析必须强制 1 字节对齐（`#pragma pack(1)`）；
-3. **数据交错**：双声道 PCM 采用 L-R-L-R 时域交错存储，便于 DAC 芯片顺序 DMA 输出。
+读取 WAV 时应按 Chunk ID 和长度找到 `fmt ` 与 `data`，再根据位深、声道数和 `BlockAlign` 解释载荷。44 字节头适合说明最简单的布局，不能代替对真实文件数据块的解析。

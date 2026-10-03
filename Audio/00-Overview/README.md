@@ -23,7 +23,7 @@ graph LR
 ## 三条原厂核心学习路线
 
 ### 路线 1：底层驱动、系统软件与 Linux 内核线（Driver & System Software Track）
-- **核心目标**：精通 Linux ALSA/ASoC 框架（Machine/Platform/Codec）、DAPM 音频通路编排、DMA 环形缓冲区设计，具备秒级定位 XRUN 欠载与爆音排查能力。
+- **核心目标**：理解 Linux ALSA/ASoC 框架（Machine/Platform/Codec）、DAPM 路由与 DMA 环形缓冲，能结合状态、时序和日志排查 XRUN 与爆音。
 - **推荐路径**：
   ```text
   01 音频总体架构 → 02 I2S/TDM/SoundWire 协议 → 05 音频 DMA 与 FIFO 缓冲

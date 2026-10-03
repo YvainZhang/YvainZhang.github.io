@@ -15,7 +15,7 @@
 | **LUT** | Look-Up Table | 片上硬件查找表，由双端口小 SRAM 构成，单周期完成复杂非线性函数区间采样 |
 | **PLA** | Piecewise Linear Approximation | 分段线性逼近算法，硬件使用斜率与截距快速计算非线性激活值（$y = y_0 + k(x-x_0)$） |
 | **SPM** | Scratchpad Memory (SRAM) | 暂存器存储，由软件显式编址的片上高速 SRAM，无 Tag 比对开销，确定性单周期访问 |
-| **Double Buffering** | Ping-Pong Double Buffering | 双缓冲机制，分配两块对称 SRAM 缓冲区，DMA 搬运与阵列计算异步交替，100% 隐藏访存延迟 |
+| **Double Buffering** | Ping-Pong Double Buffering | 双缓冲机制，分配两块对称 SRAM 缓冲区，DMA 搬运与阵列计算异步交替，让搬运与计算重叠，重叠程度取决于两者耗时和依赖 |
 | **Bank Conflict** | SRAM Bank Conflict | 多个计算 Lane 或 DMA 端口同一周期访问 SRAM 同一 Bank 导致的硬件争用与等待 |
 | **Quantization** | Neural Network Quantization | 神经网络量化，将高精度浮点（FP32/FP16）转换为低比特（INT8/FP8/INT4）以节省带宽与面积 |
 | **PTQ** | Post-Training Quantization | 训练后量化，基于少量离线校准数据集计算 Tensor 动态范围与 Scale 缩放因子 |
@@ -36,15 +36,15 @@
 | **2D Mesh NoC** | 2D Mesh Network-on-Chip | 二维网格片上网络，将芯片划分为规则多核 Tile，提供高扩展性分布式互联 |
 | **Router** | NoC Router Node | 片上路由器，包含 5 个双向端口（东/西/南/北/本地）与交叉开关（Crossbar Switch） |
 | **Virtual Channel** | NoC Virtual Channel (VC) | 虚通道，在同一物理链路中复用多个独立 FIFO 队列，消除队头阻塞（HOL Blocking） |
-| **DOR** | Dimension-Order Routing (XY Routing)| 维序路由算法，数据包严格先沿 X 轴后沿 Y 轴单向传输，数学证明天然免疫死锁 |
+| **DOR** | Dimension-Order Routing (XY Routing)| 维序路由算法，数据包严格先沿 X 轴后沿 Y 轴单向传输，在相应 Mesh 与通道依赖条件下避免路由死锁 |
 | **Multicast** | Hardware Multicast Tree | 硬件多播，单一权重数据包在 NoC 路由器分支处由硬件自动复制下发给多个目标 Tile |
-| **Credit Flow Control**| Credit-based Flow Control | 信用流控，下游节点向上游返还可用 Buffer 信用点数，实现绝对无溢出硬件流控 |
+| **Credit Flow Control**| Credit-based Flow Control | 信用流控，下游节点向上游返还可用 Buffer 信用点数，按可用 Buffer 控制发送量，需保证 Credit 计数与返回一致 |
 | **VLIW** | Very Long Instruction Word | 超长指令字，单个指令字封装多个 Slot，单周期并行发射至 DMA、脉动与 VPU 引擎 |
 | **Task Queue** | Hardware Task Queue | 硬件任务队列，存放由编译器烘焙的模型算子执行描述符 |
 | **Graph Engine** | Hardware Graph Execution Engine | 硬件图执行引擎，根据算子依赖关系自动流水级联调度，无需 OS 系统调用介入 |
 | **Hardware Barrier** | Hardware Sync Barrier | 硬件同步栅障，不同执行引擎（DMA 与 PE）之间的高速硬件互锁寄存器 |
 | **Event Register** | Hardware Event Register | 硬件事件寄存器，用于标记 DMA 传输完毕、脉动计算就绪与中断触发状态 |
-| **Edge NPU** | Edge Inference NPU | 端侧推理 NPU，强调极致超低功耗（<5W）、定点量化与摄像头 ISP 零拷贝融合 |
+| **Edge NPU** | Edge Inference NPU | 端侧推理 NPU，强调低功耗（此处以 <5W 设计为例）、定点量化与摄像头 ISP 零拷贝融合 |
 | **Cloud NPU** | Cloud Training/Inference NPU | 云端算力 NPU，配备超大 HBM3e 显存、浮点训练支持与大规模 Chip-to-Chip 扩展接口 |
 | **PPA** | Power, Performance, Area | 功耗、性能与芯片面积权衡金字塔指标 |
 | **TOPS/W** | Tera-Operations Per Second per Watt | 算力能效比，每瓦特功耗所能提供的万亿次定点/浮点运算峰值 |
@@ -52,7 +52,7 @@
 | **Operator Fusion** | Operator Fusion Pass | 算子融合，将连续小算子合并为单个片上执行 Kernel，消除中间中间特征图显存读写 |
 | **Constant Folding** | Constant Folding Pass | 常量折叠，编译期提前完成权重预处理（如 BatchNorm 参数融入卷积权重） |
 | **Loop Tiling** | Loop Tiling / Blocking | 循环切块，将大矩阵切分为适合片上 SRAM 容量的最佳微小 Tile 块 |
-| **Interval Graph Coloring**| Interval Graph Coloring | 区间图着色算法，根据 Tensor 生命周期重叠图，实现片上 SRAM 零碎片静态内存复用 |
+| **Interval Graph Coloring**| Interval Graph Coloring | 区间图着色算法，依据 Tensor 生命周期重叠关系规划静态内存复用，实际占用还受 Tensor 大小、对齐和 Bank 约束影响 |
 | **MLIR** | Multi-Level Intermediate Representation | 多级中间表示框架，支持从计算图 Dialect 逐步降级为硬件特定 Microcode |
 | **Dialect** | MLIR Dialect | MLIR 方言，特定抽象层级（TOSA、Linalg、Affine、MemRef、LLVM）的指令自闭环集合 |
 | **Codegen** | Low-Level Code Generation | 底层代码生成，AI 编译器后端生成含硬件二进制指令与 DMA 描述符的离线模型包 |

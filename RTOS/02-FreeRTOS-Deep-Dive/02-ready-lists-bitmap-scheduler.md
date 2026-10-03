@@ -122,7 +122,7 @@ struct xLIST_ITEM
 | `xEventListItem`（事件项） | 队列/信号量/事件组的等待链 | **`configMAX_PRIORITIES - uxPriority`** | 升序插入 |
 
 !!! note
-    **事件链的"取反"排序技巧**：优先级数值越大越高，而链表按 `xItemValue` 升序排列——把 `configMAX_PRIORITIES - uxPriority` 当作排序键，就完成了大小反转：**等待链的链头永远是等待者中优先级最高的任务**。于是 `xTaskRemoveFromEventList()` 直接摘链头即完成"唤醒最高优先级等待者"，无需任何搜索。这是 FreeRTOS 用最朴素的数据结构实现 $O(1)$ 优先级唤醒的核心机关。
+    **事件链的排序**：优先级数值越大越高，而链表按 `xItemValue` 升序排列。以 `configMAX_PRIORITIES - uxPriority` 为排序键，链头就是优先级最高的等待者。`xTaskRemoveFromEventList()` 可直接摘取链头，选取这一步是 $O(1)$；插入和完整唤醒路径的成本仍需分别分析。
 
 
 ### 3.2 关键操作与复杂度
@@ -134,7 +134,7 @@ struct xLIST_ITEM
 | `vListInsert()` | 按 `xItemValue` 升序插入（延时链/事件链） | $O(n)$ 最坏，但链短且头部命中早退 |
 | `listGET_OWNER_OF_NEXT_ENTRY()` | 游标步进一格并返回宿主 TCB | $O(1)$（时间片轮转的发动机） |
 
-哨兵节点 `xListEnd` 永远在环上，判空即 `pxNext == &xListEnd`，不存在 NULL 指针路径——环形设计把边界条件消灭在结构里。
+哨兵节点 `xListEnd` 始终在环上，空表时 `pxNext == &xListEnd`。这种结构统一了空表与非空表的部分操作，减少了处理 NULL 指针的分支。
 
 ---
 

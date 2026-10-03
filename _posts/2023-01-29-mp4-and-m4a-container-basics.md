@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "MP4 与 M4A 容器格式基础"
-subtitle: "从 ISOBMFF Box 树状结构、stbl 样本索引到 moov faststart 网络优化"
+subtitle: "Box 结构、样本索引与 moov faststart"
 date: 2023-01-29
 redirect_from:
   - /2021/09/23/mp4-and-m4a-container-basics/
@@ -19,9 +19,9 @@ tags:
 
 在多媒体开发中，**MP4（MPEG-4 Part 14）** 与 **M4A（纯音频 MP4）** 是应用广泛的封装容器。它们均派生自 ISO 基础媒体文件格式（**ISOBMFF**, ISO/IEC 14496-12）。
 
-与 TS 或 Ogg 等基于连续切片的数据流不同，MP4 采用**基于对象（Box / Atom）的树状索引结构**。所有音频、视频、字幕的时间戳与物理存储位置均记录在独立的元数据 Box 中。
+MP4 以 **Box / Atom** 组织数据。普通 MP4 文件中，`moov` 保存轨道信息和样本索引，`mdat` 保存媒体载荷；播放器需要结合两者找到并解码样本。
 
-本文梳理 MP4 核心概念、Box 层级结构、`stbl` 样本索引表映射机制以及 Web 流媒体 `faststart` 优化原理。
+下面以普通 MP4 为例说明索引与定位，不展开分片 MP4（fMP4）的结构。
 
 ---
 
@@ -93,7 +93,7 @@ $$\text{Sample } K \xrightarrow{\mathbf{stts}} \text{呈现时间 (PTS)} \xright
 
 ## 4. Web 流媒体优化：`moov faststart`
 
-在普通录制生成的 MP4 文件中，由于录制结束前无法预知最终总时长和全量索引，编码器通常将 `moov` 写入在文件尾部（`mdat` 之后）。
+录制生成普通 MP4 时，复用器常在结束后写入完整索引，因此 `moov` 可能位于 `mdat` 之后。
 
 ```
 默认未优化 MP4 结构:
@@ -106,7 +106,7 @@ $$\text{Sample } K \xrightarrow{\mathbf{stts}} \text{呈现时间 (PTS)} \xright
 +-------------------+-------------------+------------------------------------------+
 |  ftyp (几十字节)  |   moov (元数据)   |    mdat (媒体数据载荷, 几百 MB ~ 几 GB)   |
 +-------------------+-------------------+------------------------------------------+
-  (浏览器收到几十 KB 头部元数据后即可立即开始流式播放)
+  (播放器可先读取 moov，再按样本索引读取媒体数据)
 ```
 
 ### FFmpeg 优化命令
@@ -120,6 +120,4 @@ ffmpeg -i input.mp4 -c copy -movflags faststart output_faststart.mp4
 
 ## 5. 总结
 
-1. **结构模型**：MP4 通过 `moov`（元数据索引）与 `mdat`（物理载荷）解耦媒体数据；
-2. **定位原理**：依靠 `stts`、`stsc`、`stsz` 与 `stco` 四大表格完成时间戳到文件物理字节偏移的映射；
-3. **流式分发**：网络播放前需执行 `faststart` 优化，将 `moov` 移至文件头部以便即时起播。
+排查 MP4 起播或 Seek 问题时，可以先检查 `moov` 的位置，再检查样本时间与偏移表。`faststart` 调整的是 Box 顺序，不会重新编码音视频，也不保证消除网络和播放器本身的等待时间。

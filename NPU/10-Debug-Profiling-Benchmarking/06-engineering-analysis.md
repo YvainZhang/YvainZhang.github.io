@@ -33,6 +33,6 @@ $$\text{FLOPs}_{backward} \approx 2 \times \text{FLOPs}_{forward} \implies \text
   \end{aligned}$$
 - **全模型单步训练总计算量 (Forward + Backward)**：
   $$\text{FLOPs}_{total\_step} = 32 \times 3 \times 3.5907\text{ TFLOPs} = \mathbf{344.707\text{ TFLOPs}}$$
-- **评测环境**：8-NPU 节点，单卡峰值算力 200 TFLOPS（节点总峰值 1600 TFLOPS），实测单步迭代耗时 $T_{step} = 0.285\text{ s}$：
+- **计算参数**：取 8-NPU 节点、单卡同精度峰值算力 200 TFLOPS（节点总峰值 1600 TFLOPS），以及单步迭代耗时 $T_{step} = 0.285\text{ s}$：
   $$\text{MFU} = \frac{344.707 \times 10^{12}\text{ FLOPs}}{1600 \times 10^{12}\text{ FLOPs/s} \times 0.285\text{ s}} = \frac{344.707}{456.0} = \mathbf{75.59\%}$$
-- **结论**：硬件算力利用率突破 75%，达到工业界顶级优化水准。
+- **结论**：按上述计算量、峰值与耗时，MFU 为 75.59%。这个结果用于说明计算口径；模型结构、额外重计算、算子支持范围和通信开销不同，不能据此直接评定其他系统的优化水平。

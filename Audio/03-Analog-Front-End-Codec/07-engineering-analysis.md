@@ -2,9 +2,9 @@
 
 ## 1. 硬件解决什么问题：音频模拟保真度四大客观指标的数学定义
 
-在芯片数据手册与 Audio Precision 仪器测试报告中，衡量音频 Codec 品质的四个最权威指标是：**信噪比（SNR）**、**总谐波失真加噪声（THD+N）**、**动态范围（DNR）**与**声道分离度（Crosstalk）**。
+在芯片数据手册与 Audio Precision 仪器测试报告中，常用 **信噪比（SNR）**、**总谐波失真加噪声（THD+N）**、**动态范围（DNR）**与**声道分离度（Crosstalk）**评估音频 Codec。
 
-理解其背后的数学本质与理论推导，是评估芯片物理性能天花板的基础。
+下面说明这些指标的计算方式，以及理想量化模型与实测结果的区别。
 
 ---
 
@@ -34,7 +34,7 @@ $$x(t) = A_1 \cos(2\pi f_0 t + \phi_1) + \sum_{k=2}^{\infty} A_k \cos(2\pi k f_0
 $$\text{THD+N} = \frac{\sqrt{\sum_{k=2}^{\infty} A_k^2 + V_{\text{noise}}^2}}{A_1}$$
 用分贝（dB）表示：
 $$\text{THD+N (dB)} = 20 \log_{10}\left( \frac{\sqrt{\sum_{k=2}^{\infty} A_k^2 + V_{\text{noise}}^2}}{A_1} \right)$$
-**原厂优秀门限**：发烧级 Codec 的 THD+N 通常需要达到 **$<-100\text{ dB}$（即 $< 0.001\%$）**。
+**示例目标**：若产品要求 THD+N **$<-100\text{ dB}$（即 $< 0.001\%$）**，还需注明频率、幅度、负载、带宽与加权方式。
 
 ### 2. 动态范围（Dynamic Range, DNR）
 系统所能传输的满量程无失真最大信号（Full-Scale Signal $V_{\text{FS}}$）与系统本底最小噪声（Noise Floor $V_{\text{noise}}$）的比值：
@@ -44,7 +44,7 @@ $$\text{DNR} = 20 \log_{10}\left( \frac{V_{\text{FS}}}{\sqrt{V_{\text{noise, A-w
 ### 3. 声道串扰（Crosstalk / Channel Separation）
 在一个声道输入满量程信号时，由于芯片内部引脚寄生电容或 PCB 耦合泄露到相邻另一个未发声声道的信号分量：
 $$\text{Crosstalk (dB)} = 20 \log_{10}\left( \frac{V_{\text{unwanted}}}{V_{\text{wanted}}} \right)$$
-工业标准通常要求低于 $-90\text{ dB}$。
+此处以低于 $-90\text{ dB}$ 为设计目标，实际要求取决于产品与测试条件。
 
 ---
 
@@ -64,12 +64,12 @@ $$\text{SNR} = 10 \log_{10}(1.5) + 20 N \log_{10}(2) \approx 1.76 + 6.02 N\text{
 
 ## 5. 工程推论与位深等效表
 
-根据黄金公式 $\text{SNR} = 6.02 N + 1.76\text{ dB}$：
+下面用理想量化模型 $\text{SNR} = 6.02 N + 1.76\text{ dB}$ 比较位数与信噪比。表中的 SNR 范围用于举例，不代表各类器件的统一上限。ENOB 由 SINAD 换算，不能直接用 SNR 代替。参见 [Analog Devices MT-001](https://www.analog.com/media/en/training-seminars/tutorials/MT-001.pdf) 与 [MT-003](https://www.analog.com/media/en/training-seminars/tutorials/MT-003.pdf)。
 
-| 标称位数 | 理论极限 SNR | 工业界实际芯片指标 (ENOB) | 瓶颈原因 |
+| 标称位数 | 理想量化 SNR | 示例 SNR 范围 | 影响因素 |
 | :--- | :--- | :--- | :--- |
-| **16-bit** | $98.08\text{ dB}$ | 94 ~ 96 dB (ENOB ≈ 15.6) | 接近理论极限，易于实现 |
-| **24-bit** | $146.24\text{ dB}$ | 108 ~ 125 dB (ENOB ≈ 18 ~ 20) | **受限于晶体管热噪声与基准源抖动**，物理世界无法达到 146dB |
-| **32-bit** | $194.40\text{ dB}$ | 125 ~ 132 dB (ENOB ≈ 21 ~ 22) | 额外低位全为热噪声，主要用于内部数字算法消除截断舍入误差 |
+| **16-bit** | $98.08\text{ dB}$ | 94 ~ 96 dB | 还需核对带宽、输入与测量条件 |
+| **24-bit** | $146.24\text{ dB}$ | 108 ~ 125 dB | 热噪声、失真与时钟抖动等会使实测结果低于理想量化模型 |
+| **32-bit** | $194.40\text{ dB}$ | 125 ~ 132 dB | 输出字长与模拟有效分辨率需分别评估 |
 
-结论：市场上标称的 32-bit 高解析音频，其有效位数（ENOB）由于物理热噪声限制永远无法超过 23 bit。32-bit 的核心价值在于**数字 DSP 滤波与音频混音运算中避免舍入截断误差的级联累积**。
+结论：32-bit 接口或数据格式不等于 32-bit 模拟有效分辨率，也不能从本表推出 ENOB 永远低于 23 bit。有效分辨率取决于输入范围、测量带宽、失真与噪声；数字处理使用更宽字长可以减少舍入与截断误差的累积。

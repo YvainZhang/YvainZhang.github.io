@@ -1,6 +1,6 @@
 # 05 SRAM 双缓冲未同步与片上存储故障排查实战
 
-在专用 AI 加速器（NPU）中，片上 Scratchpad SRAM（包括 TBuf、WBuf、AccBuf）是支撑高吞吐脉动计算的命脉。常见故障包括**双缓冲（Ping-Pong）数据踩踏**、**多 Bank 访问步长冲突（Bank Conflict）**以及**亚稳态/软错误诱发的多比特 ECC 异常**。
+在专用 AI 加速器（NPU）中，片上 Scratchpad SRAM（包括 TBuf、WBuf、AccBuf）用于存放脉动计算的输入、权重与累加结果。常见故障包括**双缓冲（Ping-Pong）数据踩踏**、**多 Bank 访问步长冲突（Bank Conflict）**以及**亚稳态/软错误诱发的多比特 ECC 异常**。
 
 ---
 
@@ -38,14 +38,14 @@ sequenceDiagram
 
 ### 3. 根治与防御措施
 1. **编译器代码生成修复**：
-   彻底废弃基于周期的延时推测，强制在每一轮 Ping-Pong 切换时发射硬同步指令对：
+   在每一轮 Ping-Pong 切换时使用完成事件同步，避免以估计周期代替实际完成：
    ```assembly
    ; 严禁基于 cycle delay 假定
    SYNC.SEND_SIGNAL  DMA_SLOT_0, EVT_PE_DONE      ; 通知 DMA：Ping Buffer 已消费完
    SYNC.WAIT_SIGNAL  PE_SLOT_0,  EVT_DMA_DONE     ; 阻塞等待：Pong Buffer 写入完成中断
    ```
 2. **硬件跨时钟域与双缓冲锁（Hardware Ping-Pong Interlock）**：
-   在 SRAM 访问控制器中增加原子锁硬件状态机：若当前 Buffer 处于 `DMA_BUSY` 状态，硬件读控制器直接反压（Stall）计算核心的取数请求，从微架构底层杜绝脏读。
+   在 SRAM 访问控制器中增加原子锁硬件状态机：若当前 Buffer 处于 `DMA_BUSY` 状态，硬件读控制器直接反压（Stall）计算核心的取数请求，阻止计算核心读取尚未写完的 Buffer。
 
 ---
 
@@ -113,6 +113,6 @@ flowchart TD
    SEC-DED（Single Error Correction, Double Error Detection）汉明码只能纠正 1 个 bit，检测 2 个 bit。如果相邻的存储 Cell 在物理版图上属于同一数据字（Word），单颗高能粒子穿透会导致相邻的 2 个 Cell 同时翻转，造成数据不可恢复。
 
 ### 3. 原厂防护与自愈设计
-- **物理版图改进**：必须在物理设计阶段实施严格的 **Bit-Interleaving 版图打散**，保证同一 ECC 代码字（Codeword）中的比特物理间距大于 $5\mu m$，使单颗粒子碰撞最多影响不同数据字的 1 个 bit，从而使 100% 的双比特翻转转化为两个可自动纠错的单比特事件。
+- **物理版图改进**：通过 **Bit-Interleaving 版图打散**，降低一次粒子事件同时影响同一 ECC 代码字（Codeword）多个比特的风险。这里以间距大于 $5\mu m$ 为设计示例；具体间距需结合工艺与故障注入评估，不能保证所有双比特翻转都转为可纠正的单比特事件。
 - **软错误巡检与刷新机制（SRAM Memory Scrubbing）**：
   在硬件后台启动一个硬件巡检状态机（Scrubber），利用 NPU 空闲周期周期性读取整个 Scratchpad，并在发生单比特软错误时立即重写纠正后的值，阻止单比特错误积累演化为多比特致命错误。

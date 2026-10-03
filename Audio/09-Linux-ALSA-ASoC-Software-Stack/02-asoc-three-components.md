@@ -40,9 +40,9 @@ graph TD
 
 | 组件名称 | 核心职责 | 代码驻留目录 | 跨平台复用性 |
 | :--- | :--- | :--- | :--- |
-| **Codec 驱动** | 控制音频编解码芯片内部的模拟/数字特性（寄存器读写、PGA增益、DAPM部件树）。**完全不知道自己连接到了哪款 CPU**。 | `sound/soc/codecs/` | **100% 芯片无关**，可在任何 ARM/x86/RISC-V 平台上直接复用 |
+| **Codec 驱动** | 控制音频编解码芯片内部的模拟/数字特性（寄存器读写、PGA增益、DAPM部件树）。**完全不知道自己连接到了哪款 CPU**。 | `sound/soc/codecs/` | 与主控平台解耦；复用时仍需满足总线、时钟和板级连接条件 |
 | **Platform 驱动** | 控制 SoC 自身的数字音频接口（I2S/TDM 控制器）与 DMA 搬运引擎。**完全不知道连接的是哪颗 Codec 芯片**。 | `sound/soc/<vendor>/` | **板级无关**，芯片原厂提供后，可在该 SoC 的所有板型中复用 |
-| **Machine 驱动** | 充当月下老人，通过 `snd_soc_dai_link` 将特定的 CPU DAI 与特定的 Codec DAI 绑定，定义板级特定引脚（GPIO Mute / 耳机插孔检测）。 | `sound/soc/<vendor>/` | **特定板型专有**，每款硬件主板编写一份 |
+| **Machine 驱动** | 通过 `snd_soc_dai_link` 将特定的 CPU DAI 与特定的 Codec DAI 绑定，定义板级特定引脚（GPIO Mute / 耳机插孔检测）。 | `sound/soc/<vendor>/` | **特定板型专有**，每款硬件主板编写一份 |
 
 ---
 

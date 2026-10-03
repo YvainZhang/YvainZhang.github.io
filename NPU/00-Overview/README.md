@@ -4,7 +4,7 @@
 
 ## 原厂研发分工与 DSA 设计哲学
 
-领域专用架构（Domain-Specific Architecture, DSA）的核心设计原则是**“牺牲通用标量灵活性，换取极限能效比与算力密度”**。在 NPU 芯片原厂中，芯片与软件的协同度远超通用 CPU/GPU：
+领域专用架构（Domain-Specific Architecture, DSA）针对目标负载安排计算和存储资源，以通用性上的取舍换取能效与吞吐。模型支持范围、编译器能力和硬件接口需要一起设计，下面列出一种常见的研发分工：
 
 ```mermaid
 graph LR

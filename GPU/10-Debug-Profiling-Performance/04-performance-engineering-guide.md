@@ -7,6 +7,6 @@
 - [ ] **Step 3 (SRAM 冲突)**：Shared Memory 访问是否存在 Bank Conflict？是否已添加 Padding？
 - [ ] **Step 4 (Tensor Core)**：矩阵维度是否对齐到 16 的倍数以完整利用 Tensor Core MMA 硬件？
 - [ ] **Step 5 (Double Buffering)**：是否采用异步 Copy（`cp.async`）实现计算与数据搬运的流水线重叠？
-- [ ] **Step 6 (寄存器控制)**：每线程寄存器用量是否控制在阈值内，杜绝任何 Register Spill？
-- [ ] **Step 7 (Occupancy 权衡)**：SM 活跃 Warp 数量是否足以完全隐藏指令延迟？
-- [ ] **Step 8 (Roofline 验证)**：实际测得的 TFLOPS 或带宽是否达到硬件理论峰值的 80% 以上？
+- [ ] **Step 6 (寄存器控制)**：每线程寄存器用量是否导致 Register Spill？限制寄存器数量后，Occupancy 与执行时间如何变化？
+- [ ] **Step 7 (Occupancy 权衡)**：SM 活跃 Warp 是否有足够就绪指令？等待主要来自依赖、访存还是发射资源？
+- [ ] **Step 8 (Roofline 验证)**：实际测得的 TFLOPS 或带宽距离该形状、精度和设备上的可达上界有多远？同时记录模型假设和实测条件。

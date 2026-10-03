@@ -2,11 +2,11 @@
 
 ## 1. 异构多核架构（Heterogeneous Multicore）工程背景
 
-在车载仪表盘、工业人机界面（HMI）和扫地机器人中，单靠一颗芯片往往无法兼顾“图形界面的复杂性”与“电机/传感器控制的高实时性”：
+车载仪表盘、工业人机界面（HMI）和扫地机器人可能同时需要图形界面和实时控制。一种常见划分是在同一 SoC 上使用不同类型的核心：
 * **应用核心（Linux on Cortex-A）**：运行 Ubuntu/Yocto、Qt UI、网络协议与 AI 视觉模型，具备大容量 DDR，但存在毫秒级调度不确定性。
-* **实时核心（RTOS on Cortex-M）**：运行 FreeRTOS 或 Zephyr，负责纳秒/微秒级 CAN 总线收发、电机闭环控制与电源监控。
+* **实时核心（RTOS on Cortex-M）**：运行 FreeRTOS 或 Zephyr，处理 CAN 总线、电机控制与电源监控，按各任务的时限安排中断和调度。
 
-两者必须通过 **AMP（Asymmetric Multiprocessing）** 架构高效互联。
+本文讨论两类核心通过 **AMP（Asymmetric Multiprocessing）** 架构协作的方式。
 
 ```mermaid
 flowchart TD
@@ -101,7 +101,7 @@ sequenceDiagram
 
 1. **写方刷新（Clean）**：发送方在敲击 Mailbox 中断之前，**必须显式执行 Cache Clean 操作**，强制将 Cache 中的脏数据推送到物理内存。
 2. **读方作废（Invalidate）**：接收方在收到中断、读取共享物理内存之前，**必须先执行 Cache Invalidate**，清空自身的本地 Cache 行，强制从总线物理 DDR 读取最新鲜的数据。
-3. **或者使用无 Cache（Non-Cacheable / Strongly-Ordered）内存段**：通过 MPU/MMU 将共享 SRAM 区域直接配置为非缓存属性，彻底杜绝一致性隐患。
+3. **评估非缓存映射**：通过 MPU/MMU 将共享区域配置为合适的非缓存属性，可以减少 Cache 维护需求，但仍需处理内存序、访问宽度和缓冲区所有权。
 
 ### 内存序与屏障的落点（比 Clean/Invalidate 更隐蔽的坑）
 

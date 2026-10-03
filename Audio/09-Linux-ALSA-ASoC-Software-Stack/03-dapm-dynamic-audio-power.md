@@ -5,7 +5,7 @@
 现代音频 Codec 芯片内部集成了数十个微小的模拟模块（多个麦克风偏置、左/右 PGA、左/右 ADC、左/右 DAC、立体声耳放、差分扬声器功放、混音器 Mixer）。
 若在播放耳机音乐时，将所有模块全部带电开启，芯片将产生不必要的严重发热与毫瓦级无效耗电；若由应用程序逐一手动控制每个寄存器上下电，极易出错且产生爆音。
 
-**DAPM（Dynamic Audio Power Management，动态音频电源管理）**是 ASoC 的灵魂所在：
+**DAPM（Dynamic Audio Power Management，动态音频电源管理）**根据路由与流状态管理部件供电：
 它将音频芯片内部所有的物理电路抽象为一个**有向图（Directed Graph）**。**只有当前被音频流实际贯通经过的硬件节点，DAPM 才会自动为其供电；没有信号流经的模块在硬件上被自动断电隔离**。
 
 ---
@@ -72,4 +72,4 @@ static const struct snd_soc_dapm_route my_audio_routes[] = {
 3. **状态变化判断**：若路径连通，DAPM 将沿途的 `Left DAC`、`Left Mixer` 与 `Headphone Amp` 标记为“需上电（Power-Up）”。
 4. **延迟排序与平滑上电**：DAPM 严格按照声学防爆音顺序执行微秒级上电：
    - 先开 DAC -> 再开 Mixer -> 稳定共模偏置 -> 最后开启 Headphone Amp；
-   - 彻底杜绝了因后级先开被前级直流跳变冲击的爆音现象。
+   - 降低后级先开时受到前级直流跳变冲击的风险，仍需配合 Codec 与功放的静音、偏置稳定和放电要求。
