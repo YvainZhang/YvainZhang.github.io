@@ -1,6 +1,6 @@
 ---
 layout: home
-description: "把复杂系统，写成可以复用的理解。半导体嵌入式、系统架构、AI 工具与生活的长期笔记。"
+description: "架构师的成长之路和自我修养。一名嵌入式工程师的技术笔记、读书记录和日常。"
 ---
 
 {% assign latest_posts = site.posts | slice: 0, 5 %}
@@ -18,27 +18,27 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
                     <span>嵌入式系统工程师 · base 南京</span>
                 </div>
             </div>
-            <p class="studio-eyebrow"><span></span> Embedded systems · System Atlas · AI · Life</p>
-            <h1>把复杂系统，<br><span class="hero-accent">写成可以复用的理解。</span></h1>
-            <p class="studio-intro">你好，我是 Yvain。在半导体嵌入式行业写了十多年代码的工程师。这里收录 SoC、Wi-Fi、音频等核心系统知识图谱，也记录 AI 自动化工具、摄影与那些值得慢慢想清楚的事。</p>
+            <p class="studio-eyebrow"><span></span> 系统设计与架构实践</p>
+            <h1>架构师的成长之路<br><span class="hero-accent">和自我修养。</span></h1>
+            <p class="studio-intro">你好，我是 Yvain，一名嵌入式系统工程师。</p>
             <div class="studio-actions">
                 <a class="studio-button studio-button-primary" href="#atlas">探索系统图谱 <span aria-hidden="true">↓</span></a>
                 <a class="studio-button studio-button-quiet" href="#projects">开源分析工具 ↗</a>
                 {% if lead_post %}<a class="studio-button studio-button-quiet" href="#writing">最新手记 ↗</a>{% endif %}
             </div>
         </div>
-        <aside class="studio-console" aria-label="当前关注方向与系统状态">
+        <aside class="studio-console" aria-label="架构师成长与自我修养的内容路径">
             <div class="studio-console-head">
-                <span>SYSTEM LAB / 2026 ACTIVE</span>
+                <span>GROWTH JOURNAL / 持续更新</span>
                 <i aria-hidden="true"></i>
             </div>
             <ol>
-                <li><a href="#atlas"><span>01</span><strong>ATLAS</strong><em>系统图谱与工程手记 →</em></a></li>
-                <li><a href="#projects"><span>02</span><strong>OPEN TOOLS</strong><em>AI 抓包排障与分析工具 →</em></a></li>
-                <li><a href="{{ '/geek/' | prepend: site.baseurl }}"><span>03</span><strong>GEEK LAB</strong><em>上下文工程与自治 Agent →</em></a></li>
-                <li><a href="#offline"><span>04</span><strong>OFFLINE</strong><em>跑步解构与摄影留存 →</em></a></li>
+                <li><a href="#atlas"><span>01</span><strong>ATLAS</strong><em>按专题整理的系统知识 →</em></a></li>
+                <li><a href="#projects"><span>02</span><strong>PRACTICE</strong><em>工作中用到的开源工具 →</em></a></li>
+                <li><a href="#writing"><span>03</span><strong>NOTES</strong><em>最近更新的文章与笔记 →</em></a></li>
+                <li><a href="#offline"><span>04</span><strong>LIFE</strong><em>读书、跑步和拍照 →</em></a></li>
             </ol>
-            <p><span class="studio-pulse" aria-hidden="true"></span> 知识持续整理中 · 知行合一</p>
+            <p><span class="studio-pulse" aria-hidden="true"></span> 边学边记，慢慢补齐</p>
         </aside>
     </div>
     <div class="studio-hero-foot">
@@ -54,11 +54,11 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
         <div class="chapter-links">
             <a href="#atlas"><span>01</span>系统图谱</a>
             <a href="#projects"><span>02</span>开源工具</a>
-            <a href="#writing"><span>03</span>深度写作</a>
+            <a href="#writing"><span>03</span>文章笔记</a>
             <a href="#offline"><span>04</span>屏幕之外</a>
             <a href="#contact"><span>05</span>交流连接</a>
         </div>
-        <a class="chapter-hub-link" href="{{ '/tech/' | prepend: site.baseurl }}">查看技术全景 ↗</a>
+        <a class="chapter-hub-link" href="{{ '/tech/' | prepend: site.baseurl }}">查看技术总览 ↗</a>
     </div>
 </nav>
 
@@ -66,8 +66,8 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
     <div class="studio-section-heading">
         <p>System Atlas / 01</p>
         <div>
-            <h2 id="atlas-heading">从物理信号到系统软件，核心工程知识图谱。</h2>
-            <p style="color: rgba(21,34,37,0.68); margin-top: 12px; font-size: 15px; line-height: 1.75;">不是零散的文章标题，而是按时序、总线拓扑与数据通路组织，遇到现场问题能顺藤摸瓜回溯推导的系统知识体系。</p>
+            <h2 id="atlas-heading">系统知识，边学边整理。</h2>
+            <p style="color: rgba(21,34,37,0.68); margin-top: 12px; font-size: 15px; line-height: 1.75;">按模块整理硬件、驱动和系统软件的关系。遇到问题时，能沿着时序和数据通路回头查，也试着弄清性能、功耗与可靠性之间为什么需要取舍。</p>
         </div>
     </div>
 
@@ -80,7 +80,7 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
                     <span class="studio-atlas-badge">SYSTEM ARCHITECTURE</span>
                 </div>
                 <h3>SoC 系统知识库</h3>
-                <p>从 CPU 启动、Cache 一致性、MMU 页表与片上 NoC，走到 DMA 引擎、外设控制器、Boot、BSP、Linux 内核与系统底层调试。</p>
+                <p>CPU 启动、Cache 一致性、MMU、片上总线与 DMA，以及 Boot、BSP、Linux 内核和底层调试的相关笔记。</p>
                 <div class="studio-atlas-flow">
                     <span>CPU / MMU</span><i>→</i><span>CACHE</span><i>→</i><span>AXI / NoC</span><i>→</i><span>DDR / DMA</span><i>→</i><span>BSP / LINUX</span>
                 </div>
@@ -104,7 +104,7 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
                     <span class="studio-atlas-badge">PACKET PATH</span>
                 </div>
                 <h3>Wi-Fi 系统知识库</h3>
-                <p>从应用层与 Linux 网络栈出发，穿过 USB / SDIO / PCIe 总线、Firmware 握手、MAC 与 PHY，一直追到空口 802.11 帧分析。</p>
+                <p>沿着收发路径整理 Linux 网络栈、Host Driver、USB / SDIO / PCIe、Firmware 和 MAC / PHY，附有 802.11 抓包与排障笔记。</p>
                 <div class="studio-atlas-flow">
                     <span>TCP / IP</span><i>→</i><span>HOST DRIVER</span><i>→</i><span>BUS</span><i>→</i><span>FW</span><i>→</i><span>MAC / PHY</span><i>→</i><span>AIR</span>
                 </div>
@@ -128,7 +128,7 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
                     <span class="studio-atlas-badge">NEW RELEASE / 2026</span>
                 </div>
                 <h3>Audio 系统知识库</h3>
-                <p>从芯片物理层、模拟 Codec、时钟时序与 DSP，一路走到 DMA 缓冲、Linux ALSA/ASoC、低功耗管理与实时流式语音。把音频知识组织成可推导、可调试的工程证据链。</p>
+                <p>整理模拟 Codec、数字接口、时钟、DSP、DMA 缓冲与 ALSA/ASoC，也记录低功耗音频和流式语音中的调试问题。</p>
                 <div class="studio-atlas-flow">
                     <span>MIC / AFE</span><i>→</i><span>I2S / PDM</span><i>→</i><span>DSP</span><i>→</i><span>DMA FIFO</span><i>→</i><span>ALSA / ASoC</span><i>→</i><span>AUDIO APP</span>
                 </div>
@@ -152,7 +152,7 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
                     <span class="studio-atlas-badge">EXECUTION PATH</span>
                 </div>
                 <h3>GPU 系统知识库</h3>
-                <p>从用户空间命令提交、硬件调度队列和 SM/CU 执行架构，走到 Warp 同步、纹理与显存层次、图形流水线与通用计算。</p>
+                <p>围绕命令提交、硬件调度和 SM/CU 执行，整理 Warp 同步、显存层次、图形流水线与通用计算。</p>
                 <div class="studio-atlas-flow">
                     <span>HOST</span><i>→</i><span>CMD QUEUE</span><i>→</i><span>SM / CU</span><i>→</i><span>WARP</span><i>→</i><span>CACHE / VRAM</span>
                 </div>
@@ -175,7 +175,7 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
                     <span class="studio-atlas-badge">TENSOR PATH</span>
                 </div>
                 <h3>NPU 系统知识库</h3>
-                <p>从脉动阵列、片上 Scratchpad 与低比特量化通路，走到 AI 编译器算子融合、硬件调度器与分布式大模型互联集群。</p>
+                <p>脉动阵列、片上 Scratchpad、量化与数据搬运的学习笔记，以及 AI 编译器、任务调度和多卡互联的相关内容。</p>
                 <div class="studio-atlas-flow">
                     <span>COMPILER</span><i>→</i><span>TENSOR DMA</span><i>→</i><span>SYSTOLIC ARRAY</span><i>→</i><span>SRAM / HBM</span>
                 </div>
@@ -202,7 +202,7 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
     <div class="studio-section-heading studio-section-heading-row">
         <div>
             <p>Open Source / 02</p>
-            <h2 id="projects-heading">把工作里反复推演的逻辑，做成开放工具。</h2>
+            <h2 id="projects-heading">工作中用到的开源工具。</h2>
         </div>
         <a href="{{ '/projects/' | prepend: site.baseurl }}">查看全部开源项目 <span aria-hidden="true">→</span></a>
     </div>
@@ -239,7 +239,7 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
     <div class="studio-section-heading studio-section-heading-row">
         <div>
             <p>Writing / 03</p>
-            <h2 id="writing-heading">最近写下的深度思考与工程手记</h2>
+            <h2 id="writing-heading">最近更新的文章与笔记。</h2>
         </div>
         <a href="{{ '/tags/' | prepend: site.baseurl }}">查看文章标签索引 <span aria-hidden="true">→</span></a>
     </div>
@@ -276,8 +276,8 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
     <div class="studio-section-heading">
         <p>Off The Screen / 04</p>
         <div>
-            <h2 id="offline-heading">偶尔合上终端，去看真实世界里的光。</h2>
-            <p style="color: rgba(21,34,37,0.68); margin-top: 12px; font-size: 15px; line-height: 1.75;">代码与系统占据了白天，跑步与摄影则是给生活换个频率。离开屏幕，找回专注与身体的节奏。</p>
+            <h2 id="offline-heading">读书、跑步和拍照。</h2>
+            <p style="color: rgba(21,34,37,0.68); margin-top: 12px; font-size: 15px; line-height: 1.75;">工作之外，读一点书，出去跑跑，偶尔拍几张照片。这些也是我想在这里留下的日常。</p>
         </div>
     </div>
 
@@ -289,10 +289,10 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
                 </div>
                 <div class="studio-offline-copy">
                     <p class="studio-eyebrow" style="color: #087f8c; margin-bottom: 8px;"><span></span> PHOTOGRAPHY / 摄影</p>
-                    <h3>水岸薄雾与城市夜景</h3>
-                    <p>拿着相机记录沿途的光影与水岸的薄雾。普通的一天，也值得被认真留存。</p>
+                    <h3>太湖边与城市夜景</h3>
+                    <p>太湖边散步时拍的照片，还有一张以前的城市夜景，整理成了两组相册。</p>
                     <div class="studio-offline-quote">
-                        “把走过的日常多看一眼，留住偶尔遇到的好光线。”
+                        “偶尔遇到好光线，就拍下来。”
                     </div>
                 </div>
             </div>
@@ -310,10 +310,10 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
                 </div>
                 <div class="studio-offline-copy">
                     <p class="studio-eyebrow" style="color: #087f8c; margin-bottom: 8px;"><span></span> OFFLINE / 跑步与节奏</p>
-                    <h3>有氧慢跑与节奏重置</h3>
-                    <p>在江畔与操场间保持长跑习惯。配速不必激进，长距离匀速跑能彻底清空大脑。很多卡壳的驱动死锁与架构难题，往往在脚步沉稳时自然清晰。</p>
+                    <h3>有空去跑一跑</h3>
+                    <p>平时坐得多，跑步是换个节奏的办法。配速不用太赶，跑完回来，再接着处理手头的事。</p>
                     <div class="studio-offline-quote">
-                        “Slow is smooth, smooth is fast. 专注呼吸与步频，把耐力留给长路。”
+                        “慢一点，跑得久一点。”
                     </div>
                 </div>
             </div>
@@ -331,7 +331,7 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
                 <div class="studio-offline-copy">
                     <p class="studio-eyebrow" style="color: #087f8c; margin-bottom: 8px;"><span></span> READING / 年度书单</p>
                     <h3>推荐书籍</h3>
-                    <p>这里放着今年想认真读的书，也留着往期推荐。有空时，再慢慢翻。</p>
+                    <p>今年想读的书和以前记下的推荐，放在这里。读完以后，再补几句自己的感受。</p>
                     <div class="studio-offline-quote">
                         “有空读几页，慢慢看，慢慢想。”
                     </div>
@@ -347,7 +347,7 @@ description: "把复杂系统，写成可以复用的理解。半导体嵌入式
         <div class="studio-contact-lead">
             <p class="studio-eyebrow"><span></span> Say Hello / 05</p>
             <h2 id="contact-heading">聊聊系统、技术，或打个招呼。</h2>
-            <p>关于底层架构、芯片驱动、AI 工具链，或者打个招呼。如果你从知识库或博客而来，随时欢迎交流探讨。</p>
+            <p>如果你也在研究芯片驱动、系统架构或 AI 工具，欢迎交流。文章里有错误或没讲清楚的地方，也请告诉我。</p>
         </div>
         <div class="studio-contact-actions">
             <a class="studio-contact-btn studio-contact-btn-primary" href="mailto:yvain.zhang@gmail.com">

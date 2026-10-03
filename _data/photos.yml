@@ -10,15 +10,15 @@
 - album: "城市夜景"
   slug: "city-nightscape"
   date: "2016-11"
-  description: "一张旧夜景，更多是在记录当时的光线和城市氛围。"
+  description: "2016 年拍的一张城市夜景。"
   items:
     - title: "夜景"
       image: "/img/photos/1773998506014_d.jpg"
-      description: "城市灯光亮起之后，街道和楼体形成了更安静的层次。"
+      description: "灯光下的街道与楼体。"
 
 - album: "无锡太湖周边"
   slug: "wuxi-taihu"
-  description: "太湖边的一组散步照片，偏安静和开阔的水岸感受。"
+  description: "太湖边散步时拍的一组照片。"
   items:
     - title: "无锡太湖周边 1"
       image: "/img/photos/无锡太湖周边 1.jpg"

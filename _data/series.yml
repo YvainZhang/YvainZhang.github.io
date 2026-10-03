@@ -8,11 +8,11 @@
 
 - slug: "investment"
   title: "投资"
-  description: "记录市场观察、框架思考和以后可能会持续更新的投资笔记。"
+  description: "给市场观察和投资相关的学习笔记留个位置。"
 
 - slug: "life"
   title: "生活感悟"
-  description: "给工作之外的想法留个位置，慢慢写成更有人味的记录。"
+  description: "一些工作之外的想法和日常记录。"
 
 - slug: "photography"
   title: "摄影"

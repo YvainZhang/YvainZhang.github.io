@@ -7,8 +7,8 @@
   license: "MIT"
   language: "Python"
   featured: true
-  summary: "把 Wi-Fi 空口抓包交给 AI，从数据提取、协议流和时间线一路分析到根因定位。"
-  description: "支持 pcapng 与 OmniPeek 抓包，以六层分析链路组织射频质量、802.11 帧、Block Ack、DHCP、TCP 重传和连接问题，输出可复查的因果链与排障建议。"
+  summary: "提取 Wi-Fi 空口抓包中的协议和时间线信息，再用 AI 辅助分析可能的故障原因。"
+  description: "支持 pcapng 与 OmniPeek 抓包，整理射频质量、802.11 帧、Block Ack、DHCP、TCP 重传和连接问题，供 AI 分析并给出排查建议。结论需要结合原始抓包和现场情况核对。"
   pipeline:
     - "Capture"
     - "Decode"

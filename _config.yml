@@ -1,17 +1,17 @@
 # Site settings
 title: Yvain Zhang
-SEOTitle: Yvain Zhang | Blog
+SEOTitle: Yvain Zhang | 架构师的成长之路和自我修养
 header-img: img/post-bg-desk.jpg
 email:
-description: "Personal blog about software, notes, and projects."
-keyword: "Yvain Zhang, Blog, Jekyll, GitHub Pages, software, notes"
+description: "架构师的成长之路和自我修养。记录系统设计与架构实践，以及阅读和生活中的思考。"
+keyword: "Yvain Zhang, 架构师的成长之路, 自我修养, 系统架构, 嵌入式, 工程实践, 阅读, 个人博客"
 url: "https://xidianedu.cc"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/YvainZhang/YvainZhang.github.io.git" # you code repository
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "Notes on software, tools, and personal projects."
+sidebar-about-description: "架构师的成长之路和自我修养。把技术积累用在系统设计上。"
 sidebar-avatar: https://github.com/YvainZhang.png      # sync with GitHub profile avatar
 
 
