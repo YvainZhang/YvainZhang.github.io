@@ -18,7 +18,20 @@
     tools.innerHTML =
       '<div class="collection-side-tools__head"><span>阅读进度</span><output>0%</output></div>' +
       '<div class="collection-side-progress" role="progressbar" aria-label="当前文章阅读进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>';
-    sidebar.insertBefore(tools, sidebar.firstChild);
+    var primaryNav = sidebar.querySelector(".md-nav--primary");
+    var primaryList = primaryNav && primaryNav.querySelector(".md-nav__list");
+    var drawerLayout = window.matchMedia("(max-width: 76.234375em)");
+
+    function placeTools() {
+      // The mobile drawer covers siblings of its primary navigation.
+      if (drawerLayout.matches && primaryList) {
+        primaryNav.insertBefore(tools, primaryList);
+      } else {
+        sidebar.insertBefore(tools, sidebar.firstChild);
+      }
+    }
+    placeTools();
+    drawerLayout.addEventListener("change", placeTools);
 
     var output = tools.querySelector("output");
     var sideBar = tools.querySelector(".collection-side-progress span");
