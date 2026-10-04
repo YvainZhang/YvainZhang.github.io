@@ -16,7 +16,7 @@ body_class: tech-page
             <p>零散问题写成工程笔记，反复遇到的知识整理成系统专题。这里既保留现场经验，也试着把硬件、驱动和系统之间的关系连起来。</p>
             <div class="tech-hero-stats" aria-label="技术内容统计">
                 <span><strong>{{ technical_posts | size }}</strong> Articles</span>
-                <span><strong>07</strong> System collections</span>
+                <span><strong>08</strong> System collections</span>
                 <span><strong>04</strong> Domains</span>
             </div>
         </div>
@@ -34,7 +34,7 @@ body_class: tech-page
 
 <section class="tech-section tech-collection" aria-labelledby="collection-heading">
     <div class="tech-section-heading">
-        <p>System Collections / 01—07</p>
+        <p>System Collections / 01—08</p>
         <div>
             <h2 id="collection-heading">按专题查找系统知识。</h2>
             <span>每个专题按模块整理，也收录相关案例和实验。可以顺着读，遇到具体问题时也方便回来查。</span>
@@ -175,7 +175,7 @@ body_class: tech-page
         <div class="soc-feature-copy">
             <div class="soc-feature-meta"><span>RTOS System Atlas</span><span>Kernel to Practice</span></div>
             <h3 id="rtos-heading">RTOS 系统知识库</h3>
-            <p>从任务调度、中断与同步，走到 FreeRTOS、Zephyr 和系统选型；用 RVKernel Lab 追踪 RISC-V 内核的抢占、IPC 与多核协同。</p>
+            <p>从任务调度、中断与同步，走到 FreeRTOS、Zephyr 和系统选型；用异步 SDK 核对队列、通知与任务退出，用 RVKernel 追踪抢占、IPC 与多核协同。</p>
             <div class="soc-feature-stats">
                 <span><strong>4</strong> Core Modules</span>
                 <span><strong>4</strong> Labs</span>
@@ -193,16 +193,37 @@ body_class: tech-page
     </a>
 </section>
 
+<section class="tech-section" aria-labelledby="linux-heading">
+    <a class="soc-feature" href="{{ '/tech/linux/' | prepend: site.baseurl }}" aria-label="进入 Linux 系统实践">
+        <div class="soc-feature-copy">
+            <div class="soc-feature-meta"><span>Linux System Practice</span><span>Userspace to Kernel</span></div>
+            <h3 id="linux-heading">Linux 系统实践</h3>
+            <p>从 fd、IO、进程与事件，走到并发、网络和驱动退出；用异步 SDK、TAP 与专用 QEMU 追踪对象、时序与资源。</p>
+            <div class="soc-feature-stats">
+                <span><strong>10</strong>机制章节</span><span><strong>3</strong>工程案例</span><span><strong>C</strong>源码实验</span>
+            </div>
+            <span class="soc-feature-enter">进入 Linux 专题 <i aria-hidden="true">→</i></span>
+        </div>
+        <div class="soc-feature-map" aria-hidden="true">
+            <div class="soc-map-label">USERSPACE TO KERNEL</div>
+            <div class="soc-map-row soc-map-row-top"><span>FD</span><i></i><span>EVENT</span><i></i><span>OWNER</span></div>
+            <div class="soc-map-bus"><b>LIFETIME + CONCURRENCY + IO</b></div>
+            <div class="soc-map-row soc-map-row-bottom"><span>SDK</span><i></i><span>TAP</span><i></i><span>DRIVER</span></div>
+            <div class="soc-map-control"><span>PROCESS</span><span>MEMORY</span><span>STOP</span><span>VERIFY</span></div>
+        </div>
+    </a>
+</section>
+
 <section class="tech-section" aria-labelledby="platform-heading">
     <a class="soc-feature" href="{{ '/tech/platform/' | prepend: site.baseurl }}" aria-label="进入平台架构实践">
         <div class="soc-feature-copy">
             <div class="soc-feature-meta"><span>Platform Architecture</span><span>Problem to Design</span></div>
             <h3 id="platform-heading">平台架构实践</h3>
-            <p>从 fd、buffer 寿命、事件和停止问题出发，连接 Linux 系统机制、RTOS 对照、资源预算与平台设计。</p>
+            <p>从接口的所有权与结果义务出发，讨论资源预算、运行时边界、可靠性、交付与平台演进。</p>
             <div class="soc-feature-stats">
-                <span><strong>Linux</strong> Mechanisms</span>
-                <span><strong>RTOS</strong> Runtime</span>
-                <span><strong>4</strong> Cases</span>
+                <span><strong>契约</strong> Contract</span>
+                <span><strong>预算</strong> Budget</span>
+                <span><strong>演进</strong> Evolution</span>
             </div>
             <span class="soc-feature-enter">进入实践专题 <i aria-hidden="true">→</i></span>
         </div>
@@ -210,7 +231,7 @@ body_class: tech-page
             <div class="soc-map-label">RESOURCE TO CONTRACT</div>
             <div class="soc-map-row soc-map-row-top"><span>OBJECT</span><i></i><span>QUEUE</span><i></i><span>OWNER</span></div>
             <div class="soc-map-bus"><b>LIFETIME + BUDGET + RECOVERY</b></div>
-            <div class="soc-map-row soc-map-row-bottom"><span>LINUX</span><i></i><span>CORE</span><i></i><span>RTOS</span></div>
+            <div class="soc-map-row soc-map-row-bottom"><span>CONTRACT</span><i></i><span>BUDGET</span><i></i><span>DELIVERY</span></div>
             <div class="soc-map-control"><span>FD</span><span>EVENT</span><span>STOP</span><span>VERIFY</span></div>
         </div>
     </a>

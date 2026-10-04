@@ -2,7 +2,7 @@
 
 `submit()` 返回成功以后，请求可能还在队列里。此时调用者能否复用原 buffer？队列满是立即失败还是稍后通知？停止时还有哪些结果必须交付？这些问题先于函数名和目录分层。
 
-本章以受约束的设备 SDK 为例。业务核心接收事件、输出动作；Linux 与 FreeRTOS runtime 分别负责执行。前置阅读：[并发与所有权](../mechanisms/07-concurrency-ownership.md)、[事件与时间](../mechanisms/06-events-time.md)。头文件和实现见[源码与版本](../reference/source.md)。
+本章以受约束的设备 SDK 为例。业务核心接收事件、输出动作；Linux 与 FreeRTOS runtime 分别负责执行。前置阅读：[并发与所有权](https://xidianedu.cc/tech/linux/mechanisms/07-concurrency-ownership/)、[事件与时间](https://xidianedu.cc/tech/linux/mechanisms/06-events-time/)。头文件和实现见[源码与版本](../reference/source.md)。
 
 ## 区分入队、接受和完成
 
@@ -41,7 +41,7 @@ accepted = completed + timed_out + cancelled + failed + live
 
 停止成功以后，两项余量 `pending` 和 `live` 都要归零。只检查 `live=0` 会遗漏仍在入口中的 ticket。
 
-代码中的 `stats.queued` 在 `C_SUBMIT` 到达 core 时才递增，runtime 发布的 snapshot 还可能滞后。因此运行中的 snapshot 不能直接替代上表的外部入队账，也不能独自证明入口已排空。具体反例见[停止与入队守恒](../cases/01-stop-drain.md)。
+代码中的 `stats.queued` 在 `C_SUBMIT` 到达 core 时才递增，runtime 发布的 snapshot 还可能滞后。因此运行中的 snapshot 不能直接替代上表的外部入队账，也不能独自证明入口已排空。具体反例见[停止与入队守恒](https://xidianedu.cc/tech/linux/cases/01-stop-drain/)。
 
 ## 请求身份必须跨恢复边界
 

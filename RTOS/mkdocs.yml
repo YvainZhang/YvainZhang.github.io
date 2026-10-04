@@ -67,6 +67,11 @@ nav:
   - 首页: README.md
   - 项目实践:
       - RVKernel Lab: Projects/rvkernel.md
+  - FreeRTOS 工程实践:
+      - 从问题进入: Practice/README.md
+      - 实验环境: Practice/01-environment.md
+      - 队列、通知与 owner: Practice/02-queue-owner.md
+      - 恢复与停止: Practice/03-recovery-stop.md
   - 总览与路线: 00-Overview/README.md
   - 01 RTOS 通用核心机制:
       - 模块概览: 01-RTOS-Fundamentals/README.md

@@ -65,3 +65,6 @@ Audio/Labs/**/test_tone_48k.wav
 /linux-link-lab/
 /Platform-site/
 /_platform_publish/__pycache__/
+
+/Linux-site/
+/_linux_publish/__pycache__/

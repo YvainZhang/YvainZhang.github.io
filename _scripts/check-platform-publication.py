@@ -36,6 +36,18 @@ ASSETS = {
     *(f'assets/benchmark/limit-{limit}-round-{round_id}.csv'
       for limit in (4, 16) for round_id in range(1, 6)),
 }
+LINUX_PAGES = {
+    'README.md', 'guide/environment.md', 'runtime/01-async-sdk.md',
+    'hardware/01-boot-hardware.md',
+    *(name for name in PAGES if name.startswith('mechanisms/')),
+    'cases/01-stop-drain.md', 'cases/02-inflight-budget.md', 'cases/04-exec-fd.md',
+}
+RTOS_PAGES = {
+    'README.md', '01-environment.md', '02-queue-owner.md', '03-recovery-stop.md',
+}
+SITE_ROOTS = {
+    'linux': ROOT / 'Linux', 'platform': DOCS, 'rtos': ROOT / 'RTOS',
+}
 FORBIDDEN = re.compile(
     r'面试|求职|个人能力验收|能力缺口|复习强化|学习问答|Hermes|'
     r'linux-link-lab/|(?:assessment|roadmap)/|/Users/'
@@ -53,8 +65,14 @@ def validate():
     expected = PAGES | ASSETS
     if set(files) != expected:
         raise ValueError(f'Publication inventory differs: missing={sorted(expected-set(files))}, extra={sorted(set(files)-expected)}')
-    for name in sorted(PAGES):
-        path = files[name]
+    reviewed_pages = {f'Platform/{name}': files[name] for name in PAGES}
+    for directory, pages in [('Linux', LINUX_PAGES), ('RTOS/Practice', RTOS_PAGES)]:
+        collection = ROOT / directory
+        published = {str(p.relative_to(collection)): p for p in collection.rglob('*') if p.is_file()}
+        if set(published) != pages:
+            raise ValueError(f'{directory}: publication inventory differs')
+        reviewed_pages.update({f'{directory}/{name}': p for name, p in published.items()})
+    for name, path in sorted(reviewed_pages.items()):
         body = path.read_text(encoding='utf-8')
         check_text(name, body)
         if len(re.findall(r'^```', body, re.M)) % 2:
@@ -65,10 +83,27 @@ def validate():
         prose = re.sub(r'^```.*?^```\s*$', '', body, flags=re.M | re.S)
         for link in re.findall(r'\]\(([^)]+)\)', prose):
             target = urlsplit(link.strip('<>'))
-            if target.scheme or target.netloc or not target.path:
+            if not target.path:
+                continue
+            # Check cross-collection links against repository sources, without network access.
+            if target.netloc == 'xidianedu.cc' and target.path.startswith('/tech/'):
+                parts = unquote(target.path).strip('/').split('/')
+                if len(parts) > 1 and parts[1] in SITE_ROOTS:
+                    linked = SITE_ROOTS[parts[1]].joinpath(*parts[2:])
+                    if target.path.endswith('/'):
+                        candidates = [linked.with_suffix('.md'), linked / 'README.md']
+                        if len(parts) == 2:
+                            candidates = [linked / 'README.md']
+                    else:
+                        candidates = [linked]
+                    if not any(p.is_file() for p in candidates):
+                        raise ValueError(f'{name}: missing site resource {link}')
+                continue
+            if target.scheme or target.netloc:
                 continue
             linked = (path.parent / unquote(target.path)).resolve()
-            if not linked.is_relative_to(DOCS.resolve()) or not linked.is_file():
+            collection_root = ROOT / name.split('/')[0]
+            if not linked.is_relative_to(collection_root.resolve()) or not linked.is_file():
                 raise ValueError(f'{name}: missing or external local resource {link}')
     for name in ASSETS - {'assets/platform-lab-source.tar.gz'}:
         check_text(name, files[name].read_text(encoding='utf-8'))
@@ -121,11 +156,12 @@ def validate():
     if archive_hash not in json.dumps(verification):
         raise ValueError('Verification does not identify the public source archive')
     return {
-        'schema': 1,
-        'site_url': 'https://xidianedu.cc/tech/platform/',
+        'schema': 2,
+        'site_urls': [f'https://xidianedu.cc/tech/{name}/' for name in SITE_ROOTS],
         'historical_benchmark_dates': '2026-10-02/03',
         'files': {name: hashlib.sha256(path.read_bytes()).hexdigest()
-                  for name, path in sorted(files.items())},
+                  for name, path in sorted({**reviewed_pages,
+                      **{f'Platform/{name}': files[name] for name in ASSETS}}.items())},
     }
 
 
@@ -142,7 +178,7 @@ def main():
             raise ValueError('Reviewed publication manifest is missing or stale')
     except (ValueError, KeyError, OSError, UnicodeError, tarfile.TarError) as error:
         raise SystemExit(f'Platform publication FAILED: {error}')
-    print(f'Platform publication PASS: {len(PAGES)} pages, {len(ASSETS)} assets, source checksums and benchmark calculations')
+    print(f'Publication PASS: {len(PAGES)+len(LINUX_PAGES)+len(RTOS_PAGES)} pages across Linux, RTOS and platform design, {len(ASSETS)} assets, source checksums and benchmark calculations')
 
 
 if __name__ == '__main__':

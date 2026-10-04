@@ -1,0 +1,75 @@
+site_name: Linux 系统实践
+site_description: 从 fd、buffer 和事件出发，整理 Linux 用户态、网络、驱动与异步 SDK 实践。
+site_author: Yvain Zhang
+site_url: https://xidianedu.cc/tech/linux/
+docs_dir: ../Linux
+site_dir: ../Linux-site
+use_directory_urls: true
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - search.share
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: 切换至深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: 切换至浅色模式
+
+plugins:
+  - search:
+      lang: zh
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: platform-mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+
+extra:
+  generator: false
+  homepage: /tech/
+copyright: Copyright &copy; 2026 Yvain Zhang
+
+nav:
+  - 专题概览: README.md
+  - 环境与复现: guide/environment.md
+  - 系统机制:
+      - C 对象与 ABI: mechanisms/01-c-abi.md
+      - 构建、符号与 ELF: mechanisms/02-build-elf.md
+      - fd 与对象寿命: mechanisms/03-fd-lifetime.md
+      - IO 与持久化: mechanisms/04-io-persistence.md
+      - 进程、线程与 IPC: mechanisms/05-process-ipc.md
+      - 事件、就绪与时间: mechanisms/06-events-time.md
+      - 并发、队列与所有权: mechanisms/07-concurrency-ownership.md
+      - 内存、调度与性能: mechanisms/08-memory-performance.md
+      - 网络路径与 TAP: mechanisms/09-network-tap.md
+      - 内核设备与退出: mechanisms/10-kernel-lifetime.md
+  - 异步 SDK: runtime/01-async-sdk.md
+  - 启动与硬件边界: hardware/01-boot-hardware.md
+  - 工程案例:
+      - 停止时的排队请求: cases/01-stop-drain.md
+      - 在途额度与性能: cases/02-inflight-budget.md
+      - exec 与描述符语义: cases/04-exec-fd.md

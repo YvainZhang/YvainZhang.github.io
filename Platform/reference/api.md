@@ -48,4 +48,4 @@ remote_cancel 与 pause_data 当前能力为 0。关闭 `SDK_ENABLE_DATA` 时 da
 
 DROP、DUP、DISCONNECT、STREAM、BAD_VERSION、DELAY、RECOVER_FAIL 用于注入教学故障。普通请求回显 payload，wire 显式序列化并拒绝错误版本、截断和超长。当前模拟器没有实现 USB / SDIO DMA、射频或真实固件执行。
 
-相关内容：[停止收尾](../cases/01-stop-drain.md)、[跨运行时恢复](../cases/03-cross-runtime-recovery.md)、[验证范围](verification.md)。
+相关内容：[停止收尾](https://xidianedu.cc/tech/linux/cases/01-stop-drain/)、[跨运行时恢复](../cases/03-cross-runtime-recovery.md)、[验证范围](verification.md)。

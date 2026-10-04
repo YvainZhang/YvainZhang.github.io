@@ -64,6 +64,9 @@ jobs:
       - name: Build RTOS knowledge base
         run: mkdocs build --strict --config-file RTOS/mkdocs.yml --site-dir "$GITHUB_WORKSPACE/_site/tech/rtos"
 
+      - name: Build Linux system practice
+        run: mkdocs build --strict --config-file _linux_publish/mkdocs.yml --site-dir "$GITHUB_WORKSPACE/_site/tech/linux"
+
       - name: Build platform architecture practice
         run: mkdocs build --strict --config-file _platform_publish/mkdocs.yml --site-dir "$GITHUB_WORKSPACE/_site/tech/platform"
 
@@ -78,6 +81,10 @@ jobs:
           test -f _site/tech/audio/index.html
           test -f _site/tech/rtos/index.html
           test -f _site/tech/rtos/Projects/rvkernel/index.html
+          test -f _site/tech/linux/index.html
+          test -f _site/tech/linux/mechanisms/03-fd-lifetime/index.html
+          test -f _site/tech/rtos/Practice/index.html
+          test -f _site/tech/rtos/Practice/03-recovery-stop/index.html
           test -f _site/tech/platform/index.html
           test -f _site/tech/platform/mechanisms/03-fd-lifetime/index.html
           test -f _site/tech/platform/assets/platform-lab-source.tar.gz

@@ -79,6 +79,7 @@ hide:
     <h2>故障分析与调试</h2>
   </div>
   <div class="rtos-practice-grid">
+    <a href="Practice/"><span>FreeRTOS Practice</span><strong>异步 SDK 工程实践</strong><p>从 buffer 复制到队列、通知、恢复与任务退出，配套固定版本源码与实验步骤。</p></a>
     <a href="Projects/rvkernel/"><span>My Project / RVKernel Lab</span><strong>RVKernel 内核实验</strong><p>QEMU RV32：Sv32 页表、SBI 定时抢占、具名管道与 4 核 SMP。</p></a>
     <a href="Case-Studies/01-priority-inversion-mars-pathfinder-case/"><span>Case 01</span><strong>火星探路者优先级反转</strong><p>从信息总线死锁现场看互斥锁优先级继承与天花板协议的作用。</p></a>
     <a href="Case-Studies/02-stack-overflow-isr-corruption-debug/"><span>Case 02</span><strong>任务栈溢出与内存破坏</strong><p>MPU 硬件 Guard 保护、Canary 水位线探测与中断现场排查定位。</p></a>

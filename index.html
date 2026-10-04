@@ -192,23 +192,56 @@ description: "架构师的成长之路和自我修养。一名嵌入式工程师
     </div>
 
     <div class="studio-atlas-grid">
+        <a class="studio-atlas-card" href="{{ '/tech/linux/' | prepend: site.baseurl }}">
+            <div>
+                <div class="studio-atlas-head">
+                    <span class="studio-atlas-tag">LINUX SYSTEM PRACTICE</span>
+                    <span class="studio-atlas-badge">USERSPACE TO KERNEL</span>
+                </div>
+                <h3>Linux 系统实践</h3>
+                <p>从 fd、buffer 和事件出发，沿着进程、网络与驱动退出理解 Linux，配套异步 SDK、TAP 与 QEMU 实验。</p>
+                <div class="studio-atlas-flow"><span>fd / IO</span><i>→</i><span>事件 / 并发</span><i>→</i><span>网络 / 驱动</span></div>
+            </div>
+            <div class="studio-atlas-foot">
+                <div class="studio-atlas-stats"><span><strong>10</strong>机制章节</span><span><strong>3</strong>工程案例</span></div>
+                <span class="studio-atlas-enter">进入知识库 <i aria-hidden="true">→</i></span>
+            </div>
+        </a>
+        <a class="studio-atlas-card" href="{{ '/tech/rtos/' | prepend: site.baseurl }}">
+            <div>
+                <div class="studio-atlas-head">
+                    <span class="studio-atlas-tag">RTOS SYSTEM ATLAS</span>
+                    <span class="studio-atlas-badge">TASKS &amp; SCHEDULING</span>
+                </div>
+                <h3>RTOS 系统知识库</h3>
+                <p>围绕任务、中断与同步，阅读 FreeRTOS、Zephyr 和 RVKernel；从队列复制、通知与恢复追到任务退出。</p>
+                <div class="studio-atlas-flow"><span>任务 / 中断</span><i>→</i><span>队列 / 通知</span><i>→</i><span>恢复 / 停止</span></div>
+            </div>
+            <div class="studio-atlas-foot">
+                <div class="studio-atlas-stats"><span><strong>FreeRTOS</strong>实践</span><span><strong>RVKernel</strong>实验</span></div>
+                <span class="studio-atlas-enter">进入知识库 <i aria-hidden="true">→</i></span>
+            </div>
+        </a>
+    </div>
+
+    <div class="studio-atlas-grid">
         <a class="studio-atlas-card studio-atlas-pinned" href="{{ '/tech/platform/' | prepend: site.baseurl }}">
             <div>
                 <div class="studio-atlas-head">
                     <span class="studio-atlas-tag highlight">PLATFORM PRACTICE</span>
-                    <span class="studio-atlas-badge">LINUX / RTOS</span>
+                    <span class="studio-atlas-badge">CONTRACT &amp; BUDGET</span>
                 </div>
                 <h3>平台架构实践</h3>
-                <p>从 fd 与 buffer 的寿命、事件和停止问题出发，追到接口契约、跨运行时边界与资源预算，配套源码和复现实验。</p>
+                <p>从所有权、接受与完成的责任出发，讨论接口契约、资源预算、故障恢复与交付边界。</p>
                 <div class="studio-atlas-flow">
                     <span>问题</span><i>→</i><span>机制</span><i>→</i><span>实验</span><i>→</i><span>设计取舍</span>
                 </div>
             </div>
             <div class="studio-atlas-foot">
                 <div class="studio-atlas-stats">
-                    <span><strong>Linux</strong> Mechanisms</span>
-                    <span><strong>RTOS</strong> Runtime</span>
-                    <span><strong>4</strong> Cases</span>
+                    <span><strong>契约</strong> Contract</span>
+                    <span><strong>预算</strong> Budget</span>
+                    <span><strong>演进</strong> Evolution</span>
                 </div>
                 <span class="studio-atlas-enter">进入实践专题 <i aria-hidden="true">→</i></span>
             </div>

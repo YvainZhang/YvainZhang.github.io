@@ -2,7 +2,7 @@
 
 “owner 已退出”为什么还不能立即释放 SDK？同样的问题会出现在持 fd 解绑、DMA 取消和升级失败中：一个对象退出了，其他持有者和异步工作可能仍然存在。评审先把这些义务写清，再扩大到系统的预算、故障和维护。
 
-代码和测试入口见[源码与版本](../reference/source.md)。前置阅读：[fd 生命周期](../mechanisms/03-fd-lifetime.md)、[内核设备退出](../mechanisms/10-kernel-lifetime.md)、[SDK 契约](02-sdk-contract.md)。
+代码和测试入口见[源码与版本](../reference/source.md)。前置阅读：[fd 生命周期](https://xidianedu.cc/tech/linux/mechanisms/03-fd-lifetime/)、[内核设备退出](https://xidianedu.cc/tech/linux/mechanisms/10-kernel-lifetime/)、[SDK 契约](02-sdk-contract.md)。
 
 ## SDK 的释放条件逐层完成
 
@@ -29,7 +29,7 @@ read      : 已有记录可排空，之后 EOF
 release   : -1 session ref；最后引用释放实例
 ```
 
-因此设备解绑与对象释放处于不同时间点。module 的寿命、设备注册的寿命、open session 的寿命和一次异步工作的寿命也分别核对。详细实现和实验见[内核生命周期](../mechanisms/10-kernel-lifetime.md)。
+因此设备解绑与对象释放处于不同时间点。module 的寿命、设备注册的寿命、open session 的寿命和一次异步工作的寿命也分别核对。详细实现和实验见[内核生命周期](https://xidianedu.cc/tech/linux/mechanisms/10-kernel-lifetime/)。
 
 ## 把局部安全扩展成系统评审
 
@@ -58,7 +58,7 @@ release   : -1 session ref；最后引用释放实例
 
 **退出条件**：内容失败、p99 越界、RAM 越界、恢复恶化，或者设备改为串行执行。若要降低内存，改变结构或所有权方案并重新测量，不能只改逻辑额度。
 
-完整计算见[资源预算](06-resource-budget.md)，逐轮样本见[额度案例](../cases/02-inflight-budget.md)。
+完整计算见[资源预算](06-resource-budget.md)，逐轮样本见[额度案例](https://xidianedu.cc/tech/linux/cases/02-inflight-budget/)。
 
 ## 约束变化以后重新展开
 

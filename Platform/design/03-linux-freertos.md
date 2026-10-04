@@ -2,7 +2,7 @@
 
 同一套异步请求逻辑需要运行在 Linux 和 FreeRTOS 上。容易先想到把 thread、mutex、event 封装成一层统一 API，随后却发现通知、时间和退出的差异仍然泄漏出来。更稳定的边界来自请求语义：什么算接受，何时超时，恢复如何隔离旧回复，停止需要交付哪些结果。
 
-先阅读[SDK 契约](02-sdk-contract.md)和[事件与时间](../mechanisms/06-events-time.md)。本例采用官方 FreeRTOS V11.1.0 的 POSIX port，运行真实任务、队列与调度器；底层仍使用宿主能力。实现与版本见[源码入口](../reference/source.md)。
+先阅读[SDK 契约](02-sdk-contract.md)和[事件与时间](https://xidianedu.cc/tech/linux/mechanisms/06-events-time/)。本例采用官方 FreeRTOS V11.1.0 的 POSIX port，运行真实任务、队列与调度器；底层仍使用宿主能力。实现与版本见[源码入口](../reference/source.md)。
 
 ## 分层以后，各层负责什么
 
@@ -23,19 +23,11 @@ core 没有 OS 头文件，以输入事件推进状态，输出发送、通知�
 | 后端 | 独立进程、seqpacket | device task、queues | 完整身份、协议与能力 |
 | 退出 | 协作停止、waitpid、join | 停止标志、完成信号、自删 | 所有访问结束后释放实例 |
 
-## 通知数量不能代替工作数量
+## 分别核对运行机制
 
-通知可以合并，处理通知和处理队列也可能相隔一段时间。owner 收到提示后应按真实队列状态处理，而不能假设“一次通知恰好对应一个请求”。公平预算限制每轮处理量，未处理的数据仍保存在有界队列中。
+[Linux 异步 SDK](https://xidianedu.cc/tech/linux/runtime/01-async-sdk/)展开入口复制、eventfd / epoll、启动发布与进程收尾。[FreeRTOS 工程实践](https://xidianedu.cc/tech/rtos/Practice/)展开队列 item、任务通知、调度、恢复与任务退出。
 
-FreeRTOS queue 按创建时的 item 大小复制数据。本例把整个 `core_event` 入队，其中包含 payload。若 item 改为指针，就只复制指针值；原 buffer 的寿命仍由接口契约负责。这个变化同时影响 RAM、复制成本和退出收尾，不能只改 item 大小。[FreeRTOS 队列 API](https://www.freertos.org/Documentation/02-Kernel/04-API-references/06-Queues/01-xQueueCreate)
-
-## 队列满实验要控制因果
-
-本例 owner 优先级为 3，device 为 2。device 连续生产数据时，owner 可能立刻消费；“发送 80 次”不必然导致容量较小的队列满。
-
-定向注入在一段短且有界的 80 次非阻塞发送期间暂停调度，随后恢复，使过载条件可重复。这样能验证满时的丢弃和计数。生产代码还要按负载、任务优先级和消费能力设计；该注入不提供长期暂停调度的设计依据。
-
-`taskYIELD()` 也不能被当成“保证低优先级任务立即运行”。需要等待设备工作时，应选择能够表达条件的阻塞或通知，并检查实际调度配置。
+两端都把通知当作检查真实工作集合的提示。处理预算限制正常循环的单轮工作量；停止时的最终收尾仍要覆盖全部有界剩余集合。共同语义不要求相同调度顺序，但要求结果义务一致。
 
 ## 恢复时序保留共同语义
 
@@ -54,7 +46,7 @@ Linux 重建子进程和 IPC 通道，隔离旧通信。FreeRTOS 的旧排队回
 
 ## 运行同一组语义测试
 
-先按[环境准备](../guide/environment.md)在联网容器中获取并校验 FreeRTOS 依赖，再在无网络的专用工具容器项目根目录执行：
+先按[FreeRTOS 实验环境](https://xidianedu.cc/tech/rtos/Practice/01-environment/)获取并校验依赖，再在无网络的专用工具容器项目根目录执行：
 
 ```sh
 make -C platform core-test freertos-test

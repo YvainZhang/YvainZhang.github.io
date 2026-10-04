@@ -43,7 +43,9 @@ permalink: /projects/
         <div class="project-detail-foot">
             <div>{% for item in project.stack %}<span>{{ item }}</span>{% endfor %}</div>
             {% if project.repo %}<a href="{{ project.repo }}" target="_blank" rel="noopener noreferrer">{{ project.repo_label | default: project.name }} <span aria-hidden="true">↗</span></a>{% endif %}
-            {% if project.tutorial %}<a href="{{ project.tutorial | relative_url }}">阅读专题 <span aria-hidden="true">→</span></a>{% endif %}
+            {% if project.tutorial %}<a href="{{ project.tutorial | relative_url }}">{{ project.tutorial_label | default: "阅读专题" }} <span aria-hidden="true">→</span></a>{% endif %}
+            {% if project.linux_tutorial %}<a href="{{ project.linux_tutorial | relative_url }}">Linux 实践 <span aria-hidden="true">→</span></a>{% endif %}
+            {% if project.rtos_tutorial %}<a href="{{ project.rtos_tutorial | relative_url }}">RTOS 实践 <span aria-hidden="true">→</span></a>{% endif %}
             {% if project.source %}<a href="{{ project.source | relative_url }}">源码与许可 <span aria-hidden="true">→</span></a>{% endif %}
         </div>
     </article>

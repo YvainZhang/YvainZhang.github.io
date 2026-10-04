@@ -20,13 +20,13 @@ tags:
 
 借用、复制与转移会形成不同的责任。借用要求调用者保留对象到规定的完成点；复制可以让原 buffer 更早复用，但需要额外内存与拷贝；转移则要说明成功和失败各由谁释放。
 
-锁能保护一次访问，接口还需要定义整个异步过程的寿命。[fd 与对象寿命]({{ '/tech/platform/mechanisms/03-fd-lifetime/' | relative_url }})和[队列与所有权]({{ '/tech/platform/mechanisms/07-concurrency-ownership/' | relative_url }})分别用对象关系和执行时序说明这件事。
+锁能保护一次访问，接口还需要定义整个异步过程的寿命。[fd 与对象寿命]({{ '/tech/linux/mechanisms/03-fd-lifetime/' | relative_url }})和[队列与所有权]({{ '/tech/linux/mechanisms/07-concurrency-ownership/' | relative_url }})分别用对象关系和执行时序说明这件事。
 
 ## “提交成功”之后还有几层状态
 
 示例 SDK 提交时复制 payload，并先返回排队 ticket。owner 后续决定接受或拒绝；被接受的请求再进入完成、超时、取消或失败。取消事件进入队列，也不保证抢先于响应。
 
-这些层次决定了统计、错误处理和停止义务。公平处理预算可以限制一轮事件的工作量，但停止时仍需处理剩余 ticket 的结果通知。[停止收尾案例]({{ '/tech/platform/cases/01-stop-drain/' | relative_url }})给出受控的队列场景与两套守恒关系。
+这些层次决定了统计、错误处理和停止义务。公平处理预算可以限制一轮事件的工作量，但停止时仍需处理剩余 ticket 的结果通知。[停止收尾案例]({{ '/tech/linux/cases/01-stop-drain/' | relative_url }})给出受控的队列场景与两套守恒关系。
 
 ## 再连接到运行时和平台预算
 
@@ -35,5 +35,7 @@ tags:
 扩大在途额度还会影响吞吐、排队、尾延迟和停止时间；缩小逻辑额度也不自动缩小固定结构占用。[资源预算]({{ '/tech/platform/design/06-resource-budget/' | relative_url }})把这些约束放到同一张账里，再比较候选方案。
 
 专题中的章节由具体问题扩展，阅读索引按知识依赖组织。可以从一个案例进入，再追到相关机制；也可以从 C、fd、IO、进程和事件顺着读。
+
+Linux 的机制与实验整理在 [Linux 系统实践]({{ "/tech/linux/" | relative_url }})，任务、队列与退出整理在 [FreeRTOS 工程实践]({{ "/tech/rtos/Practice/" | relative_url }})。接口契约、预算和跨系统取舍在平台设计中继续展开。
 
 实验使用独立 Linux 工具容器、FreeRTOS POSIX port 和专用 QEMU 软件设备。源码、命令和结果范围分别见[下载页]({{ '/tech/platform/reference/source/' | relative_url }})、[环境准备]({{ '/tech/platform/guide/environment/' | relative_url }})和[验证记录]({{ '/tech/platform/reference/verification/' | relative_url }})。

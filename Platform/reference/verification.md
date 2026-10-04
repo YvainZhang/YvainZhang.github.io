@@ -36,7 +36,7 @@
 
 用户态环境是 aarch64 Linux、Alpine 3.22、musl 1.2.5、GCC 14.2.0；检测镜像使用 Debian bookworm / glibc / GCC 12。内核基线为 Alpine `6.12.111-0-virt` 和匹配头文件，QEMU ARM64 virt、TCG、512 MiB、2 CPU、无网络，未启用 PREEMPT_RT。
 
-源码后续发生修订，以上记录保留原日期与覆盖范围。[历史性能 CSV 和汇总](../cases/02-inflight-budget.md)作为案例数据公开；重新构建的性能输出应另外保存，不能覆盖为同一轮结果。
+源码后续发生修订，以上记录保留原日期与覆盖范围。[历史性能 CSV 和汇总](https://xidianedu.cc/tech/linux/cases/02-inflight-budget/)作为案例数据公开；重新构建的性能输出应另外保存，不能覆盖为同一轮结果。
 
 ## 验证仍需目标平台支持的部分
 
