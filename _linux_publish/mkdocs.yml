@@ -56,6 +56,11 @@ copyright: Copyright &copy; 2026 Yvain Zhang
 nav:
   - 专题概览: README.md
   - 环境与复现: guide/environment.md
+  - 系统设计进阶:
+      - 事件循环调度与背压: advanced/01-reactor-scheduling.md
+      - 尾延迟与诊断证据: advanced/02-tail-latency.md
+      - 多实例资源隔离: advanced/03-resource-isolation.md
+      - 驱动静止与退出证明: advanced/04-driver-quiescence.md
   - 系统机制:
       - C 对象与 ABI: mechanisms/01-c-abi.md
       - 构建、符号与 ELF: mechanisms/02-build-elf.md

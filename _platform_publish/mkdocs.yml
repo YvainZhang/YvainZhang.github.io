@@ -68,6 +68,10 @@ not_in_nav: |
 nav:
   - 专题概览: README.md
   - 实验环境索引: guide/environment.md
+  - 架构推演:
+      - 负载、容量与 admission: design/09-capacity-admission.md
+      - 故障模型与恢复边界: design/10-failure-recovery.md
+      - 接口兼容与所有权演进: design/11-contract-evolution.md
   - 平台设计:
       - SDK 需求与契约: design/02-sdk-contract.md
       - 跨系统运行时边界: design/03-linux-freertos.md

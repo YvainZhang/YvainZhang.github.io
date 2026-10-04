@@ -78,3 +78,7 @@ python3 kernel-labs/run-vm.py
 `build/vm/` 保存内核版本、config、镜像与串口。当前配置未启用 KASAN / lockdep 时，这两项保持 SKIP：串口没有报警不证明不存在所有 UAF 或锁问题，软件实例也没有替代真实 MMIO、DMA 与中断验证。
 
 从持 fd 解绑这个问题，可以继续推到平台退出接口：停止新工作、同步既有活动、排空或拒绝已有数据，最后归还引用。[停止与排空案例](../cases/01-stop-drain.md)在用户态执行环境里处理同一组责任，但 Linux driver 仍通过独立 UAPI 接入，不并入用户态 OS 抽象层。
+
+## 进一步证明退出
+
+[驱动静止与退出证明](../advanced/04-driver-quiescence.md)按并发交错分析 dead、重排、等待和引用，并讨论用户复制与真实硬件活动加入后的责任。

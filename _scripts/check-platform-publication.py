@@ -27,6 +27,8 @@ PAGES = {
     'design/07-complexity-evolution.md', 'design/08-lifecycle-review.md',
     'cases/01-stop-drain.md', 'cases/02-inflight-budget.md',
     'cases/03-cross-runtime-recovery.md', 'cases/04-exec-fd.md',
+    'design/09-capacity-admission.md', 'design/10-failure-recovery.md',
+    'design/11-contract-evolution.md',
 }
 ASSETS = {
     'assets/platform-lab-source.tar.gz',
@@ -41,6 +43,8 @@ LINUX_PAGES = {
     'hardware/01-boot-hardware.md',
     *(name for name in PAGES if name.startswith('mechanisms/')),
     'cases/01-stop-drain.md', 'cases/02-inflight-budget.md', 'cases/04-exec-fd.md',
+    'advanced/01-reactor-scheduling.md', 'advanced/02-tail-latency.md',
+    'advanced/03-resource-isolation.md', 'advanced/04-driver-quiescence.md',
 }
 RTOS_PAGES = {
     'README.md', '01-environment.md', '02-queue-owner.md', '03-recovery-stop.md',

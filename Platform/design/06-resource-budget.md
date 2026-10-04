@@ -86,3 +86,7 @@ backend_stack_bytes =      0
 下一次实验固定请求与版本，分别加入有界慢 callback 和设备服务变化，测输入等待、执行、IO 与交付时间，再调整额度。CPU 总利用率和单次吞吐不足以定位瓶颈。[内存与性能机制](https://xidianedu.cc/tech/linux/mechanisms/08-memory-performance/)
 
 功耗与热采用同一业务负载，记录活动、空闲、睡眠与转换能量。宿主基准没有功耗仪器数据，也没有真实芯片成本；这两项保持未知并进入平台 PoC。
+
+## 进一步推导容量
+
+当平均吞吐已足够、短时突发仍填满队列时，继续看 [负载包络与 admission](09-capacity-admission.md)，将到达、暂停和服务能力推成容量与时延边界。

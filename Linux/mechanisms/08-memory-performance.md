@@ -65,3 +65,7 @@ cat build/benchmark/summary.json
 遇到 CPU 利用率低而请求慢，可以进一步按排队、锁、IO、调度和 callback 工作拆分等待。这需要 profile 或额外时间戳；本基准没有这些证据，所以不能直接归因为 CPU 瓶颈、缓存行冲突或优先级问题。
 
 这里也没有硬实时最坏延迟保证。虚拟环境的 p99、FreeRTOS 宿主 port 的结果，以及真实 MCU 上的中断与调度延迟，各自具有不同测量边界。[Linux / FreeRTOS 对照](https://xidianedu.cc/tech/platform/design/03-linux-freertos/)说明该怎样保留公共语义并验证目标运行环境。
+
+## 进一步定位尾延迟
+
+[尾延迟诊断](../advanced/02-tail-latency.md)区分用户等待、分段时间与闭环负载，[资源隔离](../advanced/03-resource-isolation.md)继续核对 quota、回收和多实例共享成本。

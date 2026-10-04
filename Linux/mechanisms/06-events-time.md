@@ -87,3 +87,7 @@ L3-ready-batch-generation-fd-reuse
 `epoll` 运行三字节、LT、eventfd、timerfd 与 signalfd；`extra` 包含热点公平性与旧 batch 身份，也会运行 stdio/权限补充实验。HUP 实验关闭写端后核对事件及 EOF，提醒事件循环把关闭状态与剩余数据分别处理。以上是受控输入的通过条件，并非吞吐或实时延迟保证。全部机制与构建回归为 `make -C labs test`。
 
 从三字节反例最终得到的是 owner 的职责：保留未完成工作、按预算安排处理、让停止与时间检查得到机会，并在对应对象仍有效时执行 IO。[并发与所有权](07-concurrency-ownership.md)继续把这些调度规则与资源寿命连接；[停止案例](../cases/01-stop-drain.md)解释停止时为什么必须处理剩余通知义务。
+
+## 进一步分析控制时延
+
+[事件循环调度与背压](../advanced/01-reactor-scheduling.md)将单源就绪问题扩展到多源调度，核算预算、同步回调与未完成工作的进展。
