@@ -77,6 +77,11 @@
     "RTOS/Practice/01-environment.md": "ec0e92363b5fa9159b16231ea532ec64e156ae341e51a8527e165489fdaec953",
     "RTOS/Practice/02-queue-owner.md": "5c6df28ce4318aa0c4cbdf9c1c63810dbb25f7922e747e5d51b45bfdd2684434",
     "RTOS/Practice/03-recovery-stop.md": "1639c0fb7196063f29e9c324945c8a85db38814958031dea0d6c9ed93c9bbf64",
-    "RTOS/Practice/README.md": "f46d3d4013b4b8767dcaf0397ab0edc8b18596cf721402c82216c485460cf49f"
+    "RTOS/Practice/README.md": "f46d3d4013b4b8767dcaf0397ab0edc8b18596cf721402c82216c485460cf49f",
+    "_collection_theme/main.html": "9584f1f65db53f509c95ea08114e5dfc3d0a6248270138130546709f02066c7e",
+    "_linux_publish/mkdocs.yml": "2e21035dfeee6e1d0a0beb8c9f09202752f7ed7739eb7b36bb851b8df6ae6c34",
+    "_platform_publish/mkdocs.yml": "c1e0c017a09a6bd46d5a30bf0db29f4422fe05f011afa5aef4c6c797df887b77",
+    "assets/collections/reading-controls.js": "2d4834b66238f3fb579a36957a89ce1dc1b8822588c5561da6fbe5f8db1b34cb",
+    "assets/collections/reading.css": "3dac27f32af746a52d174c89c5017f9ddebdfa0bae8d99a3c588891827fa5dcc"
   }
 }

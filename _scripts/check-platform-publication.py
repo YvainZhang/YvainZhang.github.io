@@ -52,6 +52,11 @@ RTOS_PAGES = {
 SITE_ROOTS = {
     'linux': ROOT / 'Linux', 'platform': DOCS, 'rtos': ROOT / 'RTOS',
 }
+SHARED_FILES = {
+    '_collection_theme/main.html', 'assets/collections/reading.css',
+    'assets/collections/reading-controls.js',
+    '_linux_publish/mkdocs.yml', '_platform_publish/mkdocs.yml',
+}
 FORBIDDEN = re.compile(
     r'面试|求职|个人能力验收|能力缺口|复习强化|学习问答|Hermes|'
     r'linux-link-lab/|(?:assessment|roadmap)/|/Users/'
@@ -65,6 +70,9 @@ def check_text(name, body):
 
 
 def validate():
+    shared_files = {name: ROOT / name for name in SHARED_FILES}
+    for name, path in shared_files.items():
+        check_text(name, path.read_text(encoding='utf-8'))
     files = {str(p.relative_to(DOCS)): p for p in DOCS.rglob('*') if p.is_file()}
     expected = PAGES | ASSETS
     if set(files) != expected:
@@ -164,7 +172,7 @@ def validate():
         'site_urls': [f'https://xidianedu.cc/tech/{name}/' for name in SITE_ROOTS],
         'historical_benchmark_dates': '2026-10-02/03',
         'files': {name: hashlib.sha256(path.read_bytes()).hexdigest()
-                  for name, path in sorted({**reviewed_pages,
+                  for name, path in sorted({**reviewed_pages, **shared_files,
                       **{f'Platform/{name}': files[name] for name in ASSETS}}.items())},
     }
 

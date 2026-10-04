@@ -9,6 +9,7 @@ use_directory_urls: true
 theme:
   name: material
   language: zh
+  custom_dir: ../_collection_theme
   features:
     - navigation.top
     - navigation.footer
@@ -51,10 +52,15 @@ markdown_extensions:
 hooks:
   - mermaid_source.py
 extra_javascript:
+  - /assets/collections/reading-controls.js
   - javascripts/vendor/mermaid-10.4.0.min.js
   - javascripts/platform-diagrams.js
 
+extra_css:
+  - /assets/collections/reading.css
+
 extra:
+  collection_label: Platform Architecture
   generator: false
   homepage: /tech/
 copyright: Copyright &copy; 2026 Yvain Zhang

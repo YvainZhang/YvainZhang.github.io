@@ -88,6 +88,8 @@ jobs:
           test -f _site/tech/platform/index.html
           test -f _site/tech/platform/mechanisms/03-fd-lifetime/index.html
           test -f _site/tech/platform/assets/platform-lab-source.tar.gz
+          test -f _site/assets/collections/reading.css
+          test -f _site/assets/collections/reading-controls.js
           test -f _site/CNAME
 
       - name: Upload Pages artifact
