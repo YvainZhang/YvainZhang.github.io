@@ -15,6 +15,7 @@
     - "Decode"
     - "Detect"
     - "Diagnose"
+  flow_note: "pcapng / OmniPeek → 诊断线索"
   highlights:
     - "纯 Python 标准库实现，无第三方依赖"
     - "支持 AI CLI，也可独立连接多种 LLM API"
@@ -24,6 +25,35 @@
     - "802.11"
     - "pcapng"
     - "LLM"
+
+- slug: "freertos-crashkit"
+  name: "FreeRTOS CrashKit"
+  repo: "https://github.com/YvainZhang/freertos-crashkit"
+  repo_label: "github.com/YvainZhang/freertos-crashkit"
+  eyebrow: "FreeRTOS × Crash Capture"
+  year: "2026"
+  status: "Experimental"
+  license: "MIT"
+  language: "C / Python"
+  featured: true
+  summary: "在 FreeRTOS 异常现场保存寄存器、内存片段和已登记的任务信息，再用 Python 离线核对快照与固件，生成报告。"
+  description: "故障采集核心使用固定内存，将 CPU 异常入口、任务登记和板级读写分开。离线工具检查快照完整性、比对 ELF 固件身份，输出 JSON / HTML 报告。当前参考移植在单核 RV32、QEMU virt、FreeRTOS V11.1.0 上验证；真实板卡和掉电保存尚未验证，任务信息来自登记时的元数据。"
+  pipeline:
+    - "Capture"
+    - "Record"
+    - "Verify"
+    - "Report"
+  flow_note: "RV32 异常 → 快照 → JSON / HTML"
+  highlights:
+    - "固定内存采集，异常路径不使用堆、日志锁或调度器 API"
+    - "RV32 独立故障栈与 FreeRTOS 静态任务登记，不修改内核"
+    - "版本化快照、CRC 损坏检测与 ELF 固件身份比对"
+  stack:
+    - "C11"
+    - "Python"
+    - "FreeRTOS"
+    - "RISC-V"
+    - "QEMU"
 
 - slug: "platform-architecture-lab"
   name: "Platform Architecture Lab"

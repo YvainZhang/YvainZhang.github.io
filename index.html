@@ -253,17 +253,18 @@ description: "架构师的成长之路和自我修养。一名嵌入式工程师
     </div>
 </section>
 
-{% assign featured_project = site.data.projects | where: "featured", true | first %}
-{% if featured_project %}
+{% assign featured_projects = site.data.projects | where: "featured", true %}
+{% if featured_projects.size > 0 %}
 <section class="studio-section studio-projects" id="projects" aria-labelledby="projects-heading">
     <div class="studio-section-heading studio-section-heading-row">
         <div>
             <p>Open Source / 02</p>
-            <h2 id="projects-heading">工作中用到的开源工具。</h2>
+            <h2 id="projects-heading">自己维护的开源工具。</h2>
         </div>
         <a href="{{ '/projects/' | prepend: site.baseurl }}">查看全部开源项目 <span aria-hidden="true">→</span></a>
     </div>
-    <article class="studio-project-card">
+    {% for featured_project in featured_projects %}
+    <article class="studio-project-card" id="project-{{ featured_project.slug }}">
         <div class="studio-project-copy">
             <div class="studio-project-meta">
                 <span>{{ featured_project.eyebrow }}</span>
@@ -279,15 +280,16 @@ description: "架构师的成长之路和自我修养。一名嵌入式工程师
             <a class="studio-project-link" href="{{ featured_project.repo }}" target="_blank" rel="noopener noreferrer">在 GitHub 查看源码 <span aria-hidden="true">↗</span></a>
         </div>
         <div class="studio-project-flow" aria-label="项目分析流程">
-            <div class="studio-project-flow-head"><span>ANALYSIS PIPELINE</span><i>{{ featured_project.language }}</i></div>
+            <div class="studio-project-flow-head"><span>PROJECT WORKFLOW</span><i>{{ featured_project.language }}</i></div>
             <ol>
                 {% for stage in featured_project.pipeline %}
                 <li><span>0{{ forloop.index }}</span><strong>{{ stage }}</strong>{% unless forloop.last %}<i aria-hidden="true">→</i>{% endunless %}</li>
                 {% endfor %}
             </ol>
-            <p><span aria-hidden="true"></span> pcapng / OmniPeek → Root Cause</p>
+            <p><span aria-hidden="true"></span> {{ featured_project.flow_note }}</p>
         </div>
     </article>
+    {% endfor %}
 </section>
 {% endif %}
 

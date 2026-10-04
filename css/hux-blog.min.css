@@ -3889,6 +3889,9 @@ img::-moz-selection {
   background: #102a2f;
   box-shadow: 18px 18px 0 rgba(8, 127, 140, 0.12);
 }
+.studio-project-card + .studio-project-card {
+  margin-top: 40px;
+}
 .studio-project-copy {
   padding: 52px;
 }
