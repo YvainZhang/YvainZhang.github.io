@@ -1,0 +1,93 @@
+site_name: 平台架构实践
+site_description: 从资源寿命、事件与停止问题出发，整理 Linux 系统机制、RTOS 对照和平台设计取舍。
+site_author: Yvain Zhang
+site_url: https://xidianedu.cc/tech/platform/
+docs_dir: ../Platform
+site_dir: ../Platform-site
+use_directory_urls: true
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - search.share
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: 切换至深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: 切换至浅色模式
+
+plugins:
+  - search:
+      lang: zh
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: platform-mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+
+hooks:
+  - mermaid_source.py
+extra_javascript:
+  - javascripts/vendor/mermaid-10.4.0.min.js
+  - javascripts/platform-diagrams.js
+
+extra:
+  generator: false
+  homepage: /tech/
+copyright: Copyright &copy; 2026 Yvain Zhang
+
+nav:
+  - 专题概览: README.md
+  - 环境与复现: guide/environment.md
+  - 系统机制:
+      - C 对象与 ABI: mechanisms/01-c-abi.md
+      - 构建、符号与 ELF: mechanisms/02-build-elf.md
+      - fd 与对象寿命: mechanisms/03-fd-lifetime.md
+      - IO 与持久化: mechanisms/04-io-persistence.md
+      - 进程、线程与 IPC: mechanisms/05-process-ipc.md
+      - 事件、就绪与时间: mechanisms/06-events-time.md
+      - 并发、队列与所有权: mechanisms/07-concurrency-ownership.md
+      - 内存、调度与性能: mechanisms/08-memory-performance.md
+      - 网络路径与 TAP: mechanisms/09-network-tap.md
+      - 内核设备与退出: mechanisms/10-kernel-lifetime.md
+  - 平台设计:
+      - 启动与硬件边界: design/01-boot-hardware.md
+      - SDK 需求与契约: design/02-sdk-contract.md
+      - Linux 与 FreeRTOS: design/03-linux-freertos.md
+      - 可靠性与交付: design/04-reliability-delivery.md
+      - 芯片与平台选型: design/05-platform-selection.md
+      - 资源与性能预算: design/06-resource-budget.md
+      - 复杂度与演进: design/07-complexity-evolution.md
+      - 全生命周期评审: design/08-lifecycle-review.md
+  - 工程案例:
+      - 停止时的排队请求: cases/01-stop-drain.md
+      - 在途额度与性能: cases/02-inflight-budget.md
+      - 跨运行时恢复: cases/03-cross-runtime-recovery.md
+      - exec 与描述符语义: cases/04-exec-fd.md
+  - 实验参考:
+      - 源码与许可: reference/source.md
+      - SDK API: reference/api.md
+      - 验证范围与记录: reference/verification.md

@@ -1,0 +1,494 @@
+{
+  "date": "2026-10-04",
+  "archive": "platform-lab-source.tar.gz",
+  "archive_sha256": "29659eabaf31dfb9dcfdc9ff9b15505fd98c9f95a3db8ee792f476da2c31350c",
+  "reproduction": "Fresh extraction of the public source archive; disposable Linux containers with networking disabled for all tests. FreeRTOS dependency was fetched and SHA256-checked beforehand.",
+  "repack_identical": true,
+  "suites": [
+    {
+      "suite": "sanitize",
+      "result": "PASS",
+      "source_id": "fa87c0ba3827",
+      "architecture": "aarch64",
+      "tool_versions": {
+        "cc": {
+          "exit_code": 0,
+          "lines": [
+            "cc (Debian 12.2.0-14+deb12u1) 12.2.0",
+            "Copyright (C) 2022 Free Software Foundation, Inc.",
+            "This is free software; see the source for copying conditions.  There is NO"
+          ]
+        },
+        "make": {
+          "exit_code": 0,
+          "lines": [
+            "GNU Make 4.3",
+            "Built for aarch64-unknown-linux-gnu",
+            "Copyright (C) 1988-2020 Free Software Foundation, Inc."
+          ]
+        },
+        "python": {
+          "exit_code": 0,
+          "lines": [
+            "Python 3.11.2"
+          ]
+        },
+        "libc": {
+          "exit_code": 0,
+          "lines": [
+            "ldd (Debian GLIBC 2.36-9+deb12u14) 2.36",
+            "Copyright (C) 2022 Free Software Foundation, Inc.",
+            "This is free software; see the source for copying conditions.  There is NO"
+          ]
+        }
+      },
+      "steps": [
+        {
+          "command": [
+            "make",
+            "-C",
+            "platform",
+            "sanitize"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 33,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": [
+            "ready-callback-owner-context",
+            "dup2-vs-spawn-same-fd-CLOEXEC",
+            "spawn-child-fd-collision-roundtrip"
+          ]
+        },
+        {
+          "command": [
+            "make",
+            "-C",
+            "labs",
+            "sanitize"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 26,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": []
+        },
+        {
+          "command": [
+            "make",
+            "STARTUP_BUILD=build/startup-asan",
+            "CFLAGS=-O1 -g -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer",
+            "startup-test"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 18,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": [
+            "ready-callback-owner-context",
+            "thread-create-failure-rollback-retry",
+            "dup2-vs-spawn-same-fd-CLOEXEC",
+            "spawn-child-fd-collision-roundtrip"
+          ]
+        }
+      ]
+    },
+    {
+      "suite": "tsan",
+      "result": "PASS",
+      "source_id": "fa87c0ba3827",
+      "architecture": "aarch64",
+      "tool_versions": {
+        "cc": {
+          "exit_code": 0,
+          "lines": [
+            "cc (Debian 12.2.0-14+deb12u1) 12.2.0",
+            "Copyright (C) 2022 Free Software Foundation, Inc.",
+            "This is free software; see the source for copying conditions.  There is NO"
+          ]
+        },
+        "make": {
+          "exit_code": 0,
+          "lines": [
+            "GNU Make 4.3",
+            "Built for aarch64-unknown-linux-gnu",
+            "Copyright (C) 1988-2020 Free Software Foundation, Inc."
+          ]
+        },
+        "python": {
+          "exit_code": 0,
+          "lines": [
+            "Python 3.11.2"
+          ]
+        },
+        "libc": {
+          "exit_code": 0,
+          "lines": [
+            "ldd (Debian GLIBC 2.36-9+deb12u14) 2.36",
+            "Copyright (C) 2022 Free Software Foundation, Inc.",
+            "This is free software; see the source for copying conditions.  There is NO"
+          ]
+        }
+      },
+      "steps": [
+        {
+          "command": [
+            "make",
+            "-C",
+            "platform",
+            "BUILD=../build/tsan",
+            "CFLAGS=-O1 -g -std=c11 -Wall -Wextra -Werror -fsanitize=thread",
+            "test"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 33,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": [
+            "ready-callback-owner-context",
+            "dup2-vs-spawn-same-fd-CLOEXEC",
+            "spawn-child-fd-collision-roundtrip"
+          ]
+        },
+        {
+          "command": [
+            "make",
+            "STARTUP_BUILD=build/startup-tsan",
+            "CFLAGS=-O1 -g -std=c11 -Wall -Wextra -Werror -fsanitize=thread",
+            "startup-test"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 18,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": [
+            "ready-callback-owner-context",
+            "thread-create-failure-rollback-retry",
+            "dup2-vs-spawn-same-fd-CLOEXEC",
+            "spawn-child-fd-collision-roundtrip"
+          ]
+        }
+      ]
+    },
+    {
+      "suite": "user",
+      "result": "PASS",
+      "source_id": "fa87c0ba3827",
+      "architecture": "aarch64",
+      "tool_versions": {
+        "cc": {
+          "exit_code": 0,
+          "lines": [
+            "cc (Alpine 14.2.0) 14.2.0",
+            "Copyright (C) 2024 Free Software Foundation, Inc.",
+            "This is free software; see the source for copying conditions.  There is NO"
+          ]
+        },
+        "make": {
+          "exit_code": 0,
+          "lines": [
+            "GNU Make 4.4.1",
+            "Built for aarch64-alpine-linux-musl",
+            "Copyright (C) 1988-2023 Free Software Foundation, Inc."
+          ]
+        },
+        "python": {
+          "exit_code": 0,
+          "lines": [
+            "Python 3.12.15"
+          ]
+        },
+        "libc": {
+          "exit_code": 1,
+          "lines": [
+            "musl libc (aarch64)",
+            "Version 1.2.5",
+            "Dynamic Program Loader"
+          ]
+        }
+      },
+      "steps": [
+        {
+          "command": [
+            "make",
+            "test"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 62,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": [
+            "ready-callback-owner-context",
+            "dup2-vs-spawn-same-fd-CLOEXEC",
+            "spawn-child-fd-collision-roundtrip"
+          ]
+        }
+      ]
+    },
+    {
+      "suite": "reproduction",
+      "result": "PASS",
+      "source_id": "fa87c0ba3827",
+      "architecture": "aarch64",
+      "tool_versions": {
+        "cc": {
+          "exit_code": 0,
+          "lines": [
+            "cc (Alpine 14.2.0) 14.2.0",
+            "Copyright (C) 2024 Free Software Foundation, Inc.",
+            "This is free software; see the source for copying conditions.  There is NO"
+          ]
+        },
+        "make": {
+          "exit_code": 0,
+          "lines": [
+            "GNU Make 4.4.1",
+            "Built for aarch64-alpine-linux-musl",
+            "Copyright (C) 1988-2023 Free Software Foundation, Inc."
+          ]
+        },
+        "python": {
+          "exit_code": 0,
+          "lines": [
+            "Python 3.12.15"
+          ]
+        },
+        "libc": {
+          "exit_code": 1,
+          "lines": [
+            "musl libc (aarch64)",
+            "Version 1.2.5",
+            "Dynamic Program Loader"
+          ]
+        }
+      },
+      "steps": [
+        {
+          "command": [
+            "make",
+            "-C",
+            "labs",
+            "all"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 0,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": []
+        },
+        {
+          "command": [
+            "make",
+            "check-docs",
+            "package"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 0,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": []
+        },
+        {
+          "command": [
+            "./build/labs/mechanisms",
+            "--list"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 0,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": []
+        },
+        {
+          "command": [
+            "./build/labs/mechanisms",
+            "fd"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 3,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": []
+        },
+        {
+          "command": [
+            "./build/labs/mechanisms",
+            "epoll"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 6,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": []
+        },
+        {
+          "command": [
+            "./build/labs/mechanisms",
+            "memory"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 4,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": []
+        }
+      ]
+    },
+    {
+      "suite": "startup",
+      "result": "PASS",
+      "source_id": "fa87c0ba3827",
+      "architecture": "aarch64",
+      "tool_versions": {
+        "cc": {
+          "exit_code": 0,
+          "lines": [
+            "cc (Alpine 14.2.0) 14.2.0",
+            "Copyright (C) 2024 Free Software Foundation, Inc.",
+            "This is free software; see the source for copying conditions.  There is NO"
+          ]
+        },
+        "make": {
+          "exit_code": 0,
+          "lines": [
+            "GNU Make 4.4.1",
+            "Built for aarch64-alpine-linux-musl",
+            "Copyright (C) 1988-2023 Free Software Foundation, Inc."
+          ]
+        },
+        "python": {
+          "exit_code": 0,
+          "lines": [
+            "Python 3.12.15"
+          ]
+        },
+        "libc": {
+          "exit_code": 1,
+          "lines": [
+            "musl libc (aarch64)",
+            "Version 1.2.5",
+            "Dynamic Program Loader"
+          ]
+        }
+      },
+      "steps": [
+        {
+          "command": [
+            "make",
+            "startup-test"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 18,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": [
+            "ready-callback-owner-context",
+            "thread-create-failure-rollback-retry",
+            "dup2-vs-spawn-same-fd-CLOEXEC",
+            "spawn-child-fd-collision-roundtrip"
+          ]
+        }
+      ]
+    },
+    {
+      "suite": "freertos",
+      "result": "PASS",
+      "source_id": "fa87c0ba3827",
+      "architecture": "aarch64",
+      "tool_versions": {
+        "cc": {
+          "exit_code": 0,
+          "lines": [
+            "cc (Alpine 14.2.0) 14.2.0",
+            "Copyright (C) 2024 Free Software Foundation, Inc.",
+            "This is free software; see the source for copying conditions.  There is NO"
+          ]
+        },
+        "make": {
+          "exit_code": 0,
+          "lines": [
+            "GNU Make 4.4.1",
+            "Built for aarch64-alpine-linux-musl",
+            "Copyright (C) 1988-2023 Free Software Foundation, Inc."
+          ]
+        },
+        "python": {
+          "exit_code": 0,
+          "lines": [
+            "Python 3.12.15"
+          ]
+        },
+        "libc": {
+          "exit_code": 1,
+          "lines": [
+            "musl libc (aarch64)",
+            "Version 1.2.5",
+            "Dynamic Program Loader"
+          ]
+        }
+      },
+      "steps": [
+        {
+          "command": [
+            "make",
+            "freertos-test"
+          ],
+          "exit_code": 0,
+          "status": "PASS",
+          "assertion_records": {
+            "PASS": 29,
+            "FAIL": 0,
+            "SKIP": 0
+          },
+          "targeted_checks": []
+        }
+      ]
+    }
+  ],
+  "not_rerun": [
+    "network",
+    "benchmark",
+    "kernel-build",
+    "kernel-vm"
+  ],
+  "scope": "Assertion records count log entries, including repeated vectors. These results do not establish exhaustive interleaving coverage, target MCU timing, real DMA/IRQ or hardware power measurements."
+}

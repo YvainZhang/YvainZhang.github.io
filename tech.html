@@ -16,7 +16,7 @@ body_class: tech-page
             <p>零散问题写成工程笔记，反复遇到的知识整理成系统专题。这里既保留现场经验，也试着把硬件、驱动和系统之间的关系连起来。</p>
             <div class="tech-hero-stats" aria-label="技术内容统计">
                 <span><strong>{{ technical_posts | size }}</strong> Articles</span>
-                <span><strong>06</strong> System collections</span>
+                <span><strong>07</strong> System collections</span>
                 <span><strong>04</strong> Domains</span>
             </div>
         </div>
@@ -34,7 +34,7 @@ body_class: tech-page
 
 <section class="tech-section tech-collection" aria-labelledby="collection-heading">
     <div class="tech-section-heading">
-        <p>System Collections / 01—06</p>
+        <p>System Collections / 01—07</p>
         <div>
             <h2 id="collection-heading">按专题查找系统知识。</h2>
             <span>每个专题按模块整理，也收录相关案例和实验。可以顺着读，遇到具体问题时也方便回来查。</span>
@@ -189,6 +189,29 @@ body_class: tech-page
             <div class="soc-map-bus"><b>TIMING + SYNCHRONIZATION</b></div>
             <div class="soc-map-row soc-map-row-bottom"><span>TASK</span><i></i><span>IPC</span><i></i><span>MEMORY</span></div>
             <div class="soc-map-control"><span>FREERTOS</span><span>ZEPHYR</span><span>RISC-V</span><span>SMP</span></div>
+        </div>
+    </a>
+</section>
+
+<section class="tech-section" aria-labelledby="platform-heading">
+    <a class="soc-feature" href="{{ '/tech/platform/' | prepend: site.baseurl }}" aria-label="进入平台架构实践">
+        <div class="soc-feature-copy">
+            <div class="soc-feature-meta"><span>Platform Architecture</span><span>Problem to Design</span></div>
+            <h3 id="platform-heading">平台架构实践</h3>
+            <p>从 fd、buffer 寿命、事件和停止问题出发，连接 Linux 系统机制、RTOS 对照、资源预算与平台设计。</p>
+            <div class="soc-feature-stats">
+                <span><strong>Linux</strong> Mechanisms</span>
+                <span><strong>RTOS</strong> Runtime</span>
+                <span><strong>4</strong> Cases</span>
+            </div>
+            <span class="soc-feature-enter">进入实践专题 <i aria-hidden="true">→</i></span>
+        </div>
+        <div class="soc-feature-map" aria-hidden="true">
+            <div class="soc-map-label">RESOURCE TO CONTRACT</div>
+            <div class="soc-map-row soc-map-row-top"><span>OBJECT</span><i></i><span>QUEUE</span><i></i><span>OWNER</span></div>
+            <div class="soc-map-bus"><b>LIFETIME + BUDGET + RECOVERY</b></div>
+            <div class="soc-map-row soc-map-row-bottom"><span>LINUX</span><i></i><span>CORE</span><i></i><span>RTOS</span></div>
+            <div class="soc-map-control"><span>FD</span><span>EVENT</span><span>STOP</span><span>VERIFY</span></div>
         </div>
     </a>
 </section>

@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "Open Source"
-description: "自己维护的开源工具，以及相关的分析方法。"
+description: "自己维护的开源工具、平台实验与相关的分析方法。"
 header-img: "img/post-bg-unix-linux.jpg"
 nav_exclude: true
 permalink: /projects/
@@ -10,8 +10,8 @@ permalink: /projects/
 <div class="projects-page">
     <div class="projects-page-intro">
         <p>Projects / Work in public</p>
-        <h2>自己维护的开源工具。</h2>
-        <span>这里放一些工作中用到的工具。源码、分析步骤和使用方法一起公开，方便复查，也欢迎提出修改建议。</span>
+        <h2>开源工具与平台实验。</h2>
+        <span>整理工作中用到的工具与系统实验，公开源码、分析步骤和使用方法，方便复查。</span>
     </div>
 
     {% for project in site.data.projects %}
@@ -35,14 +35,16 @@ permalink: /projects/
                 <ul>{% for item in project.highlights %}<li>{{ item }}</li>{% endfor %}</ul>
             </div>
             <div>
-                <h3>分析链路</h3>
+                <h3>问题展开</h3>
                 <ol>{% for stage in project.pipeline %}<li><span>0{{ forloop.index }}</span>{{ stage }}</li>{% endfor %}</ol>
             </div>
         </div>
 
         <div class="project-detail-foot">
             <div>{% for item in project.stack %}<span>{{ item }}</span>{% endfor %}</div>
-            <a href="{{ project.repo }}" target="_blank" rel="noopener noreferrer">github.com/YvainZhang/ai_wifi_analysis <span aria-hidden="true">↗</span></a>
+            {% if project.repo %}<a href="{{ project.repo }}" target="_blank" rel="noopener noreferrer">{{ project.repo_label | default: project.name }} <span aria-hidden="true">↗</span></a>{% endif %}
+            {% if project.tutorial %}<a href="{{ project.tutorial | relative_url }}">阅读专题 <span aria-hidden="true">→</span></a>{% endif %}
+            {% if project.source %}<a href="{{ project.source | relative_url }}">源码与许可 <span aria-hidden="true">→</span></a>{% endif %}
         </div>
     </article>
     {% endfor %}

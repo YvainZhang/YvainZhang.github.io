@@ -1,0 +1,92 @@
+[
+  {
+    "limit": 4,
+    "round": 1,
+    "samples": 10000,
+    "completed": 10000,
+    "failed": 0,
+    "elapsed_ns": 15051690116,
+    "requests_per_s": 664.38
+  },
+  {
+    "limit": 4,
+    "round": 2,
+    "samples": 10000,
+    "completed": 10000,
+    "failed": 0,
+    "elapsed_ns": 15077402050,
+    "requests_per_s": 663.24
+  },
+  {
+    "limit": 4,
+    "round": 3,
+    "samples": 10000,
+    "completed": 10000,
+    "failed": 0,
+    "elapsed_ns": 15063594084,
+    "requests_per_s": 663.85
+  },
+  {
+    "limit": 4,
+    "round": 4,
+    "samples": 10000,
+    "completed": 10000,
+    "failed": 0,
+    "elapsed_ns": 15038419857,
+    "requests_per_s": 664.96
+  },
+  {
+    "limit": 4,
+    "round": 5,
+    "samples": 10000,
+    "completed": 10000,
+    "failed": 0,
+    "elapsed_ns": 15056468895,
+    "requests_per_s": 664.17
+  },
+  {
+    "limit": 16,
+    "round": 1,
+    "samples": 10000,
+    "completed": 10000,
+    "failed": 0,
+    "elapsed_ns": 3786829718,
+    "requests_per_s": 2640.73
+  },
+  {
+    "limit": 16,
+    "round": 2,
+    "samples": 10000,
+    "completed": 10000,
+    "failed": 0,
+    "elapsed_ns": 3772343005,
+    "requests_per_s": 2650.87
+  },
+  {
+    "limit": 16,
+    "round": 3,
+    "samples": 10000,
+    "completed": 10000,
+    "failed": 0,
+    "elapsed_ns": 3784456182,
+    "requests_per_s": 2642.39
+  },
+  {
+    "limit": 16,
+    "round": 4,
+    "samples": 10000,
+    "completed": 10000,
+    "failed": 0,
+    "elapsed_ns": 3773819668,
+    "requests_per_s": 2649.84
+  },
+  {
+    "limit": 16,
+    "round": 5,
+    "samples": 10000,
+    "completed": 10000,
+    "failed": 0,
+    "elapsed_ns": 3785985762,
+    "requests_per_s": 2641.32
+  }
+]

@@ -62,3 +62,6 @@ Audio/Labs/**/test_tone_48k.wav
 # Local source and reference material
 /html_files/
 /记录/
+/linux-link-lab/
+/Platform-site/
+/_platform_publish/__pycache__/
